@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils_sample_drawing.R
 \name{draw_sample_pps}
 \alias{draw_sample_pps}
-\title{Draw probability proportional to size (PPS) sample}
+\title{Draw probability proportional to size (PPS) sample (legacy helper)}
 \usage{
 draw_sample_pps(frame, n, seed = NULL)
 }
@@ -17,5 +17,5 @@ draw_sample_pps(frame, n, seed = NULL)
 Data frame with drawn sample and metadata attributes
 }
 \description{
-Draw probability proportional to size (PPS) sample
+Draw probability proportional to size (PPS) sample (legacy helper)
 }

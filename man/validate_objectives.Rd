@@ -7,11 +7,12 @@
 validate_objectives(objectives)
 }
 \arguments{
-\item{objectives}{List of objective objects}
+\item{objectives}{List of objective objects (flat or nested).}
 }
 \value{
-List with validation results
+List with validation results.
 }
 \description{
-Validate objectives
+Accepts either a flat list of objectives or the nested structure stored on a
+Protocol.
 }

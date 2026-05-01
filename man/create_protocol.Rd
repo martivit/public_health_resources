@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils_protocol.R
 \name{create_protocol}
 \alias{create_protocol}
-\title{Protocol Utility Functions}
+\title{Create a new protocol instance}
 \usage{
 create_protocol(
   assessment_title = NULL,
@@ -21,6 +21,5 @@ create_protocol(
 A new Protocol object
 }
 \description{
-Utility functions for working with Protocol objects and protocol workflows.
 Create a new protocol instance
 }

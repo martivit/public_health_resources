@@ -22,7 +22,6 @@ library(tibble)
 library(dplyr)
 source("dev/generate_household_samples.R")
 
-
 # Setup
 
 

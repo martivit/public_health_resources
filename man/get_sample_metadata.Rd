@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils_sample_drawing.R
 \name{get_sample_metadata}
 \alias{get_sample_metadata}
-\title{Get sampling metadata from drawn sample}
+\title{Get sampling metadata from drawn sample (legacy helper)}
 \usage{
 get_sample_metadata(sample)
 }
@@ -13,5 +13,5 @@ get_sample_metadata(sample)
 List with sampling metadata
 }
 \description{
-Get sampling metadata from drawn sample
+Get sampling metadata from drawn sample (legacy helper)
 }

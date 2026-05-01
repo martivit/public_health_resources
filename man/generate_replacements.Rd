@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils_sample_drawing.R
 \name{generate_replacements}
 \alias{generate_replacements}
-\title{Generate replacement samples}
+\title{Generate replacement samples (legacy helper)}
 \usage{
 generate_replacements(
   frame,
@@ -27,5 +27,5 @@ generate_replacements(
 Data frame with replacement samples
 }
 \description{
-Generate replacement samples
+Generate replacement samples (legacy helper)
 }

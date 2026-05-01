@@ -67,6 +67,15 @@ Tool <- R6::R6Class(
 "Tool",
 public = list(
 
+  #' @field survey Data frame containing the survey sheet of the XLSForm.
+  survey = NULL,
+
+  #' @field choices Data frame containing the choices sheet of the XLSForm.
+  choices = NULL,
+
+  #' @field settings Data frame containing the settings sheet of the XLSForm.
+  settings = NULL,
+
   # ------------------------------------------------------------------------
   # Initialization
   # ------------------------------------------------------------------------
@@ -89,21 +98,21 @@ public = list(
     private$.tool_type <- "generic"
 
     # Initialize empty data frames with required columns if not provided
-    private$.survey <- if (!is.null(survey)) {
+    self$survey <- if (!is.null(survey)) {
       private$.validate_survey_structure(survey)
       survey
     } else {
       private$.create_empty_survey()
     }
 
-    private$.choices <- if (!is.null(choices)) {
+    self$choices <- if (!is.null(choices)) {
       private$.validate_choices_structure(choices)
       choices
     } else {
       private$.create_empty_choices()
     }
 
-    private$.settings <- if (!is.null(settings)) {
+    self$settings <- if (!is.null(settings)) {
       settings
     } else {
       private$.create_empty_settings()
@@ -153,7 +162,7 @@ public = list(
   #' Get the survey sheet data.
   #' @return Data frame containing the survey sheet.
   get_survey = function() {
-    private$.survey
+    self$survey
   },
 
   #' @description
@@ -168,7 +177,7 @@ public = list(
     if (validate) {
       private$.validate_survey_structure(survey)
     }
-    private$.survey <- survey
+    self$survey <- survey
     private$.touch()
     invisible(self)
   },
@@ -177,7 +186,7 @@ public = list(
   #' Get the choices sheet data.
   #' @return Data frame containing the choices sheet.
   get_choices = function() {
-    private$.choices
+    self$choices
   },
 
   #' @description
@@ -192,7 +201,7 @@ public = list(
     if (validate) {
       private$.validate_choices_structure(choices)
     }
-    private$.choices <- choices
+    self$choices <- choices
     private$.touch()
     invisible(self)
   },
@@ -201,7 +210,7 @@ public = list(
   #' Get the settings sheet data.
   #' @return Data frame containing the settings sheet.
   get_settings = function() {
-    private$.settings
+    self$settings
   },
 
   #' @description
@@ -212,7 +221,7 @@ public = list(
     if (!is.data.frame(settings)) {
       stop("Settings must be a data.frame")
     }
-    private$.settings <- settings
+    self$settings <- settings
     private$.touch()
     invisible(self)
   },
@@ -225,7 +234,7 @@ public = list(
   #' Get the master (template) survey sheet.
   #' @return Data frame containing the master survey.
   get_master_survey = function() {
-    private$.survey
+    self$survey
   },
 
   #' @description
@@ -240,7 +249,7 @@ public = list(
     if (validate) {
       private$.validate_survey_structure(survey)
     }
-    private$.survey <- survey
+    self$survey <- survey
     private$.modified_survey <- NULL
     private$.touch()
     invisible(self)
@@ -250,7 +259,7 @@ public = list(
   #' Get the master (template) choices sheet.
   #' @return Data frame containing the master choices.
   get_master_choices = function() {
-    private$.choices
+    self$choices
   },
 
   #' @description
@@ -265,7 +274,7 @@ public = list(
     if (validate) {
       private$.validate_choices_structure(choices)
     }
-    private$.choices <- choices
+    self$choices <- choices
     private$.modified_choices <- NULL
     private$.touch()
     invisible(self)
@@ -300,9 +309,9 @@ public = list(
     if (!is.character(language) || length(language) != 1 || nchar(language) == 0) {
       stop("language must be a non-empty character string")
     }
-    if (nrow(private$.settings) == 0) {
+    if (nrow(self$settings) == 0) {
       # Create a single-row settings frame when none exists
-      private$.settings <- data.frame(
+      self$settings <- data.frame(
         form_title       = NA_character_,
         form_id          = NA_character_,
         version          = NA_character_,
@@ -310,10 +319,10 @@ public = list(
         stringsAsFactors = FALSE
       )
     } else {
-      if (!"default_language" %in% names(private$.settings)) {
-        private$.settings[["default_language"]] <- NA_character_
+      if (!"default_language" %in% names(self$settings)) {
+        self$settings[["default_language"]] <- NA_character_
       }
-      private$.settings[["default_language"]] <- language
+      self$settings[["default_language"]] <- language
     }
     private$.touch()
     invisible(self)
@@ -338,7 +347,7 @@ public = list(
       stop("modules must be a non-empty character vector")
     }
 
-    survey <- private$.survey
+    survey <- self$survey
 
     if (nrow(survey) == 0) {
       private$.modified_survey <- survey
@@ -395,7 +404,7 @@ public = list(
     modified_survey <- private$.modified_survey
 
     if (!"type" %in% names(modified_survey) || nrow(modified_survey) == 0) {
-      private$.modified_choices <- private$.choices[0L, , drop = FALSE]
+      private$.modified_choices <- self$choices[0L, , drop = FALSE]
       private$.touch()
       return(invisible(self))
     }
@@ -408,14 +417,14 @@ public = list(
     list_names <- gsub("\\s+.*$", "", list_names)
     list_names <- unique(list_names[nchar(list_names) > 0])
 
-    if (length(list_names) == 0 || !"list_name" %in% names(private$.choices)) {
-      private$.modified_choices <- private$.choices[0L, , drop = FALSE]
+    if (length(list_names) == 0 || !"list_name" %in% names(self$choices)) {
+      private$.modified_choices <- self$choices[0L, , drop = FALSE]
       private$.touch()
       return(invisible(self))
     }
 
-    private$.modified_choices <- private$.choices[
-      private$.choices$list_name %in% list_names, , drop = FALSE
+    private$.modified_choices <- self$choices[
+      self$choices$list_name %in% list_names, , drop = FALSE
     ]
     private$.touch()
     invisible(self)
@@ -453,7 +462,7 @@ public = list(
     target <- if (!is.null(private$.modified_choices)) {
       private$.modified_choices
     } else {
-      private$.choices
+      self$choices
     }
 
     # Align columns: add any missing columns as NA
@@ -475,7 +484,7 @@ public = list(
     if (!is.null(private$.modified_choices)) {
       private$.modified_choices <- updated
     } else {
-      private$.choices <- updated
+      self$choices <- updated
     }
 
     private$.touch()
@@ -498,12 +507,12 @@ public = list(
     survey_to_check <- if (!is.null(private$.modified_survey)) {
       private$.modified_survey
     } else {
-      private$.survey
+      self$survey
     }
     choices_to_check <- if (!is.null(private$.modified_choices)) {
       private$.modified_choices
     } else {
-      private$.choices
+      self$choices
     }
 
     if (!"type" %in% names(survey_to_check) || nrow(survey_to_check) == 0) {
@@ -546,19 +555,19 @@ public = list(
     if (!is.character(key) || length(key) != 1 || nchar(key) == 0) {
       stop("key must be a non-empty character string")
     }
-    if (nrow(private$.settings) == 0) {
+    if (nrow(self$settings) == 0) {
       # Create a single-row settings frame when none exists
-      private$.settings <- data.frame(
+      self$settings <- data.frame(
         form_title = NA_character_,
         form_id    = NA_character_,
         version    = NA_character_,
         stringsAsFactors = FALSE
       )
     }
-    if (!key %in% names(private$.settings)) {
-      private$.settings[[key]] <- NA
+    if (!key %in% names(self$settings)) {
+      self$settings[[key]] <- NA
     }
-    private$.settings[[key]] <- value
+    self$settings[[key]] <- value
     private$.touch()
     invisible(self)
   },
@@ -594,7 +603,7 @@ public = list(
   #' @return Data frame with filtered survey rows.
   get_filtered_survey = function(indicator_mapping = NULL) {
     if (is.null(indicator_mapping) || length(private$.selected_indicators) == 0) {
-      return(private$.survey)
+      return(self$survey)
     }
 
     # Get question names for selected indicators
@@ -602,11 +611,11 @@ public = list(
     selected_questions <- unique(selected_questions)
 
     if (length(selected_questions) == 0) {
-      return(private$.survey)
+      return(self$survey)
     }
 
     # Filter survey to include selected questions and structural elements
-    survey <- private$.survey
+    survey <- self$survey
     if (!"name" %in% names(survey)) {
       return(survey)
     }
@@ -635,7 +644,7 @@ public = list(
     filtered_survey <- self$get_filtered_survey(indicator_mapping)
 
     if (!"type" %in% names(filtered_survey)) {
-      return(private$.choices)
+      return(self$choices)
     }
 
     # Extract choice list names from select_one and select_multiple questions
@@ -644,11 +653,11 @@ public = list(
     list_names <- gsub("\\s+.*$", "", list_names)  # Remove anything after list name
     list_names <- unique(list_names)
 
-    if (length(list_names) == 0 || !"list_name" %in% names(private$.choices)) {
-      return(private$.choices)
+    if (length(list_names) == 0 || !"list_name" %in% names(self$choices)) {
+      return(self$choices)
     }
 
-    private$.choices[private$.choices$list_name %in% list_names, , drop = FALSE]
+    self$choices[self$choices$list_name %in% list_names, , drop = FALSE]
   },
 
   # ------------------------------------------------------------------------
@@ -728,13 +737,13 @@ public = list(
     }
 
     # Ensure all columns from existing survey are present
-    for (col in names(private$.survey)) {
+    for (col in names(self$survey)) {
       if (!col %in% names(new_row)) {
         new_row[[col]] <- NA
       }
     }
 
-    private$.survey <- rbind(private$.survey, new_row[, names(private$.survey), drop = FALSE])
+    self$survey <- rbind(self$survey, new_row[, names(self$survey), drop = FALSE])
     private$.touch()
     invisible(self)
   },
@@ -749,7 +758,7 @@ public = list(
       return(invisible(self))
     }
 
-    private$.survey <- private$.survey[private$.survey$name != name, , drop = FALSE]
+    self$survey <- self$survey[self$survey$name != name, , drop = FALSE]
     private$.touch()
     invisible(self)
   },
@@ -759,7 +768,7 @@ public = list(
   #' @param name Question name to check.
   #' @return Logical indicating if question exists.
   has_question = function(name) {
-    "name" %in% names(private$.survey) && name %in% private$.survey$name
+    "name" %in% names(self$survey) && name %in% self$survey$name
   },
 
   #' @description
@@ -770,7 +779,7 @@ public = list(
     if (!self$has_question(name)) {
       return(NULL)
     }
-    private$.survey[private$.survey$name == name, , drop = FALSE]
+    self$survey[self$survey$name == name, , drop = FALSE]
   },
 
   #' @description
@@ -784,13 +793,13 @@ public = list(
     }
 
     updates <- list(...)
-    row_idx <- which(private$.survey$name == name)
+    row_idx <- which(self$survey$name == name)
 
     for (col_name in names(updates)) {
-      if (!col_name %in% names(private$.survey)) {
-        private$.survey[[col_name]] <- NA
+      if (!col_name %in% names(self$survey)) {
+        self$survey[[col_name]] <- NA
       }
-      private$.survey[row_idx, col_name] <- updates[[col_name]]
+      self$survey[row_idx, col_name] <- updates[[col_name]]
     }
 
     private$.touch()
@@ -819,13 +828,13 @@ public = list(
     }
 
     # Ensure all columns from existing choices are present
-    for (col in names(private$.choices)) {
+    for (col in names(self$choices)) {
       if (!col %in% names(new_row)) {
         new_row[[col]] <- NA
       }
     }
 
-    private$.choices <- rbind(private$.choices, new_row[, names(private$.choices), drop = FALSE])
+    self$choices <- rbind(self$choices, new_row[, names(self$choices), drop = FALSE])
     private$.touch()
     invisible(self)
   },
@@ -837,10 +846,10 @@ public = list(
   #' @return Invisibly returns self for method chaining.
   remove_choice = function(list_name, name = NULL) {
     if (is.null(name)) {
-      private$.choices <- private$.choices[private$.choices$list_name != list_name, , drop = FALSE]
+      self$choices <- self$choices[self$choices$list_name != list_name, , drop = FALSE]
     } else {
-      private$.choices <- private$.choices[
-        !(private$.choices$list_name == list_name & private$.choices$name == name),
+      self$choices <- self$choices[
+        !(self$choices$list_name == list_name & self$choices$name == name),
         , drop = FALSE
       ]
     }
@@ -853,7 +862,7 @@ public = list(
   #' @param list_name Name of the choice list.
   #' @return Data frame with choices for the specified list.
   get_choices_for_list = function(list_name) {
-    private$.choices[private$.choices$list_name == list_name, , drop = FALSE]
+    self$choices[self$choices$list_name == list_name, , drop = FALSE]
   },
 
   #' @description
@@ -863,8 +872,8 @@ public = list(
   #' @param ... Named arguments for columns to update.
   #' @return Invisibly returns self for method chaining.
   update_choice = function(list_name, name, ...) {
-    row_idx <- which(private$.choices$list_name == list_name &
-                     private$.choices$name == name)
+    row_idx <- which(self$choices$list_name == list_name &
+                     self$choices$name == name)
 
     if (length(row_idx) == 0) {
       stop(paste("Choice", name, "in list", list_name, "not found"))
@@ -872,10 +881,10 @@ public = list(
 
     updates <- list(...)
     for (col_name in names(updates)) {
-      if (!col_name %in% names(private$.choices)) {
-        private$.choices[[col_name]] <- NA
+      if (!col_name %in% names(self$choices)) {
+        self$choices[[col_name]] <- NA
       }
-      private$.choices[row_idx, col_name] <- updates[[col_name]]
+      self$choices[row_idx, col_name] <- updates[[col_name]]
     }
 
     private$.touch()
@@ -886,7 +895,7 @@ public = list(
   #' Get all unique choice list names.
   #' @return Character vector of choice list names.
   get_choice_list_names = function() {
-    unique(private$.choices$list_name)
+    unique(self$choices$list_name)
   },
 
   # ------------------------------------------------------------------------
@@ -902,8 +911,8 @@ public = list(
       tool_type = private$.tool_type,
       created_at = private$.created_at,
       modified_at = private$.modified_at,
-      num_questions = nrow(private$.survey),
-      num_choices = nrow(private$.choices),
+      num_questions = nrow(self$survey),
+      num_choices = nrow(self$choices),
       num_indicators = length(private$.selected_indicators),
       custom = private$.metadata
     )
@@ -927,9 +936,9 @@ public = list(
   clone_tool = function(deep = TRUE) {
     new_tool <- Tool$new(
       name = paste(private$.name, "(copy)"),
-      survey = if (deep) data.frame(private$.survey) else private$.survey,
-      choices = if (deep) data.frame(private$.choices) else private$.choices,
-      settings = if (deep) data.frame(private$.settings) else private$.settings
+      survey = if (deep) data.frame(self$survey) else self$survey,
+      choices = if (deep) data.frame(self$choices) else self$choices,
+      settings = if (deep) data.frame(self$settings) else self$settings
     )
     new_tool$set_selected_indicators(private$.selected_indicators)
     new_tool
@@ -944,8 +953,8 @@ public = list(
     cat("Type:", private$.tool_type, "\n")
     cat("Created:", format(private$.created_at, "%Y-%m-%d %H:%M:%S"), "\n")
     cat("Modified:", format(private$.modified_at, "%Y-%m-%d %H:%M:%S"), "\n")
-    cat("Master Survey Questions:", nrow(private$.survey), "\n")
-    cat("Master Choice Lists:", length(unique(private$.choices$list_name)), "\n")
+    cat("Master Survey Questions:", nrow(self$survey), "\n")
+    cat("Master Choice Lists:", length(unique(self$choices$list_name)), "\n")
     if (!is.null(private$.modified_survey)) {
       cat("Modified Survey Questions:", nrow(private$.modified_survey), "\n")
     }
@@ -967,9 +976,6 @@ private = list(
   .tool_type = NULL,
   .created_at = NULL,
   .modified_at = NULL,
-  .survey = NULL,
-  .choices = NULL,
-  .settings = NULL,
   .modified_survey = NULL,
   .modified_choices = NULL,
   .selected_indicators = NULL,
@@ -1007,7 +1013,7 @@ private = list(
         }
       )
       if (!is.null(sv)) {
-        private$.survey <- sv
+        self$survey <- sv
       }
     }
 
@@ -1020,7 +1026,7 @@ private = list(
         }
       )
       if (!is.null(ch)) {
-        private$.choices <- ch
+        self$choices <- ch
       }
     }
 
@@ -1033,7 +1039,7 @@ private = list(
         }
       )
       if (!is.null(st)) {
-        private$.settings <- st
+        self$settings <- st
       }
     }
 
@@ -1099,7 +1105,7 @@ private = list(
 
   # Validate survey content
   .validate_survey_content = function() {
-    survey <- private$.survey
+    survey <- self$survey
 
     if (nrow(survey) == 0) {
       return(invisible(NULL))
@@ -1206,7 +1212,7 @@ private = list(
 
   # Validate choices content
   .validate_choices_content = function() {
-    choices <- private$.choices
+    choices <- self$choices
 
     if (nrow(choices) == 0) {
       return(invisible(NULL))
@@ -1232,8 +1238,8 @@ private = list(
 
   # Validate references between survey and choices
   .validate_references = function() {
-    survey <- private$.survey
-    choices <- private$.choices
+    survey <- self$survey
+    choices <- self$choices
 
     if (!"type" %in% names(survey)) {
       return(invisible(NULL))

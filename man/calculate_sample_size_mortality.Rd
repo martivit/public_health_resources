@@ -10,6 +10,7 @@ calculate_sample_size_mortality(
   non_response_rate = 5,
   design = "cluster",
   design_effect = 1.5,
+  number_clusters = NULL,
   recall_days = 90,
   average_household_size,
   fpc = FALSE,
@@ -18,29 +19,61 @@ calculate_sample_size_mortality(
 )
 }
 \arguments{
-\item{expected_death_rate}{Numeric. Expected death rate in deaths per 10,000 people per day}
+\item{expected_death_rate}{Numeric. Expected crude death rate (CDR) in
+  deaths per 10,000 people per day (must be positive).}
 
-\item{desired_precision}{Numeric. Desired precision in deaths per 10,000 people per day}
+\item{desired_precision}{Numeric. Desired precision as a half-width in
+  deaths per 10,000 people per day (must be positive).}
 
-\item{non_response_rate}{Numeric. Non-response rate in percentages (0-100, default = 5)}
+\item{non_response_rate}{Numeric. Anticipated non-response rate in
+  percentages (0–100, default = 5).}
 
-\item{design}{Character. "simple_random" or "cluster" (default = "cluster")}
+\item{design}{Character. Sampling design: \code{"simple_random"} or
+  \code{"cluster"} (default = \code{"cluster"}).}
 
-\item{design_effect}{Numeric. Design effect (required if design = "cluster", default = 1.5)}
+\item{design_effect}{Numeric. Design effect for cluster sampling; must be
+  \eqn{\ge 1} (default = 1.5, ignored when \code{design = "simple_random"}).}
 
-\item{recall_days}{Numeric. Number of recall days (default = 90)}
+\item{number_clusters}{Integer or \code{NULL}. Number of clusters; when
+  \code{NULL} or \eqn{\le 0} the SMART-recommended \eqn{t = 2.045} is used,
+  otherwise the \eqn{t}-distribution with \code{number_clusters - 1} degrees
+  of freedom is applied (default = \code{NULL}).}
 
-\item{average_household_size}{Numeric. Average household size (required)}
+\item{recall_days}{Numeric. Length of the recall period in days
+  (default = 90).}
 
-\item{fpc}{Logical. Apply finite population correction (default = FALSE)}
+\item{average_household_size}{Numeric. Average number of individuals per
+  household (must be positive).}
 
-\item{total_population}{Numeric. Total population size (required if fpc = TRUE)}
+\item{fpc}{Logical. Whether to apply the finite population correction
+  (default = \code{FALSE}).}
 
-\item{confidence_level}{Numeric. Confidence level (default = 0.95)}
+\item{total_population}{Numeric. Total population size; required (and must
+  be positive) when \code{fpc = TRUE}.}
+
+\item{confidence_level}{Numeric. Desired confidence level as a proportion
+  (default = 0.95).}
 }
 \value{
-List with sample_size_households, sample_size_individuals, and sample_size_person_time
+A named list with six elements:
+  \describe{
+    \item{sample_size_households}{Integer. Households required after
+      non-response adjustment.}
+    \item{sample_size_individuals}{Integer. Individuals required (no
+      non-response adjustment).}
+    \item{sample_size_person_time}{Numeric. Total person-days of observation
+      (\code{sample_size_individuals} \eqn{\times} \code{recall_days}).}
+    \item{expected_deaths}{Integer. Expected number of deaths in the sample
+      over the recall period.}
+    \item{recall_days}{Numeric. The recall period used (echo of input).}
+    \item{design_effect}{Numeric. The effective design effect applied:
+      1 for simple random sampling, or the supplied value for cluster
+      sampling.}
+  }
 }
 \description{
-Calculate sample size for mortality surveys
+Estimates the required sample size for a retrospective household mortality
+survey using a Poisson-rate approach.  The function returns both individual
+and household sample sizes as well as the total person-time (in person-days)
+and the expected number of deaths that would be observed in the sample.
 }

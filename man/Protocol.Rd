@@ -4,25 +4,37 @@
 \alias{Protocol}
 \title{Protocol R6 Class}
 \description{
-Main class for managing the complete protocols pipeline workflow.
-Allows flexible interaction with different workflow components:
-1. Objective Selection (Primary and Secondary)
-2. Strata Definition and Sample Size Calculations
-3. Sampling Frame Validation and Sample Drawing
-4. Tool and Indicator Selection
+Base class for managing protocol pipeline workflows.
+Handles core components shared across all protocol types:
+1. Objective Selection (nested by sector, pillar, sub-pillar, and data source)
+2. Tool and Indicator Selection
+
+For survey protocols that require strata definition, sample size
+calculations, sampling frame management, and sample drawing, use
+the \code{\link{SurveyProtocol}} subclass instead.
 }
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
 \describe{
-\item{\code{primary_objectives}}{List of primary research objectives}
+\item{\code{objectives}}{Nested list of research objectives structured as
+\code{sector → pillar → sub_pillar → data_source → [list of objectives]}.
+Use \code{add_objective()}, \code{remove_objective()}, and
+\code{set_objectives()} to manage; use \code{flatten_objectives()} or
+\code{objectives_to_df()} to inspect.}
 
-\item{\code{secondary_objectives}}{List of secondary research objectives}
+\item{\code{framework}}{A \code{\link{Framework}} object (e.g.
+\code{\link{ANAFramework}}) that holds the master and adjusted
+reference schemas and SVG diagrams for this protocol.  Assign a
+Framework instance to this field to associate a conceptual framework
+with the protocol.}
 
-\item{\code{sample_table}}{Data frame with rows=strata, columns=parameters}
-
-\item{\code{sampling_frame}}{Data frame with sampling units and strata}
-
-\item{\code{drawn_sample}}{List containing drawn sample and metadata}
+\item{\code{objective_schema}}{Data frame containing the objective schema.
+This field is no longer auto-populated on initialisation.  When a
+\code{\link{Framework}} is associated with this protocol, access the
+schema via \code{self$framework$master_schema} or
+\code{self$framework$adjusted_schema}.  \code{objective_schema} may
+still be set manually for custom schemas that do not require a full
+Framework object.}
 
 \item{\code{tools}}{List of Tool objects (placeholder for Tool class instances)}
 
@@ -38,18 +50,16 @@ Allows flexible interaction with different workflow components:
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-Protocol-new}{\code{Protocol$new()}}
-\item \href{#method-Protocol-set_primary_objectives}{\code{Protocol$set_primary_objectives()}}
-\item \href{#method-Protocol-set_secondary_objectives}{\code{Protocol$set_secondary_objectives()}}
+\item \href{#method-Protocol-set_objectives}{\code{Protocol$set_objectives()}}
+\item \href{#method-Protocol-add_objective}{\code{Protocol$add_objective()}}
+\item \href{#method-Protocol-remove_objective}{\code{Protocol$remove_objective()}}
 \item \href{#method-Protocol-add_target_stratum}{\code{Protocol$add_target_stratum()}}
-\item \href{#method-Protocol-add_stratum}{\code{Protocol$add_stratum()}}
-\item \href{#method-Protocol-set_sampling_frame}{\code{Protocol$set_sampling_frame()}}
-\item \href{#method-Protocol-draw_sample}{\code{Protocol$draw_sample()}}
 \item \href{#method-Protocol-add_tools}{\code{Protocol$add_tools()}}
 \item \href{#method-Protocol-select_indicators}{\code{Protocol$select_indicators()}}
-\item \href{#method-Protocol-get_sample_table}{\code{Protocol$get_sample_table()}}
 \item \href{#method-Protocol-get_issues}{\code{Protocol$get_issues()}}
 \item \href{#method-Protocol-get_protocol_summary}{\code{Protocol$get_protocol_summary()}}
 \item \href{#method-Protocol-export_protocol}{\code{Protocol$export_protocol()}}
+\item \href{#method-Protocol-generate_report}{\code{Protocol$generate_report()}}
 \item \href{#method-Protocol-clone}{\code{Protocol$clone()}}
 }
 }
@@ -78,37 +88,77 @@ A new Protocol object
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Protocol-set_primary_objectives"></a>}}
-\if{latex}{\out{\hypertarget{method-Protocol-set_primary_objectives}{}}}
-\subsection{Method \code{set_primary_objectives()}}{
-Set primary research objectives
+\if{html}{\out{<a id="method-Protocol-set_objectives"></a>}}
+\if{latex}{\out{\hypertarget{method-Protocol-set_objectives}{}}}
+\subsection{Method \code{set_objectives()}}{
+Set all objectives at once, replacing the current objectives
+
+Accepts either a flat list of objectives (as produced by
+\code{create_objective()} or \code{create_objectives_from_df()}) or an
+already-nested structure (sector → pillar → sub_pillar → data_source).
+Flat lists are automatically converted with \code{nest_objectives()}.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Protocol$set_primary_objectives(objectives)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{Protocol$set_objectives(objectives)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{objectives}}{List of primary objectives}
+\item{\code{objectives}}{List.  Flat or nested objectives.}
 }
 \if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+Invisibly returns \code{self} for method chaining.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Protocol-set_secondary_objectives"></a>}}
-\if{latex}{\out{\hypertarget{method-Protocol-set_secondary_objectives}{}}}
-\subsection{Method \code{set_secondary_objectives()}}{
-Set secondary research objectives
+\if{html}{\out{<a id="method-Protocol-add_objective"></a>}}
+\if{latex}{\out{\hypertarget{method-Protocol-add_objective}{}}}
+\subsection{Method \code{add_objective()}}{
+Add a single objective to the protocol
+
+The objective is placed into the nested structure under its
+\code{sector}, \code{pillar}, \code{sub_pillar}, and \code{data_source}
+keys.  Use \code{create_objective()} to build a conforming objective
+list.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Protocol$set_secondary_objectives(objectives)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{Protocol$add_objective(objective)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{objectives}}{List of secondary objectives}
+\item{\code{objective}}{Named list. Objective to add (see \code{create_objective()}).}
 }
 \if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+Invisibly returns \code{self} for method chaining.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-Protocol-remove_objective"></a>}}
+\if{latex}{\out{\hypertarget{method-Protocol-remove_objective}{}}}
+\subsection{Method \code{remove_objective()}}{
+Remove an objective from the protocol by its short_objective label
+
+Searches the entire nested objectives structure and removes the first
+objective whose \code{short_objective} matches the supplied value.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Protocol$remove_objective(short_objective)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{short_objective}}{Character. The \code{short_objective} value of the
+objective to remove.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+Invisibly returns \code{self} for method chaining.
 }
 }
 \if{html}{\out{<hr>}}
@@ -126,81 +176,6 @@ Add a target stratum to metadata
 \item{\code{stratum_id}}{Character. Unique identifier}
 
 \item{\code{stratum_name}}{Character. Human-readable name}
-}
-\if{html}{\out{</div>}}
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Protocol-add_stratum"></a>}}
-\if{latex}{\out{\hypertarget{method-Protocol-add_stratum}{}}}
-\subsection{Method \code{add_stratum()}}{
-Add a stratum to the sample table
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Protocol$add_stratum(
-  stratum_id,
-  stratum_name,
-  population_size,
-  design_effect = 1,
-  precision = 0.05,
-  confidence_level = 0.95,
-  allocation_method = "proportional"
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{stratum_id}}{Character. Unique identifier for the stratum}
-
-\item{\code{stratum_name}}{Character. Human-readable name}
-
-\item{\code{population_size}}{Numeric. Population size for this stratum}
-
-\item{\code{design_effect}}{Numeric. Design effect (default = 1)}
-
-\item{\code{precision}}{Numeric. Desired precision (default = 0.05)}
-
-\item{\code{confidence_level}}{Numeric. Confidence level (default = 0.95)}
-
-\item{\code{allocation_method}}{Character. Method for allocation (default = "proportional")}
-}
-\if{html}{\out{</div>}}
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Protocol-set_sampling_frame"></a>}}
-\if{latex}{\out{\hypertarget{method-Protocol-set_sampling_frame}{}}}
-\subsection{Method \code{set_sampling_frame()}}{
-Set the sampling frame
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Protocol$set_sampling_frame(frame)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{frame}}{Data frame with required columns: id, stratum, population_size}
-}
-\if{html}{\out{</div>}}
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Protocol-draw_sample"></a>}}
-\if{latex}{\out{\hypertarget{method-Protocol-draw_sample}{}}}
-\subsection{Method \code{draw_sample()}}{
-Draw sample from sampling frame
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Protocol$draw_sample(method = "srs", seed = NULL, cluster_size = NULL)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{method}}{Character. Sampling method: "srs", "proportional", "pps_cluster", "rlc", "systematic"}
-
-\item{\code{seed}}{Integer. Random seed for reproducibility}
-
-\item{\code{cluster_size}}{Numeric. Cluster size for PPS or RLC methods}
 }
 \if{html}{\out{</div>}}
 }
@@ -250,19 +225,6 @@ Select indicators for data collection
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Protocol-get_sample_table"></a>}}
-\if{latex}{\out{\hypertarget{method-Protocol-get_sample_table}{}}}
-\subsection{Method \code{get_sample_table()}}{
-Get the sample table
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Protocol$get_sample_table()}\if{html}{\out{</div>}}
-}
-
-\subsection{Returns}{
-Data frame containing the sample table
-}
-}
-\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Protocol-get_issues"></a>}}
 \if{latex}{\out{\hypertarget{method-Protocol-get_issues}{}}}
 \subsection{Method \code{get_issues()}}{
@@ -299,6 +261,50 @@ Export protocol to a list
 
 \subsection{Returns}{
 List containing all protocol data
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-Protocol-generate_report"></a>}}
+\if{latex}{\out{\hypertarget{method-Protocol-generate_report}{}}}
+\subsection{Method \code{generate_report()}}{
+Generate a Word document report based on the REACH TOR template
+
+Creates a \code{.docx} file based on the bundled REACH Terms of Reference
+template (\code{inst/resources/reach_tor_template.docx}).  The document
+inherits the template's formatting, branding, section structure (Executive
+Summary, Rationale, Methodology, DAP, etc.) and key placeholder strings are
+replaced with protocol metadata.  A new \strong{Protocol Data} section is
+inserted directly after the Executive Summary table and contains:
+\itemize{
+  \item Research Objectives table
+  \item Data Collection Tools (one sub-section per tool with indicator list)
+}
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Protocol$generate_report(
+  output_file = "protocol_report.docx",
+  reference_docx = NULL,
+  open = FALSE
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{output_file}}{Character. Output file path including the \code{.docx}
+extension.  Defaults to \code{"protocol_report.docx"} in the current
+working directory.}
+
+\item{\code{reference_docx}}{Character or \code{NULL}.  Path to a custom
+\code{.docx} template.  When \code{NULL} (default) the package-bundled
+REACH TOR template is used.}
+
+\item{\code{open}}{Logical.  Whether to open the generated file after writing.
+Defaults to \code{FALSE}.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+Invisibly returns \code{self} for method chaining.
 }
 }
 \if{html}{\out{<hr>}}

@@ -7,8 +7,9 @@
 print_objectives_summary(objectives)
 }
 \arguments{
-\item{objectives}{List of objectives}
+\item{objectives}{List of objectives (flat or nested).}
 }
 \description{
-Print objectives summary
+Accepts either a flat list of objectives or the nested structure stored on a
+Protocol.
 }

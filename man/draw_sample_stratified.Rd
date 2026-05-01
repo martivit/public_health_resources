@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils_sample_drawing.R
 \name{draw_sample_stratified}
 \alias{draw_sample_stratified}
-\title{Draw stratified sample}
+\title{Draw stratified sample (legacy helper)}
 \usage{
 draw_sample_stratified(frame, sample_table, method = "srs", seed = NULL)
 }
@@ -19,5 +19,5 @@ draw_sample_stratified(frame, sample_table, method = "srs", seed = NULL)
 List with drawn samples by stratum and combined sample
 }
 \description{
-Draw stratified sample
+Draw stratified sample (legacy helper)
 }

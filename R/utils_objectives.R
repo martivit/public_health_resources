@@ -2,223 +2,337 @@
 #'
 #' @description
 #' Functions for creating and managing research objectives in the protocol pipeline.
+#' Objectives are stored on a Protocol as a nested list keyed by
+#' \code{sector → pillar → sub_pillar → data_source}, where \code{data_source}
+#' captures whether the objective is "primary" or "secondary" (or any other
+#' value from the objective schema).
 
-#' Create an objective
-#'
-#' @param objective_id Character. Unique identifier for the objective
-#' @param objective_text Character. Description of the objective
-#' @param data_type Character. Either "primary" or "secondary"
-#' @param sector Character. Sector (FSL, Health, Nutrition, WASH, Protection, Education, Shelter)
-#' @param indicators Character vector. List of indicator IDs related to this objective
-#' @param rationale Character. Rationale for the objective (optional)
-#' @return List representing an objective
-#' @export
-create_objective <- function(objective_id,
-                             objective_text,
-                             data_type,
-                             sector,
-                             indicators = NULL,
-                             rationale = NULL) {
-  
-  # Validate data_type
-  if (!data_type %in% c("primary", "secondary")) {
-    stop("data_type must be 'primary' or 'secondary'")
+# Internal helper: normalise a data_source value (NULL / NA → "primary").
+.normalize_data_source <- function(data_source) {
+  if (is.null(data_source) || (length(data_source) == 1L && is.na(data_source)) || !nzchar(as.character(data_source))) {
+    "primary"
+  } else {
+    as.character(data_source)
   }
-  
-  # Validate sector
-  valid_sectors <- c("FSL", "Health", "Nutrition", "WASH", "Protection", 
-                    "Education", "Shelter", "Multi-sector", "Other")
-  if (!sector %in% valid_sectors) {
-    warning(paste("Sector", sector, "is not in standard list:", 
-                 paste(valid_sectors, collapse = ", ")))
-  }
-  
-  objective <- list(
-    objective_id = objective_id,
-    objective_text = objective_text,
-    data_type = data_type,
-    sector = sector,
-    indicators = indicators,
-    rationale = rationale,
-    created_date = Sys.time()
-  )
-  
-  class(objective) <- c("iphra_objective", "list")
-  return(objective)
 }
 
-#' Create multiple objectives
+# Internal helper: determine whether a list is a flat list of objectives.
+# A flat list is one where every top-level element is a named list that
+# contains at least a $short_objective field.  Returns FALSE for empty lists
+# so that empty inputs are passed through directly without unnecessary nesting.
+.is_flat_objectives <- function(objectives) {
+  if (length(objectives) == 0L) return(FALSE)
+  all(vapply(objectives, function(x) is.list(x) && !is.null(x$short_objective), logical(1L)))
+}
+
+#' Create multiple objectives from a data frame
 #'
-#' @param objectives_df Data frame with columns: objective_id, objective_text, 
-#'                      data_type, sector, indicators (optional), rationale (optional)
-#' @return List of objectives
+#' @param objectives_df Data frame with columns: sector, pillar, sub_pillar,
+#'   short_objective, text_objective, and optionally data_source.
+#' @return List of objective objects (flat list).
 #' @export
 create_objectives_from_df <- function(objectives_df) {
-  if (!is.data.frame(objectives_df)) {
-    stop("objectives_df must be a data frame")
-  }
-  
-  required_cols <- c("objective_id", "objective_text", "data_type", "sector")
-  missing_cols <- setdiff(required_cols, names(objectives_df))
-  if (length(missing_cols) > 0) {
-    stop(paste("Missing required columns:", paste(missing_cols, collapse = ", ")))
-  }
-  
-  objectives_list <- list()
-  
-  for (i in seq_len(nrow(objectives_df))) {
-    row <- objectives_df[i, ]
-    
-    indicators <- if ("indicators" %in% names(row) && !is.na(row$indicators)) {
-      strsplit(as.character(row$indicators), ",")[[1]]
-    } else {
-      NULL
+
+  origin <- "create_objectives_from_df"
+
+  phr_try({
+
+    phr_validate_dataframe(objectives_df, origin = origin, soft = FALSE)
+
+    required_cols <- c("sector", "pillar", "sub_pillar", "short_objective", "text_objective")
+    phr_validate_columns(objectives_df, required_cols, origin = origin, soft = FALSE)
+
+    objectives_list <- list()
+
+    for (i in seq_len(nrow(objectives_df))) {
+      row <- objectives_df[i, ]
+
+      raw_ds      <- if ("data_source" %in% names(row)) row$data_source else NA_character_
+      data_source <- .normalize_data_source(raw_ds)
+
+      obj <- list(
+        sector          = as.character(row$sector),
+        pillar          = as.character(row$pillar),
+        sub_pillar      = as.character(row$sub_pillar),
+        short_objective = as.character(row$short_objective),
+        text_objective  = as.character(row$text_objective),
+        data_source     = data_source,
+        created_date    = Sys.time()
+      )
+
+      objectives_list[[length(objectives_list) + 1]] <- obj
     }
-    
-    rationale <- if ("rationale" %in% names(row) && !is.na(row$rationale)) {
-      as.character(row$rationale)
-    } else {
-      NULL
-    }
-    
-    obj <- create_objective(
-      objective_id = as.character(row$objective_id),
-      objective_text = as.character(row$objective_text),
-      data_type = as.character(row$data_type),
-      sector = as.character(row$sector),
-      indicators = indicators,
-      rationale = rationale
-    )
-    
-    objectives_list[[length(objectives_list) + 1]] <- obj
-  }
-  
-  return(objectives_list)
+
+    objectives_list
+
+  }, on_error = "abort", origin = origin)
 }
+
+# ---------------------------------------------------------------------------
+# Nested-structure helpers
+# ---------------------------------------------------------------------------
+
+#' Flatten a nested objectives list to a flat list of objectives
+#'
+#' Converts the nested \code{sector → pillar → sub_pillar → data_source → [objectives]}
+#' structure stored on a Protocol to a simple flat list of objective lists,
+#' suitable for iteration, validation, and conversion to a data frame.
+#' A flat list of objectives is returned unchanged.
+#'
+#' @param objectives List.  The nested or flat objectives structure (e.g.
+#'   \code{protocol$objectives}).
+#' @return Flat list of objective named lists.
+#' @export
+flatten_objectives <- function(objectives) {
+  if (is.null(objectives) || length(objectives) == 0) return(list())
+
+  # If every top-level element is an objective (has $short_objective), already flat
+  if (.is_flat_objectives(objectives)) return(objectives)
+
+  flat <- list()
+  for (sector in names(objectives)) {
+    for (pillar in names(objectives[[sector]])) {
+      for (sub_pillar in names(objectives[[sector]][[pillar]])) {
+        for (ds in names(objectives[[sector]][[pillar]][[sub_pillar]])) {
+          objs <- objectives[[sector]][[pillar]][[sub_pillar]][[ds]]
+          flat <- c(flat, objs)
+        }
+      }
+    }
+  }
+  flat
+}
+
+#' Nest a flat list of objectives into the standard hierarchical structure
+#'
+#' Converts a flat list of objective lists into the nested
+#' \code{sector → pillar → sub_pillar → data_source → [objectives]} structure.
+#'
+#' @param objectives_flat List.  Flat list of objective named lists as produced
+#'   by \code{create_objectives_from_df()}.
+#' @return Nested list suitable for assignment to \code{protocol$objectives}.
+#' @export
+nest_objectives <- function(objectives_flat) {
+  origin <- "nest_objectives"
+  phr_try({
+    phr_assert(is.list(objectives_flat),
+               message = phr_txt("objectives_flat must be a list."), origin = origin)
+    if (length(objectives_flat) == 0) return(list())
+
+    nested <- list()
+    for (obj in objectives_flat) {
+      required <- c("sector", "pillar", "sub_pillar", "data_source", "short_objective")
+      missing  <- setdiff(required, names(obj))
+      if (length(missing) > 0) {
+        phr_warning(
+          message = phr_txt("Skipping objective missing fields: {paste(missing, collapse=', ')}."),
+          origin  = origin
+        )
+        next
+      }
+      s  <- obj$sector
+      p  <- obj$pillar
+      sp <- obj$sub_pillar
+      ds <- obj$data_source
+
+      if (is.null(nested[[s]]))           nested[[s]]           <- list()
+      if (is.null(nested[[s]][[p]]))      nested[[s]][[p]]      <- list()
+      if (is.null(nested[[s]][[p]][[sp]])) nested[[s]][[p]][[sp]] <- list()
+      if (is.null(nested[[s]][[p]][[sp]][[ds]])) nested[[s]][[p]][[sp]][[ds]] <- list()
+
+      nested[[s]][[p]][[sp]][[ds]] <- c(nested[[s]][[p]][[sp]][[ds]], list(obj))
+    }
+    nested
+  }, on_error = "abort", origin = origin)
+}
+
+#' Count objectives in a (possibly nested) objectives structure
+#'
+#' @param objectives List.  Flat or nested objectives structure.
+#' @return Integer count of objectives.
+#' @export
+count_objectives <- function(objectives) {
+  length(flatten_objectives(objectives))
+}
+
+# ---------------------------------------------------------------------------
+# Validation, querying, and display
+# ---------------------------------------------------------------------------
 
 #' Validate objectives
 #'
-#' @param objectives List of objective objects
-#' @return List with validation results
+#' Accepts either a flat list of objectives or the nested structure stored on a
+#' Protocol.
+#'
+#' @param objectives List of objective objects (flat or nested).
+#' @return List with validation results.
 #' @export
 validate_objectives <- function(objectives) {
-  if (!is.list(objectives) || length(objectives) == 0) {
-    return(list(valid = FALSE, message = "Objectives must be a non-empty list"))
-  }
-  
-  issues <- list()
-  
-  # Check for duplicate IDs
-  ids <- sapply(objectives, function(x) x$objective_id)
-  if (any(duplicated(ids))) {
-    issues$duplicate_ids <- ids[duplicated(ids)]
-  }
-  
-  # Check for vague objectives (very short text)
-  for (i in seq_along(objectives)) {
-    obj <- objectives[[i]]
-    if (nchar(obj$objective_text) < 20) {
-      issues$vague_objectives <- c(issues$vague_objectives, obj$objective_id)
+
+  origin <- "validate_objectives"
+
+  phr_try({
+
+    phr_assert(
+      is.list(objectives) && length(objectives) > 0,
+      message = phr_txt("Objectives must be a non-empty list."),
+      origin  = origin
+    )
+
+    flat <- flatten_objectives(objectives)
+
+    phr_assert(
+      length(flat) > 0,
+      message = phr_txt("No objectives found after flattening nested structure."),
+      origin  = origin
+    )
+
+    issues <- list()
+
+    required_fields <- c("sector", "pillar", "sub_pillar", "short_objective", "text_objective")
+
+    # Check for duplicate short_objective labels
+    short_objs <- sapply(flat, function(x) x$short_objective)
+    if (any(duplicated(short_objs))) {
+      issues$duplicate_short_objectives <- short_objs[duplicated(short_objs)]
+      phr_warning(
+        message = phr_txt("Duplicate short_objective labels found: {paste(issues$duplicate_short_objectives, collapse=', ')}"),
+        origin  = origin,
+        hint    = phr_txt("Each objective should have a unique short_objective label.")
+      )
     }
-  }
-  
-  # Check for objectives without indicators
-  for (i in seq_along(objectives)) {
-    obj <- objectives[[i]]
-    if (is.null(obj$indicators) || length(obj$indicators) == 0) {
-      issues$missing_indicators <- c(issues$missing_indicators, obj$objective_id)
+
+    # Check for missing required fields
+    for (i in seq_along(flat)) {
+      obj     <- flat[[i]]
+      missing <- setdiff(required_fields, names(obj))
+      if (length(missing) > 0) {
+        issues$missing_fields <- c(issues$missing_fields,
+                                    paste0("objective[", i, "]: ", paste(missing, collapse = ", ")))
+      }
     }
-  }
-  
-  # Check data type
-  for (i in seq_along(objectives)) {
-    obj <- objectives[[i]]
-    if (!obj$data_type %in% c("primary", "secondary")) {
-      issues$invalid_data_type <- c(issues$invalid_data_type, obj$objective_id)
+
+    # Check for vague objectives (very short text_objective)
+    for (i in seq_along(flat)) {
+      obj <- flat[[i]]
+      if (!is.null(obj$text_objective) && nchar(obj$text_objective) < 20) {
+        issues$vague_objectives <- c(issues$vague_objectives, obj$short_objective)
+        phr_warning(
+          message = phr_txt("Objective '{obj$short_objective}' has a very short text_objective (< 20 characters)."),
+          origin  = origin,
+          hint    = phr_txt("Consider expanding the text_objective for clarity.")
+        )
+      }
     }
-  }
-  
-  if (length(issues) == 0) {
-    return(list(valid = TRUE, message = "All objectives are valid"))
-  } else {
-    return(list(valid = FALSE, issues = issues))
-  }
+
+    if (length(issues) == 0) {
+      list(valid = TRUE, message = phr_txt("All objectives are valid."))
+    } else {
+      list(valid = FALSE, issues = issues)
+    }
+
+  }, on_error = "abort", origin = origin)
 }
 
 #' Get objectives by sector
 #'
-#' @param objectives List of objectives
-#' @param sector Character. Sector to filter by
-#' @return List of objectives for the specified sector
+#' Works on both flat lists and the nested structure stored on a Protocol.
+#'
+#' @param objectives List of objectives (flat or nested).
+#' @param sector Character. Sector to filter by.
+#' @return Flat list of objectives for the specified sector.
 #' @export
 get_objectives_by_sector <- function(objectives, sector) {
-  filtered <- Filter(function(x) x$sector == sector, objectives)
-  return(filtered)
+  flat <- flatten_objectives(objectives)
+  Filter(function(x) identical(x$sector, sector), flat)
 }
 
-#' Get objectives by data type
+#' Get objectives by data source
 #'
-#' @param objectives List of objectives
-#' @param data_type Character. Either "primary" or "secondary"
-#' @return List of objectives for the specified data type
+#' Works on both flat lists and the nested structure stored on a Protocol.
+#'
+#' @param objectives List of objectives (flat or nested).
+#' @param data_source Character. Data source value to filter by (e.g. "primary"
+#'   or "secondary").
+#' @return Flat list of matching objectives.
 #' @export
-get_objectives_by_data_type <- function(objectives, data_type) {
-  if (!data_type %in% c("primary", "secondary")) {
-    stop("data_type must be 'primary' or 'secondary'")
-  }
-  
-  filtered <- Filter(function(x) x$data_type == data_type, objectives)
-  return(filtered)
+get_objectives_by_data_source <- function(objectives, data_source) {
+  flat <- flatten_objectives(objectives)
+  Filter(function(x) identical(x$data_source, data_source), flat)
 }
 
 #' Convert objectives to data frame
 #'
-#' @param objectives List of objectives
-#' @return Data frame with objective information
+#' Accepts either a flat list of objectives or the nested structure stored on a
+#' Protocol.
+#'
+#' @param objectives List of objectives (flat or nested).
+#' @return Data frame with one row per objective.
 #' @export
 objectives_to_df <- function(objectives) {
-  if (length(objectives) == 0) {
-    return(data.frame())
-  }
-  
-  df <- data.frame(
-    objective_id = sapply(objectives, function(x) x$objective_id),
-    objective_text = sapply(objectives, function(x) x$objective_text),
-    data_type = sapply(objectives, function(x) x$data_type),
-    sector = sapply(objectives, function(x) x$sector),
-    num_indicators = sapply(objectives, function(x) length(x$indicators)),
-    stringsAsFactors = FALSE
-  )
-  
-  return(df)
+
+  origin <- "objectives_to_df"
+
+  phr_try({
+
+    phr_assert(
+      is.list(objectives),
+      message = phr_txt("objectives must be a list."),
+      origin  = origin
+    )
+
+    if (length(objectives) == 0) {
+      return(data.frame(
+        sector = character(0), pillar = character(0), sub_pillar = character(0),
+        short_objective = character(0), text_objective = character(0),
+        data_source = character(0),
+        stringsAsFactors = FALSE
+      ))
+    }
+
+    flat <- flatten_objectives(objectives)
+
+    data.frame(
+      sector          = sapply(flat, function(x) x$sector %||% NA_character_),
+      pillar          = sapply(flat, function(x) x$pillar %||% NA_character_),
+      sub_pillar      = sapply(flat, function(x) x$sub_pillar %||% NA_character_),
+      short_objective = sapply(flat, function(x) x$short_objective %||% NA_character_),
+      text_objective  = sapply(flat, function(x) x$text_objective %||% NA_character_),
+      data_source     = sapply(flat, function(x) x$data_source %||% NA_character_),
+      stringsAsFactors = FALSE
+    )
+
+  }, on_error = "abort", origin = origin)
 }
 
 #' Print objectives summary
 #'
-#' @param objectives List of objectives
+#' Accepts either a flat list of objectives or the nested structure stored on a
+#' Protocol.
+#'
+#' @param objectives List of objectives (flat or nested).
 #' @export
 print_objectives_summary <- function(objectives) {
-  if (length(objectives) == 0) {
-    cat("No objectives defined\n")
+
+  origin <- "print_objectives_summary"
+
+  flat <- flatten_objectives(objectives)
+
+  if (length(flat) == 0) {
+    phr_message(phr_txt("No objectives defined."), origin = origin)
     return(invisible(NULL))
   }
-  
-  cat("Objectives Summary\n")
-  cat("==================\n\n")
-  cat("Total objectives:", length(objectives), "\n\n")
-  
-  # By data type
-  primary <- get_objectives_by_data_type(objectives, "primary")
-  secondary <- get_objectives_by_data_type(objectives, "secondary")
-  cat("Primary data objectives:", length(primary), "\n")
-  cat("Secondary data objectives:", length(secondary), "\n\n")
-  
-  # By sector
-  sectors <- unique(sapply(objectives, function(x) x$sector))
-  cat("Sectors covered:", paste(sectors, collapse = ", "), "\n\n")
-  
+
+  sectors      <- unique(sapply(flat, function(x) x$sector))
+  data_sources <- unique(sapply(flat, function(x) x$data_source %||% "unknown"))
+
+  phr_message(
+    phr_txt("Objectives Summary — {length(flat)} total objective(s). Sectors: {paste(sectors, collapse=', ')}. Data sources: {paste(data_sources, collapse=', ')}."),
+    origin = origin
+  )
+
   for (sector in sectors) {
-    sector_objs <- get_objectives_by_sector(objectives, sector)
-    cat("", sector, ":", length(sector_objs), "objective(s)\n")
+    sector_objs <- get_objectives_by_sector(flat, sector)
+    phr_message(phr_txt("{sector}: {length(sector_objs)} objective(s)"), origin = origin)
   }
 }

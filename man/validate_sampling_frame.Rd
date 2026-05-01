@@ -4,20 +4,34 @@
 \alias{validate_sampling_frame}
 \title{Sampling Frame Validation Functions}
 \usage{
-validate_sampling_frame(
-  frame,
-  required_cols = c("id", "stratum", "population_size")
-)
+validate_sampling_frame(frame, required_cols = character(0))
 }
 \arguments{
-\item{frame}{Data frame. The sampling frame to validate}
+\item{frame}{Data frame. The sampling frame to validate.}
 
-\item{required_cols}{Character vector. Required column names (default = c("id", "stratum", "population_size"))}
+\item{required_cols}{Character vector. Additional required column names
+beyond \code{"psu"} (default \code{character(0)}).}
 }
 \value{
-List with validation results
+List with \code{valid} (logical), \code{message} (character on
+  failure), \code{issues} (named list on failure), or \code{summary}
+  (named list on success).
 }
 \description{
 Functions for validating sampling frames before sample drawing.
 Validate sampling frame structure
+
+Validates a sampling frame for use in sample drawing operations.  Uses
+existing \pkg{phr} validator helpers where possible.
+
+Required column: \code{psu} (primary sampling unit identifier).
+
+Optional but validated if present:
+\itemize{
+  \item \code{inclusion} — logical column marking PSUs for inclusion;
+    created with all \code{TRUE} values by \code{set_sampling_frame()} if
+    absent.
+  \item \code{population_size} — positive numeric sizes.
+  \item \code{stratum} — strata labels (empty strata are flagged).
+}
 }

@@ -100,7 +100,7 @@ public = list(
   #' Filters for yes/no or binary questions typically used in checklists.
   #' @return Data frame with checklist-type questions.
   get_checklist_items = function() {
-    survey <- private$.survey
+    survey <- self$survey
     if (!"type" %in% names(survey)) {
       return(data.frame())
     }
@@ -121,9 +121,9 @@ public = list(
     cat("Observation Type:", private$.observation_type, "\n")
     cat("Created:", format(private$.created_at, "%Y-%m-%d %H:%M:%S"), "\n")
     cat("Modified:", format(private$.modified_at, "%Y-%m-%d %H:%M:%S"), "\n")
-    cat("Questions:", nrow(private$.survey), "\n")
+    cat("Questions:", nrow(self$survey), "\n")
     cat("Checklist Items:", nrow(self$get_checklist_items()), "\n")
-    cat("Choice Lists:", length(unique(private$.choices$list_name)), "\n")
+    cat("Choice Lists:", length(unique(self$choices$list_name)), "\n")
     cat("Selected Indicators:", length(private$.selected_indicators), "\n")
     invisible(self)
   }

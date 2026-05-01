@@ -101,8 +101,8 @@ public = list(
     cat("KII Type:", private$.kii_type, "\n")
     cat("Created:", format(private$.created_at, "%Y-%m-%d %H:%M:%S"), "\n")
     cat("Modified:", format(private$.modified_at, "%Y-%m-%d %H:%M:%S"), "\n")
-    cat("Questions:", nrow(private$.survey), "\n")
-    cat("Choice Lists:", length(unique(private$.choices$list_name)), "\n")
+    cat("Questions:", nrow(self$survey), "\n")
+    cat("Choice Lists:", length(unique(self$choices$list_name)), "\n")
     cat("Selected Indicators:", length(private$.selected_indicators), "\n")
     invisible(self)
   }

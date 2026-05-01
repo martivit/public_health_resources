@@ -2,34 +2,35 @@
 % Please edit documentation in R/utils_objectives.R
 \name{create_objective}
 \alias{create_objective}
-\title{Objectives Management Functions}
+\title{Create an objective}
 \usage{
 create_objective(
-  objective_id,
-  objective_text,
-  data_type,
   sector,
-  indicators = NULL,
-  rationale = NULL
+  pillar,
+  sub_pillar,
+  short_objective,
+  text_objective,
+  data_source = "primary"
 )
 }
 \arguments{
-\item{objective_id}{Character. Unique identifier for the objective}
+\item{sector}{Character. Sector (e.g. "General", "FSL", "Health", "Nutrition", "WASH").}
 
-\item{objective_text}{Character. Description of the objective}
+\item{pillar}{Character. Pillar within the sector (e.g. "Demographics").}
 
-\item{data_type}{Character. Either "primary" or "secondary"}
+\item{sub_pillar}{Character. Sub-pillar within the pillar.}
 
-\item{sector}{Character. Sector (FSL, Health, Nutrition, WASH, Protection, Education, Shelter)}
+\item{short_objective}{Character. Short label for the objective (should be unique).}
 
-\item{indicators}{Character vector. List of indicator IDs related to this objective}
+\item{text_objective}{Character. Full descriptive text of the objective.}
 
-\item{rationale}{Character. Rationale for the objective (optional)}
+\item{data_source}{Character. Data source type ("primary" or "secondary").  Defaults to
+\code{"primary"} when not supplied.}
 }
 \value{
-List representing an objective
+Named list representing an objective.
 }
 \description{
-Functions for creating and managing research objectives in the protocol pipeline.
-Create an objective
+Creates an objective using the standard fields from the reference schema:
+sector, pillar, sub_pillar, short_objective, text_objective, and data_source.
 }

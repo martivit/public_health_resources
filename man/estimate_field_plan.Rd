@@ -5,36 +5,68 @@
 \title{Estimate field work plan for data collection}
 \usage{
 estimate_field_plan(
+  sample_design,
   number_of_teams,
   enumerators_per_team,
+  number_of_psu_per_team_per_day = NULL,
   start_time,
   end_time,
   average_interview_time,
   average_travel_time,
-  clusters_per_day_per_team,
+  average_rest_time,
   total_sample_size = NULL
 )
 }
 \arguments{
-\item{number_of_teams}{Integer. Number of data collection teams}
+\item{sample_design}{Character. Sampling design: \code{"simple_random"} or
+  \code{"cluster"}.}
 
-\item{enumerators_per_team}{Integer. Number of enumerators per team}
+\item{number_of_teams}{Integer. Number of simultaneous data-collection teams
+  (must be positive).}
 
-\item{start_time}{Character or POSIXct. Start date/time of data collection}
+\item{enumerators_per_team}{Integer. Number of enumerators in each team
+  (must be positive).}
 
-\item{end_time}{Character or POSIXct. End date/time of data collection}
+\item{number_of_psu_per_team_per_day}{Numeric or \code{NULL}. Number of PSUs
+  (clusters) each team can complete in a day; required and must be positive
+  when \code{sample_design = "cluster"} (default = \code{NULL}).}
 
-\item{average_interview_time}{Numeric. Average interview time in minutes}
+\item{start_time}{Character or \code{Date}. Start date of data collection;
+  character strings are coerced via \code{as.Date()}.}
 
-\item{average_travel_time}{Numeric. Average travel time between clusters in minutes}
+\item{end_time}{Character or \code{Date}. End date of data collection;
+  character strings are coerced via \code{as.Date()}.  Must be after
+  \code{start_time}.}
 
-\item{clusters_per_day_per_team}{Numeric. Number of clusters each team can complete per day}
+\item{average_interview_time}{Numeric. Average time to complete one
+  interview, in minutes (must be positive).}
 
-\item{total_sample_size}{Integer. Total sample size needed (optional)}
+\item{average_travel_time}{Numeric. Average travel time between clusters
+  (or households) per day, in minutes (must be non-negative).}
+
+\item{average_rest_time}{Numeric. Average break/rest time per day, in
+  minutes (must be non-negative).}
+
+\item{total_sample_size}{Integer or \code{NULL}. Total sample size needed
+  (used to compute \code{num_days} and, for cluster designs,
+  \code{num_psu_needed}).}
 }
 \value{
-List with estimated_days, recommended_cluster_size, recommended_clusters
+A named list with four elements:
+  \describe{
+    \item{num_interview_per_enum_per_day}{Integer. Estimated interviews per
+      enumerator per day.}
+    \item{num_days}{Numeric. Estimated number of data-collection days needed.}
+    \item{num_psu_needed}{\code{NA} for simple random sampling; integer
+      number of PSUs required for cluster designs.}
+    \item{psu_size}{\code{NA} for simple random sampling; numeric cluster
+      size for cluster designs.}
+  }
 }
 \description{
-Estimate field work plan for data collection
+Estimates the number of interviews an enumerator can complete per day and
+the total number of data-collection days required to meet the target sample
+size, given available teams and working-time constraints.  For cluster
+designs the function also derives the number of PSUs (clusters) needed and
+the implied cluster size.
 }

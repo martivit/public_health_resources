@@ -10,8 +10,10 @@ restore_protocol(protocol_data)
 \item{protocol_data}{List. Exported protocol data from export_protocol()}
 }
 \value{
-A new Protocol object with restored data
+A new Protocol or SurveyProtocol object with restored data
 }
 \description{
-Restore protocol object from exported data
+Restores a \code{\link{SurveyProtocol}} when the exported data contains
+sampling fields (\code{sample_table}, \code{sampling_frame}, etc.),
+otherwise restores a base \code{\link{Protocol}}.
 }

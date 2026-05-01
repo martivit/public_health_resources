@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils_sample_size.R
 \name{calculate_sample_size_general}
 \alias{calculate_sample_size_general}
-\title{Sample Size Calculation Functions}
+\title{Calculate sample size for general indicators}
 \usage{
 calculate_sample_size_general(
   expected_proportion,
@@ -12,30 +12,49 @@ calculate_sample_size_general(
   design_effect = 1.5,
   fpc = FALSE,
   total_population = NULL,
+  number_clusters = NULL,
   confidence_level = 0.95
 )
 }
 \arguments{
-\item{expected_proportion}{Numeric. Expected proportion/prevalence in percentages (0-100)}
+\item{expected_proportion}{Numeric. Expected proportion/prevalence in
+  percentages (0–100).}
 
-\item{desired_precision}{Numeric. Desired precision in +/- percentages (0-100)}
+\item{desired_precision}{Numeric. Desired half-width of the confidence
+  interval in percentage points (0–100, exclusive).}
 
-\item{non_response_rate}{Numeric. Non-response rate in percentages (0-100, default = 5)}
+\item{non_response_rate}{Numeric. Anticipated non-response rate in
+  percentages (0–100, default = 5).}
 
-\item{design}{Character. "simple_random" or "cluster" (default = "simple_random")}
+\item{design}{Character. Sampling design: \code{"simple_random"} or
+  \code{"cluster"} (default = \code{"simple_random"}).}
 
-\item{design_effect}{Numeric. Design effect (required if design = "cluster", default = 1.5)}
+\item{design_effect}{Numeric. Design effect for cluster sampling; must be
+  \eqn{\ge 1} (default = 1.5, ignored when \code{design = "simple_random"}).}
 
-\item{fpc}{Logical. Apply finite population correction (default = FALSE)}
+\item{fpc}{Logical. Whether to apply the finite population correction
+  (default = \code{FALSE}).}
 
-\item{total_population}{Numeric. Total population size (required if fpc = TRUE)}
+\item{total_population}{Numeric. Total population size; required (and must
+  be positive) when \code{fpc = TRUE}.}
 
-\item{confidence_level}{Numeric. Confidence level (default = 0.95)}
+\item{number_clusters}{Integer or \code{NULL}. Number of clusters; when
+  \code{NULL} or \eqn{\le 0} the SMART-recommended \eqn{t = 2.045} is
+  used for cluster designs, otherwise the \eqn{t}-distribution critical
+  value with \code{number_clusters - 1} degrees of freedom is applied
+  (default = \code{NULL}).}
+
+\item{confidence_level}{Numeric. Desired confidence level as a proportion
+  (default = 0.95).}
 }
 \value{
-Numeric. Estimated sample size
+A single positive integer giving the estimated sample size after
+  non-response adjustment.
 }
 \description{
-Three main functions for calculating sample sizes for humanitarian assessments.
-Calculate sample size for general indicators
+Estimates the required household sample size for a general proportion-based
+indicator using either simple random sampling or cluster sampling.  When
+cluster sampling is used the base sample size is inflated by the design
+effect.  An optional finite population correction (FPC) can reduce the
+estimate for small populations.
 }

@@ -5,69 +5,101 @@
 
 #' Validate sampling frame structure
 #'
-#' @param frame Data frame. The sampling frame to validate
-#' @param required_cols Character vector. Required column names (default = c("id", "stratum", "population_size"))
-#' @return List with validation results
+#' Validates a sampling frame for use in sample drawing operations.  Uses
+#' existing \pkg{phr} validator helpers where possible.
+#'
+#' Required columns (in the prescribed order for a compliant frame):
+#' \code{stratum}, \code{psu}, \code{population_size}, \code{inclusion}.
+#' The columns \code{sampled_psu} and \code{allocated_sample} are added
+#' automatically by \code{draw_sample()} and are not required on input.
+#'
+#' Optional but validated if present:
+#' \itemize{
+#'   \item \code{inclusion} — logical column marking PSUs for inclusion;
+#'     created with all \code{TRUE} values by \code{set_sampling_frame()} if
+#'     absent.
+#'   \item \code{population_size} — positive numeric sizes.
+#' }
+#'
+#' @param frame Data frame. The sampling frame to validate.
+#' @param required_cols Character vector. Additional required column names
+#'   beyond the standard set (default \code{character(0)}).
+#' @return List with \code{valid} (logical), \code{message} (character on
+#'   failure), \code{issues} (named list on failure), or \code{summary}
+#'   (named list on success).
 #' @export
-validate_sampling_frame <- function(frame, 
-                                    required_cols = c("id", "stratum", "population_size")) {
-  
+validate_sampling_frame <- function(frame, required_cols = character(0)) {
+
   issues <- list()
-  
-  # Check if frame is a data frame
-  if (!is.data.frame(frame)) {
-    return(list(valid = FALSE, message = "Frame must be a data frame"))
+
+  # ---- Basic data-frame check (reuse phr_validate_dataframe) ----------
+  if (!phr_validate_dataframe(frame, soft = TRUE)) {
+    return(list(valid = FALSE,
+                message = "Frame must be a non-NULL data frame with atomic columns."))
   }
-  
-  # Check for empty frame
+
+  # ---- Non-empty check ------------------------------------------------
   if (nrow(frame) == 0) {
-    return(list(valid = FALSE, message = "Frame is empty"))
+    return(list(valid = FALSE, message = "Frame is empty."))
   }
-  
-  # Check required columns
-  missing_cols <- setdiff(required_cols, names(frame))
+
+  # ---- Required columns: stratum, psu, population_size ----------------
+  standard_required <- c("stratum", "psu", "population_size")
+  all_required <- unique(c(standard_required, required_cols))
+  missing_cols <- setdiff(all_required, names(frame))
   if (length(missing_cols) > 0) {
     issues$missing_columns <- missing_cols
   }
-  
-  # Check for duplicate IDs
-  if ("id" %in% names(frame)) {
-    if (any(duplicated(frame$id))) {
-      issues$duplicate_ids <- frame$id[duplicated(frame$id)]
+
+  # ---- PSU column checks ----------------------------------------------
+  if ("psu" %in% names(frame)) {
+    if (any(duplicated(frame$psu))) {
+      issues$duplicate_psu <- frame$psu[duplicated(frame$psu)]
+    }
+    if (any(is.na(frame$psu))) {
+      issues$missing_psu_values <- sum(is.na(frame$psu))
     }
   }
-  
-  # Check for missing values in required columns
-  for (col in intersect(required_cols, names(frame))) {
-    if (any(is.na(frame[[col]]))) {
-      issues$missing_values[[col]] <- sum(is.na(frame[[col]]))
+
+  # ---- inclusion column -----------------------------------------------
+  if ("inclusion" %in% names(frame)) {
+    if (!is.logical(frame$inclusion)) {
+      issues$invalid_inclusion <- "The 'inclusion' column must be logical (TRUE/FALSE)."
     }
+  } else {
+    issues$missing_inclusion <- paste(
+      "Frame does not have an 'inclusion' column.",
+      "Consider adding it to mark PSUs for inclusion (TRUE/FALSE)."
+    )
   }
-  
-  # Check population sizes are positive
+
+  # ---- population_size checks -----------------------------------------
   if ("population_size" %in% names(frame)) {
     if (any(frame$population_size <= 0, na.rm = TRUE)) {
       issues$invalid_population_size <- sum(frame$population_size <= 0, na.rm = TRUE)
     }
   }
-  
-  # Check for empty strata
-  if ("stratum" %in% names(frame)) {
-    strata_counts <- table(frame$stratum)
-    empty_strata <- names(strata_counts[strata_counts == 0])
-    if (length(empty_strata) > 0) {
-      issues$empty_strata <- empty_strata
-    }
-  }
-  
-  if (length(issues) == 0) {
+
+  # ---- Return result --------------------------------------------------
+  # issues only about missing inclusion do not make the frame invalid
+  hard_issues <- issues[setdiff(names(issues), "missing_inclusion")]
+
+  if (length(hard_issues) == 0) {
+    n_included <- if ("inclusion" %in% names(frame)) sum(frame$inclusion, na.rm = TRUE) else nrow(frame)
+
     return(list(
       valid = TRUE,
-      message = "Sampling frame is valid",
+      message = "Sampling frame is valid.",
+      issues  = if (length(issues) > 0) issues else NULL,
       summary = list(
-        num_units = nrow(frame),
-        num_strata = length(unique(frame$stratum)),
-        total_population = sum(frame$population_size, na.rm = TRUE)
+        num_units      = nrow(frame),
+        num_included   = n_included,
+        num_strata     = if ("stratum" %in% names(frame)) length(unique(frame$stratum)) else 1L,
+        total_population = if ("population_size" %in% names(frame)) {
+          sum(frame$population_size, na.rm = TRUE)
+        } else {
+          NA_real_
+        }
       )
     ))
   } else {
@@ -82,14 +114,19 @@ validate_sampling_frame <- function(frame,
 #' @return List with coverage check results
 #' @export
 check_frame_coverage <- function(frame, sample_table) {
-  
-  if (!is.data.frame(frame) || !is.data.frame(sample_table)) {
-    stop("Both frame and sample_table must be data frames")
-  }
-  
-  # Get strata from each
-  frame_strata <- unique(frame$stratum)
-  table_strata <- sample_table$stratum_id
+
+  origin <- "check_frame_coverage"
+
+  phr_try({
+    phr_assert(
+      is.data.frame(frame) && is.data.frame(sample_table),
+      message = phr_txt("Both frame and sample_table must be data frames."),
+      origin  = origin
+    )
+
+    # Get strata from each
+    frame_strata <- unique(frame$stratum)
+    table_strata <- sample_table$stratum_id
   
   # Check coverage
   missing_in_frame <- setdiff(table_strata, frame_strata)
@@ -121,17 +158,18 @@ check_frame_coverage <- function(frame, sample_table) {
     issues$insufficient_units <- insufficient_strata
   }
   
-  if (length(issues) == 0) {
-    return(list(
-      valid = TRUE,
-      message = "Frame provides adequate coverage for sample table"
-    ))
-  } else {
-    return(list(valid = FALSE, issues = issues))
-  }
+    if (length(issues) == 0) {
+      list(valid = TRUE, message = phr_txt("Frame provides adequate coverage for sample table."))
+    } else {
+      list(valid = FALSE, issues = issues)
+    }
+  }, on_error = "abort", origin = origin)
 }
 
 #' Create a synthetic sampling frame for testing
+#'
+#' Creates a synthetic sampling frame with the standard column structure:
+#' \code{stratum}, \code{psu}, \code{population_size}, \code{inclusion}.
 #'
 #' @param strata_config List. Configuration for each stratum with name, size, pop_range
 #' @param seed Integer. Random seed for reproducibility
@@ -155,11 +193,12 @@ create_synthetic_frame <- function(strata_config, seed = NULL) {
                               min = pop_range[1], 
                               max = pop_range[2]))
     
-    # Create frame for this stratum
+    # Create frame for this stratum (standard column order: stratum, psu, population_size, inclusion)
     stratum_frame <- data.frame(
-      id = paste0(stratum_name, "_", seq_len(num_units)),
-      stratum = stratum_name,
+      stratum         = stratum_name,
+      psu             = paste0(stratum_name, "_", seq_len(num_units)),
       population_size = populations,
+      inclusion       = TRUE,
       stringsAsFactors = FALSE
     )
     
@@ -179,43 +218,42 @@ create_synthetic_frame <- function(strata_config, seed = NULL) {
 #' @return List with summary statistics
 #' @export
 summarize_sampling_frame <- function(frame) {
-  
-  if (!is.data.frame(frame)) {
-    stop("Frame must be a data frame")
-  }
-  
-  summary <- list(
-    total_units = nrow(frame),
-    num_strata = length(unique(frame$stratum)),
-    strata_names = unique(frame$stratum)
-  )
-  
-  if ("population_size" %in% names(frame)) {
-    summary$total_population <- sum(frame$population_size, na.rm = TRUE)
-    summary$mean_population_per_unit <- mean(frame$population_size, na.rm = TRUE)
-    summary$median_population_per_unit <- median(frame$population_size, na.rm = TRUE)
-  }
-  
-  # Stratum-level summaries
-  stratum_summaries <- list()
-  for (stratum in unique(frame$stratum)) {
-    stratum_data <- frame[frame$stratum == stratum, ]
-    
-    stratum_summary <- list(
-      num_units = nrow(stratum_data),
-      total_population = if ("population_size" %in% names(stratum_data)) {
-        sum(stratum_data$population_size, na.rm = TRUE)
-      } else {
-        NA
-      }
+
+  origin <- "summarize_sampling_frame"
+
+  phr_try({
+    phr_validate_dataframe(frame, origin = origin, soft = FALSE)
+
+    summary_out <- list(
+      total_units  = nrow(frame),
+      num_strata   = if ("stratum" %in% names(frame)) length(unique(frame$stratum)) else 1L,
+      strata_names = if ("stratum" %in% names(frame)) unique(frame$stratum) else NA_character_
     )
-    
-    stratum_summaries[[stratum]] <- stratum_summary
-  }
-  
-  summary$by_stratum <- stratum_summaries
-  
-  return(summary)
+
+    if ("population_size" %in% names(frame)) {
+      summary_out$total_population          <- sum(frame$population_size, na.rm = TRUE)
+      summary_out$mean_population_per_unit  <- mean(frame$population_size, na.rm = TRUE)
+      summary_out$median_population_per_unit <- median(frame$population_size, na.rm = TRUE)
+    }
+
+    if ("stratum" %in% names(frame)) {
+      stratum_summaries <- list()
+      for (stratum in unique(frame$stratum)) {
+        stratum_data <- frame[frame$stratum == stratum, ]
+        stratum_summaries[[stratum]] <- list(
+          num_units        = nrow(stratum_data),
+          total_population = if ("population_size" %in% names(stratum_data)) {
+            sum(stratum_data$population_size, na.rm = TRUE)
+          } else {
+            NA
+          }
+        )
+      }
+      summary_out$by_stratum <- stratum_summaries
+    }
+
+    summary_out
+  }, on_error = "abort", origin = origin)
 }
 
 #' Print sampling frame summary
@@ -223,27 +261,30 @@ summarize_sampling_frame <- function(frame) {
 #' @param frame Data frame. The sampling frame
 #' @export
 print_frame_summary <- function(frame) {
-  summary <- summarize_sampling_frame(frame)
-  
-  cat("Sampling Frame Summary\n")
-  cat("======================\n\n")
-  
-  cat("Total sampling units:", summary$total_units, "\n")
-  cat("Number of strata:", summary$num_strata, "\n")
-  
-  if (!is.null(summary$total_population)) {
-    cat("Total population:", summary$total_population, "\n")
-    cat("Mean population per unit:", round(summary$mean_population_per_unit, 1), "\n")
-    cat("Median population per unit:", round(summary$median_population_per_unit, 1), "\n")
-  }
-  
-  cat("\nBy Stratum:\n")
-  for (stratum in names(summary$by_stratum)) {
-    st_summary <- summary$by_stratum[[stratum]]
-    cat(sprintf("  %s: %d units", stratum, st_summary$num_units))
-    if (!is.na(st_summary$total_population)) {
-      cat(sprintf(", population = %d", st_summary$total_population))
+
+  origin <- "print_frame_summary"
+
+  phr_try({
+    summary <- summarize_sampling_frame(frame)
+
+    phr_message(
+      phr_txt("Sampling Frame: {summary$total_units} units across {summary$num_strata} {ifelse(summary$num_strata == 1, 'stratum', 'strata')}."),
+      origin = origin
+    )
+
+    if (!is.null(summary$total_population)) {
+      phr_message(
+        phr_txt("Population: total={summary$total_population}, mean/unit={round(summary$mean_population_per_unit,1)}, median/unit={round(summary$median_population_per_unit,1)}"),
+        origin = origin
+      )
     }
-    cat("\n")
-  }
+
+    if (!is.null(summary$by_stratum)) {
+      for (stratum in names(summary$by_stratum)) {
+        st_s <- summary$by_stratum[[stratum]]
+        pop_txt <- if (!is.na(st_s$total_population)) phr_txt(", population={st_s$total_population}") else ""
+        phr_message(phr_txt("{stratum}: {st_s$num_units} units{pop_txt}"), origin = origin)
+      }
+    }
+  }, on_error = "abort", origin = origin)
 }

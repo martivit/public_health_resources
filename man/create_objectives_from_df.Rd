@@ -2,17 +2,17 @@
 % Please edit documentation in R/utils_objectives.R
 \name{create_objectives_from_df}
 \alias{create_objectives_from_df}
-\title{Create multiple objectives}
+\title{Create multiple objectives from a data frame}
 \usage{
 create_objectives_from_df(objectives_df)
 }
 \arguments{
-\item{objectives_df}{Data frame with columns: objective_id, objective_text, 
-data_type, sector, indicators (optional), rationale (optional)}
+\item{objectives_df}{Data frame with columns: sector, pillar, sub_pillar,
+short_objective, text_objective, and optionally data_source.}
 }
 \value{
-List of objectives
+List of objective objects (flat list).
 }
 \description{
-Create multiple objectives
+Create multiple objectives from a data frame
 }

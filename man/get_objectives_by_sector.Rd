@@ -7,13 +7,13 @@
 get_objectives_by_sector(objectives, sector)
 }
 \arguments{
-\item{objectives}{List of objectives}
+\item{objectives}{List of objectives (flat or nested).}
 
-\item{sector}{Character. Sector to filter by}
+\item{sector}{Character. Sector to filter by.}
 }
 \value{
-List of objectives for the specified sector
+Flat list of objectives for the specified sector.
 }
 \description{
-Get objectives by sector
+Works on both flat lists and the nested structure stored on a Protocol.
 }

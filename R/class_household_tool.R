@@ -68,7 +68,7 @@ public = list(
   #' Get roster/repeat groups from the survey.
   #' @return Data frame with roster/repeat group definitions.
   get_roster_groups = function() {
-    survey <- private$.survey
+    survey <- self$survey
     if (!"type" %in% names(survey)) {
       return(data.frame())
     }
@@ -87,7 +87,7 @@ public = list(
   #' @param roster_name Name of the roster/repeat group.
   #' @return Data frame with questions in the roster.
   get_roster_questions = function(roster_name) {
-    survey <- private$.survey
+    survey <- self$survey
     if (!"type" %in% names(survey) || !"name" %in% names(survey)) {
       return(data.frame())
     }
@@ -119,12 +119,12 @@ public = list(
     cat("Type:", private$.tool_type, "\n")
     cat("Created:", format(private$.created_at, "%Y-%m-%d %H:%M:%S"), "\n")
     cat("Modified:", format(private$.modified_at, "%Y-%m-%d %H:%M:%S"), "\n")
-    cat("Master Survey Questions:", nrow(private$.survey), "\n")
+    cat("Master Survey Questions:", nrow(self$survey), "\n")
     cat("Has Roster:", self$has_roster(), "\n")
     if (!is.null(private$.modified_survey)) {
       cat("Modified Survey Questions:", nrow(private$.modified_survey), "\n")
     }
-    cat("Choice Lists:", length(unique(private$.choices$list_name)), "\n")
+    cat("Choice Lists:", length(unique(self$choices$list_name)), "\n")
     cat("Selected Indicators:", length(private$.selected_indicators), "\n")
     invisible(self)
   }

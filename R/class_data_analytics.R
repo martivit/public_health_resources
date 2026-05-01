@@ -660,8 +660,11 @@ DataAnalytics <- R6::R6Class(
 
     #' @description Execute a single quality check using statistical tests
     #' @param check A single check definition from the schema
+    #' @param survey_design Optional srvyr survey design to use. Defaults to
+    #'   \code{self$base_survey_design} (or \code{self$survey_design} as fallback)
+    #'   when \code{NULL}.
     #' @return A list containing the check result
-    execute_check = function(check) {
+    execute_check = function(check, survey_design = NULL) {
 
       phr_try({
 
@@ -720,7 +723,8 @@ DataAnalytics <- R6::R6Class(
           return(result)
         }
 
-        test_args   <- list(survey_design = self$base_survey_design %||% self$survey_design, variables = available_vars)
+        effective_design <- survey_design %||% self$base_survey_design %||% self$survey_design
+        test_args   <- list(survey_design = effective_design, variables = available_vars)
         if (!is.null(test_params)) {
           test_args <- private$.resolve_output_params(
             func_args           = test_args,
@@ -990,17 +994,22 @@ DataAnalytics <- R6::R6Class(
           return(NULL)
         }
 
-        original_data <- self$data
-        on.exit(self$data <- original_data)
+        full_data <- self$data
 
         all_group_results <- list()
 
         for (gv in group_values) {
-          self$data  <- original_data[original_data[[group_col]] == gv, ]
+          subset_data   <- full_data[full_data[[group_col]] == gv, ]
+          subset_design <- phr_try(
+            srvyr::as_survey_design(.data = subset_data, ids = 1),
+            on_error = "warn",
+            origin   = paste0(self$dataset_name, "$compute_results_by_group"),
+            hint     = paste0("Could not create survey design for group: ", gv)
+          )
 
           group_rows <- lapply(names(self$quality_schema), function(check_name) {
             check  <- self$quality_schema[[check_name]]
-            result <- self$execute_check(check)
+            result <- self$execute_check(check, survey_design = subset_design)
             tibble::tibble(
               group_value    = as.character(gv),
               check_name     = result$check_name     %||% check_name,

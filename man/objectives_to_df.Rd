@@ -7,11 +7,12 @@
 objectives_to_df(objectives)
 }
 \arguments{
-\item{objectives}{List of objectives}
+\item{objectives}{List of objectives (flat or nested).}
 }
 \value{
-Data frame with objective information
+Data frame with one row per objective.
 }
 \description{
-Convert objectives to data frame
+Accepts either a flat list of objectives or the nested structure stored on a
+Protocol.
 }

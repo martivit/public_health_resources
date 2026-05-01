@@ -12,35 +12,64 @@ calculate_sample_size_individual(
   design_effect = 1.5,
   fpc = FALSE,
   total_population = NULL,
+  num_clusters = NULL,
   average_household_size,
   sub_population_percent = 100,
   confidence_level = 0.95
 )
 }
 \arguments{
-\item{expected_proportion}{Numeric. Expected proportion/prevalence in percentages (0-100)}
+\item{expected_proportion}{Numeric. Expected proportion/prevalence in
+  percentages (0–100).}
 
-\item{desired_precision}{Numeric. Desired precision in +/- percentages (0-100)}
+\item{desired_precision}{Numeric. Desired half-width of the confidence
+  interval in percentage points (0–100, exclusive).}
 
-\item{non_response_rate}{Numeric. Non-response rate in percentages (0-100, default = 5)}
+\item{non_response_rate}{Numeric. Anticipated non-response rate in
+  percentages (0–100, default = 5).}
 
-\item{design}{Character. "simple_random" or "cluster" (default = "simple_random")}
+\item{design}{Character. Sampling design: \code{"simple_random"} or
+  \code{"cluster"} (default = \code{"simple_random"}).}
 
-\item{design_effect}{Numeric. Design effect (required if design = "cluster", default = 1.5)}
+\item{design_effect}{Numeric. Design effect for cluster sampling; must be
+  \eqn{\ge 1} (default = 1.5, ignored when \code{design = "simple_random"}).}
 
-\item{fpc}{Logical. Apply finite population correction (default = FALSE)}
+\item{fpc}{Logical. Whether to apply the finite population correction
+  (default = \code{FALSE}).}
 
-\item{total_population}{Numeric. Total population size (required if fpc = TRUE)}
+\item{total_population}{Numeric. Total population size; required (and must
+  be positive) when \code{fpc = TRUE}.}
 
-\item{average_household_size}{Numeric. Average household size (required)}
+\item{num_clusters}{Integer or \code{NULL}. Number of clusters; passed to
+  \code{\link{calculate_sample_size_general}} as \code{number_clusters}
+  (default = \code{NULL}).}
 
-\item{sub_population_percent}{Numeric. Percentage of sub-population (0-100, default = 100)}
+\item{average_household_size}{Numeric. Average number of individuals per
+  household (must be positive).}
 
-\item{confidence_level}{Numeric. Confidence level (default = 0.95)}
+\item{sub_population_percent}{Numeric. The percentage of the household
+  population belonging to the target sub-population (0–100, default = 100).
+  Values below 100 inflate the individual sample size proportionally.}
+
+\item{confidence_level}{Numeric. Desired confidence level as a proportion
+  (default = 0.95).}
 }
 \value{
-List with sample_size_individuals and sample_size_households
+A named list with four elements:
+  \describe{
+    \item{sample_size_individuals}{Integer. Required number of individuals.}
+    \item{sample_size_households}{Integer. Required number of households.}
+    \item{average_household_size}{Numeric. The value supplied to the argument
+      \code{average_household_size}.}
+    \item{sub_population_percent}{Numeric. The value supplied to the argument
+      \code{sub_population_percent}.}
+  }
 }
 \description{
-Calculate sample size for individual-level indicators
+Estimates the required sample size when the indicator of interest is
+measured at the individual level (e.g. anaemia prevalence in children
+under five).  The function first computes the number of individuals
+needed (via \code{\link{calculate_sample_size_general}}), adjusts for a
+sub-population percentage, and then converts to the number of households
+required.
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils_sample_drawing.R
 \name{draw_sample_systematic}
 \alias{draw_sample_systematic}
-\title{Draw systematic sample}
+\title{Draw systematic sample (legacy helper)}
 \usage{
 draw_sample_systematic(frame, n, seed = NULL)
 }
@@ -17,5 +17,5 @@ draw_sample_systematic(frame, n, seed = NULL)
 Data frame with drawn sample and metadata attributes
 }
 \description{
-Draw systematic sample
+Draw systematic sample (legacy helper)
 }

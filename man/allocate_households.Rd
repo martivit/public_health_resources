@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils_sample_drawing.R
 \name{allocate_households}
 \alias{allocate_households}
-\title{Allocate households to selected clusters}
+\title{Allocate households to selected clusters (legacy helper)}
 \usage{
 allocate_households(sample, households_per_cluster, method = "equal")
 }
@@ -17,5 +17,5 @@ allocate_households(sample, households_per_cluster, method = "equal")
 Data frame with household allocations
 }
 \description{
-Allocate households to selected clusters
+Allocate households to selected clusters (legacy helper)
 }

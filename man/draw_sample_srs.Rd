@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils_sample_drawing.R
 \name{draw_sample_srs}
 \alias{draw_sample_srs}
-\title{Sample Drawing Functions}
+\title{Draw simple random sample (legacy helper)}
 \usage{
 draw_sample_srs(frame, n, seed = NULL)
 }
@@ -17,6 +17,5 @@ draw_sample_srs(frame, n, seed = NULL)
 Data frame with drawn sample and metadata attributes
 }
 \description{
-Functions for drawing samples from sampling frames using various methods.
-Draw simple random sample
+Draw simple random sample (legacy helper)
 }
