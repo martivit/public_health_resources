@@ -225,6 +225,9 @@ good_deaths <- DeathIndividualData$new(
 
   View(fsl_analytics$analysis_results$survey_design)
 
+  fsl_analytics$tables$plausibility
+
+
   # Create Mortality Data Analytics Object ####
 
   mortality_analyics <- good_hh$generate_data_analytics(stage = "standardized", type = "mortality")

@@ -1,0 +1,48 @@
+---
+title: "{{assessment_title}}"
+subtitle: "{{country_name}}"
+author: "{{mandating_body}}"
+date: "{{month_year}}"
+format:
+  docx:
+    reference-doc: {{reference_doc}}
+    toc: true
+    toc-depth: 3
+    number-sections: true
+---
+
+# Assessment Overview
+
+**Country:** {{country_name}}
+
+**Assessment Title:** {{assessment_title}}
+
+**Month/Year:** {{month_year}}
+
+**Type of Emergency:** {{type_of_emergency}}
+
+**Type of Crisis:** {{type_of_crisis}}
+
+**Project Code:** {{project_code}}
+
+**Geographic Coverage:** {{geographic_coverage}}
+
+# General Objective
+
+{{general_objective}}
+
+# Timeline
+
+| Activity | Date |
+|----------|------|
+| Pilot/Training | {{pilot_date}} |
+| Data Collection Start | {{data_start_date}} |
+| Data Collection End | {{data_end_date}} |
+| Data Analysis | {{analysis_date}} |
+| Data Validation | {{data_validation_date}} |
+| Preliminary Presentation | {{prelim_presentation_date}} |
+| Output Validation | {{output_validation_date}} |
+| Output Published | {{output_published_date}} |
+| Final Presentation | {{final_presentation_date}} |
+
+{{content}}

@@ -2,9 +2,11 @@
 #'
 #' @description
 #' Functions for loading and validating the objective schema used in Protocol
-#' planning.  The default schema is loaded from the bundled
-#' \code{reference.xlsx} resource file, which lists standard humanitarian
-#' objectives across sectors (General, Health, FSL, WASH, Nutrition, Shelter).
+#' planning.  The default objectives schema is loaded from the bundled
+#' \code{reference_objectives.xlsx} resource file, and the indicator bank is
+#' loaded from \code{reference_indicator_bank.xlsx}.  Together these files list
+#' standard humanitarian objectives and their associated indicators across
+#' sectors (General, Health, FSL, WASH, Nutrition, Shelter).
 #'
 #' @name objective_schema_utils
 NULL
@@ -19,55 +21,69 @@ NULL
   "text_objective"
 )
 
-# All columns present in the bundled reference.xlsx file.
+# All columns present in the bundled reference_objectives.xlsx file.
 .objective_schema_all_cols <- c(
+  "objective_code",
   "sector",
   "pillar",
   "sub_pillar",
-  "core",
-  "extended",
-  "outcomes",
-  "fsl",
-  "wash",
-  "health",
   "short_objective",
-  "text_objective"
+  "text_objective",
+  "objective_research_question",
+  "objective_threshold_name",
+  "objective_threshold_description"
+)
+
+# All columns present in the bundled reference_indicator_bank.xlsx file.
+.indicator_bank_all_cols <- c(
+  "objective_code",
+  "data_source",
+  "indicator_code",
+  "dep_indicator_code",
+  "tool",
+  "indicator_name",
+  "indicator_definition",
+  "indicator_numerator",
+  "indicator_denominator",
+  "research_question",
+  "citation",
+  "threshold_name",
+  "threshold_value",
+  "citation_threshold"
 )
 
 
 #' Load the default objective schema from the bundled reference file
 #'
-#' Reads the \code{reference.xlsx} resource file that ships with the package
-#' and returns its contents as a data frame.  Each row represents a standard
-#' humanitarian objective.
+#' Reads the \code{reference_objectives.xlsx} resource file that ships with the
+#' package and returns its contents as a data frame.  Each row represents a
+#' standard humanitarian objective.
 #'
 #' @return A data frame with objective schema columns:
-#'   \code{sector}, \code{pillar}, \code{sub_pillar}, \code{core},
-#'   \code{extended}, \code{outcomes}, \code{fsl}, \code{wash},
-#'   \code{health}, \code{short_objective}, \code{text_objective}.
+#'   \code{objective_code}, \code{sector}, \code{pillar}, \code{sub_pillar},
+#'   \code{short_objective}, \code{text_objective},
+#'   \code{objective_research_question}, \code{objective_threshold_name},
+#'   \code{objective_threshold_description}.
 #'   Returns an empty data frame if the file cannot be found or read.
 #' @export
 load_objective_schema <- function() {
 
-  file <- system.file("resources", "reference.xlsx", package = "phr")
+  file <- system.file("resources", "reference_objectives.xlsx", package = "phr")
 
   if (!file.exists(file) || file == "") {
-    file <- file.path("resources", "reference.xlsx")
-    if (!file.exists(file)) {
-      phr_warning(
-        origin  = "load_objective_schema",
-        message = phr_txt("Could not locate reference.xlsx; returning empty objective schema."),
-        hint    = phr_txt("Ensure the 'resources/reference.xlsx' file is present in the package installation.")
-      )
-      return(data.frame())
-    }
+    phr_warning(
+      origin  = "load_objective_schema",
+      message = phr_txt("Could not locate reference_objectives.xlsx; returning empty objective schema."),
+      hint    = phr_txt("Ensure the 'inst/resources/reference_objectives.xlsx' file is present in the package installation.")
+    )
+    return(data.frame())
   }
 
   schema <- phr_try(
     readxl::read_xlsx(file),
     on_error = "warn",
     origin   = "load_objective_schema",
-    hint     = "Check that reference.xlsx is a valid Excel file."
+    hint     = "Check that reference_objectives.xlsx is a valid Excel file."
   )
 
   if (is.null(schema) || nrow(schema) == 0) {
@@ -78,6 +94,51 @@ load_objective_schema <- function() {
   schema <- as.data.frame(schema, stringsAsFactors = FALSE)
 
   schema
+}
+
+
+#' Load the indicator bank from the bundled reference file
+#'
+#' Reads the \code{reference_indicator_bank.xlsx} resource file that ships with
+#' the package and returns its contents as a data frame.  Each row represents
+#' a standard indicator associated with a humanitarian objective.
+#'
+#' @return A data frame with indicator bank columns:
+#'   \code{objective_code}, \code{data_source}, \code{indicator_code},
+#'   \code{tool}, \code{indicator_name}, \code{indicator_definition},
+#'   \code{indicator_numerator}, \code{indicator_denominator},
+#'   \code{research_question}, \code{citation}, \code{threshold_name},
+#'   \code{threshold_value}, \code{citation_threshold}.
+#'   Returns an empty data frame if the file cannot be found or read.
+#' @export
+load_indicator_bank <- function() {
+
+  file <- system.file("resources", "reference_indicator_bank.xlsx", package = "phr")
+
+  if (!file.exists(file) || file == "") {
+    phr_warning(
+      origin  = "load_indicator_bank",
+      message = phr_txt("Could not locate reference_indicator_bank.xlsx; returning empty indicator bank."),
+      hint    = phr_txt("Ensure the 'inst/resources/reference_indicator_bank.xlsx' file is present in the package installation.")
+    )
+    return(data.frame())
+  }
+
+  bank <- phr_try(
+    readxl::read_xlsx(file),
+    on_error = "warn",
+    origin   = "load_indicator_bank",
+    hint     = "Check that reference_indicator_bank.xlsx is a valid Excel file."
+  )
+
+  if (is.null(bank) || nrow(bank) == 0) {
+    return(data.frame())
+  }
+
+  # Coerce to plain data frame
+  bank <- as.data.frame(bank, stringsAsFactors = FALSE)
+
+  bank
 }
 
 

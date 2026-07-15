@@ -30,12 +30,15 @@
 #' * `health`: HealthIndividualData - health assessments
 #'
 #' When `standardize()` is called, the `pre_standardize()` hook will:
-#' 1. Check linked datasets and ensure they are standardized
-#' 2. Merge household-level variables to all linked datasets (if available):
+#' 1. Generate survey weights via `generate_weights()` when a `SamplingFrame` is
+#'    stored in `self$sampling_frame` and a stratum role is mapped in `variable_map`
+#'    (skipped silently if either is unavailable).
+#' 2. Check linked datasets and ensure they are standardized
+#' 3. Merge household-level variables to all linked datasets (if available):
 #'    `enum_id`, `device_id`, `date_survey`, `weight`, `stratum`, `cluster_id`,
 #'    `site`, `admin1`, `admin2`, `admin3`, `admin4`. Existing variables in
 #'    linked datasets are overwritten with household values.
-#' 3. Aggregate data from linked datasets and add columns to household data with
+#' 4. Aggregate data from linked datasets and add columns to household data with
 #'    a naming convention like `linked_<name>_<column>` to show the source
 #'
 #' **Supported aggregations:**
@@ -56,6 +59,8 @@
 #'
 #' @field survey_design Survey design object (srvyr) for weighted analyses (created at clean stage)
 #' @field optional_columns Character vector of optional columns commonly present in household data
+#' @field sampling_frame Optional \code{\link{SamplingFrame}} object used by \code{generate_weights()}
+#'   to derive survey weights from population totals per stratum.
 #'
 #' @seealso [Data], [IndividualData], [DeathIndividualData], [WaterContainerData],
 #'   [NutritionIndividualData], [HealthIndividualData]
@@ -72,6 +77,7 @@ HouseholdData <- R6::R6Class(
     survey_design    = NULL,  # store srvyr design object (clean stage)
     # linked_datasets removed - now using inherited linked_objects from Data class
     optional_columns = NULL,  # non-required but commonly present columns
+    sampling_frame   = NULL,   # optional SamplingFrame for generate_weights()
 
 
     #' @description
@@ -559,26 +565,220 @@ HouseholdData <- R6::R6Class(
     },
 
 
+    #' Generate Survey Weights from a Sampling Frame
+    #'
+    #' @description
+    #' Computes survey weights for each record by matching stratum values in the
+    #' dataset against population totals held in a \code{\link{SamplingFrame}}.
+    #' The weight for every row in stratum \eqn{s} is:
+    #' \deqn{w_s = \frac{N_s / N}{n_s / n}}
+    #' where \eqn{N_s} is the total population of stratum \eqn{s} (sum of
+    #' \code{population_size} in the \code{SamplingFrame}), \eqn{N} is the grand
+    #' total population across all strata, \eqn{n_s} is the number of surveyed
+    #' households in stratum \eqn{s}, and \eqn{n} is the total sample size.
+    #' This is the standard design weight for stratified sampling (proportion of
+    #' population in the stratum divided by the proportion of the sample in the
+    #' stratum).
+    #'
+    #' @param sampling_frame Optional \code{\link{SamplingFrame}} object. When
+    #'   \code{NULL} (default), the method falls back to \code{self$sampling_frame}.
+    #'   If neither is available the method is skipped with an informational message.
+    #' @param stage Character. Which data stage to add the weight column to.
+    #'   One of \code{"standardized"} (default), \code{"clean"}, or \code{"raw"}.
+    #'
+    #' @return Invisible \code{self} (for method chaining). Modifies the dataset
+    #'   in place by adding or overwriting the mapped weight column and, if no
+    #'   weight column was previously mapped, registers \code{"survey_weight"} as
+    #'   the \code{weight} role in \code{variable_map}.
+    #'
+    #' @details
+    #' Column selection priority for writing weights:
+    #' \enumerate{
+    #'   \item If \code{variable_map$weight} is already set and that column exists
+    #'     in the dataset, the existing column is overwritten.
+    #'   \item Otherwise the weights are written to a new column called
+    #'     \code{"survey_weight"} and \code{variable_map$weight} is updated
+    #'     accordingly.
+    #' }
+    #'
+    #' Rows whose stratum value is \code{NA}, empty, or absent from the
+    #' \code{SamplingFrame} receive \code{NA} weights and a warning is issued.
+    generate_weights = function(sampling_frame = NULL,
+                                stage = c("standardized", "clean", "raw")) {
+
+      stage <- match.arg(stage)
+      origin <- paste0(self$dataset_name, "$generate_weights")
+
+      phr_try({
+
+
+        # 1. Resolve SamplingFrame
+
+        sf <- sampling_frame %||% self$sampling_frame
+
+        if (is.null(sf)) {
+          phr_message(phr_txt("No SamplingFrame available for {self$dataset_name}. Skipping generate_weights."))
+          return(invisible(self))
+        }
+
+        if (!inherits(sf, "SamplingFrame")) {
+          phr_warning(
+            origin,
+            phr_txt("sampling_frame is not a SamplingFrame object. Skipping generate_weights.")
+          )
+          return(invisible(self))
+        }
+
+        sf_df <- sf$log_df
+        if (is.null(sf_df) || nrow(sf_df) == 0) {
+          phr_message(phr_txt("SamplingFrame is empty. Skipping generate_weights."))
+          return(invisible(self))
+        }
+
+
+        # 2. Resolve stratum column
+
+        stratum_col <- self$variable_map$stratum
+
+        if (is.null(stratum_col) || stratum_col == "" || is.na(stratum_col)) {
+          phr_message(phr_txt("No stratum role found in variable_map for {self$dataset_name}. Skipping generate_weights."))
+          return(invisible(self))
+        }
+
+
+        # 3. Get dataset for the requested stage
+
+        df <- self$get_data(stage)
+
+        if (is.null(df) || nrow(df) == 0) {
+          phr_warning(
+            origin,
+            phr_txt("No {stage} data available in {self$dataset_name}. Skipping generate_weights.")
+          )
+          return(invisible(self))
+        }
+
+        if (!stratum_col %in% names(df)) {
+          phr_message(
+            phr_txt("Stratum column '{stratum_col}' not found in {stage} data for {self$dataset_name}. Skipping generate_weights.")
+          )
+          return(invisible(self))
+        }
+
+
+        # 4. Compute population totals per stratum and grand total (N)
+
+        sf_totals <- sf_df |>
+          dplyr::mutate(stratum = as.character(.data$stratum)) |>
+          dplyr::group_by(.data$stratum) |>
+          dplyr::summarize(pop_total = sum(.data$population_size, na.rm = TRUE),
+                           .groups = "drop")
+
+        N <- sum(sf_totals$pop_total, na.rm = TRUE)
+
+
+        # 5. Compute sample counts per stratum and total sample size (n)
+
+        stratum_vals <- as.character(df[[stratum_col]])
+        valid_mask   <- !is.na(stratum_vals) & stratum_vals != ""
+
+        n <- sum(valid_mask)  # total sample size (excluding NA/empty strata)
+
+        sample_counts_df <- data.frame(stratum = stratum_vals[valid_mask]) |>
+          dplyr::group_by(.data$stratum) |>
+          dplyr::summarize(n_s = dplyr::n(), .groups = "drop")
+
+        # Warn if any strata in dataset had no match in the SamplingFrame
+        unmatched <- setdiff(
+          unique(stratum_vals[valid_mask]),
+          sf_totals$stratum
+        )
+        if (length(unmatched) > 0) {
+          phr_warning(
+            origin,
+            phr_txt("The following strata in the dataset were not found in the SamplingFrame and received NA weights: {paste(unmatched, collapse=', ')}")
+          )
+        }
+
+
+        # 6. Build per-row weight vector via vectorized join
+        #    Formula: w_s = (N_s / N) / (n_s / n)
+
+        weight_lookup <- dplyr::left_join(sample_counts_df, sf_totals, by = "stratum") |>
+          dplyr::mutate(weight = (.data$pop_total / N) / (.data$n_s / n))
+
+        row_strata  <- data.frame(stratum = stratum_vals)
+        weight_vec  <- dplyr::left_join(row_strata, weight_lookup, by = "stratum")$weight
+
+
+        # 7. Determine weight column name and update variable_map if needed
+
+        existing_weight_col <- self$variable_map$weight
+        if (!is.null(existing_weight_col) &&
+            !is.na(existing_weight_col) &&
+            existing_weight_col != "" &&
+            existing_weight_col %in% names(df)) {
+          weight_col <- existing_weight_col
+          phr_message(phr_txt("Using existing weight column '{weight_col}' from variable_map."))
+        } else {
+          weight_col <- "survey_weight"
+          self$variable_map[["weight"]] <- weight_col
+          phr_message(phr_txt("No existing weight column mapped. Writing weights to '{weight_col}' and updating variable_map."))
+        }
+
+
+        # 8. Add / overwrite weight column in the dataset
+
+        df[[weight_col]] <- weight_vec
+
+        if (stage == "standardized") {
+          self$standardized_data <- df
+        } else if (stage == "clean") {
+          self$clean_data <- df
+        } else {
+          self$raw_data <- df
+        }
+
+        phr_message(
+          phr_txt("Survey weights generated and added to '{weight_col}' column in {stage} data for {self$dataset_name}.")
+        )
+
+        invisible(self)
+
+      }, on_error = "warn", origin = origin)
+    },
+
+
     #' Pre-Standardize Hook for Household Data
     #'
     #' @description
-    #' Hook method called before standardization begins. Checks linked datasets and aggregates data from them.
+    #' Hook method called before standardization begins. Generates survey weights
+    #' (if a SamplingFrame and stratum mapping are available), then checks linked
+    #' datasets and aggregates data from them.
     #'
     #' @param stage Character string specifying source stage: "clean", "standardized", or "raw"
     #'
     #' @return NULL (modifies household data in place by adding aggregated columns)
     #'
     #' @details
-    #' This hook performs three key operations:
-    #' 1. Validates that linked datasets are standardized
-    #' 2. Merges household-level variables to linked datasets (enum_id, device_id, date_survey, weight, stratum, cluster_id, etc.)
-    #' 3. Aggregates data from linked datasets back to household level with prefix "linked_<name>_<column>"
+    #' This hook performs four key operations:
+    #' 1. Generates survey weights via \code{generate_weights()} when a
+    #'    \code{SamplingFrame} is stored in \code{self$sampling_frame} and a
+    #'    stratum role is mapped in \code{variable_map}; skipped silently otherwise.
+    #' 2. Validates that linked datasets are standardized
+    #' 3. Merges household-level variables to linked datasets (enum_id, device_id, date_survey, weight, stratum, cluster_id, etc.)
+    #' 4. Aggregates data from linked datasets back to household level with prefix "linked_<name>_<column>"
     #'
     #' Supported aggregations vary by dataset type (see class documentation for details)
     pre_standardize = function(stage = c("clean", "standardized", "raw")) {
       stage <- match.arg(stage)
 
       phr_try({
+
+        # Generate survey weights if a SamplingFrame and stratum mapping are available.
+        # We write to raw_data here so the weight column is present when standardize()
+        # copies raw_data -> standardized_data in subsequent steps.
+        self$generate_weights(stage = "raw")
 
         # Check if any linked objects exist (using inherited linked_objects from Data class)
         if (length(self$linked_objects) == 0) {

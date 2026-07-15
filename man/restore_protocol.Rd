@@ -7,7 +7,9 @@
 restore_protocol(protocol_data)
 }
 \arguments{
-\item{protocol_data}{List. Exported protocol data from export_protocol()}
+\item{protocol_data}{List. Legacy exported protocol data (a list with a
+\code{metadata} element, as previously produced by the old
+\code{export_protocol()} method).}
 }
 \value{
 A new Protocol or SurveyProtocol object with restored data

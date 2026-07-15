@@ -8,18 +8,17 @@ Subclass of \code{\link{Framework}} for the ANA (Area-based Needs
 Assessment) conceptual framework.  On initialisation the class automatically
 loads:
 \itemize{
-  \item the bundled \code{reference.xlsx} as \code{master_schema};
+  \item the bundled \code{reference_objectives.xlsx} as
+    \code{master_objectives_schema};
+  \item the bundled \code{reference_indicator_bank.xlsx} as
+    \code{master_indicator_bank} (and \code{modified_indicator_bank});
   \item the bundled \code{ana_framework.svg} as \code{master_svg}.
 }
 
-Call \code{update_adjusted_schema()} with a vector of \code{short_objective}
-values and then \code{update_adjusted_svg()} to produce a highlighted SVG
-that shows which conceptual framework blocks are covered by the selection.
-
-Preset selections based on the columns of the master schema
-(\code{core}, \code{extended}, \code{outcomes}, \code{fsl},
-\code{wash}, \code{health}) can be retrieved with
-\code{get_preset_objectives()}.
+Call \code{modify_adjusted_schema()} with a vector of objective codes to
+filter \code{master_objectives_schema} into \code{modified_objectives_schema},
+and \code{modify_indicator_bank()} to filter the indicator bank.
+Call \code{modify_adjusted_svg()} to produce a highlighted SVG.
 }
 \section{Super class}{
 \code{\link[phr:Framework]{phr::Framework}} -> \code{ANAFramework}
@@ -28,19 +27,24 @@ Preset selections based on the columns of the master schema
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-ANAFramework-new}{\code{ANAFramework$new()}}
-\item \href{#method-ANAFramework-filter_schema_by_pillar}{\code{ANAFramework$filter_schema_by_pillar()}}
-\item \href{#method-ANAFramework-get_preset_objectives}{\code{ANAFramework$get_preset_objectives()}}
-\item \href{#method-ANAFramework-update_adjusted_svg}{\code{ANAFramework$update_adjusted_svg()}}
 \item \href{#method-ANAFramework-clone}{\code{ANAFramework$clone()}}
 }
 }
 \if{html}{\out{
-<details open><summary>Inherited methods</summary>
+<details><summary>Inherited methods</summary>
 <ul>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Framework" data-id="export_framework"><a href='../../phr/html/Framework.html#method-Framework-export_framework'><code>phr::Framework$export_framework()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="phr" data-topic="Framework" data-id="add_secondary_data_source"><a href='../../phr/html/Framework.html#method-Framework-add_secondary_data_source'><code>phr::Framework$add_secondary_data_source()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="phr" data-topic="Framework" data-id="modify_adjusted_schema"><a href='../../phr/html/Framework.html#method-Framework-modify_adjusted_schema'><code>phr::Framework$modify_adjusted_schema()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="phr" data-topic="Framework" data-id="modify_adjusted_svg"><a href='../../phr/html/Framework.html#method-Framework-modify_adjusted_svg'><code>phr::Framework$modify_adjusted_svg()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="phr" data-topic="Framework" data-id="modify_indicator_bank"><a href='../../phr/html/Framework.html#method-Framework-modify_indicator_bank'><code>phr::Framework$modify_indicator_bank()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="phr" data-topic="Framework" data-id="remove_secondary_data_source"><a href='../../phr/html/Framework.html#method-Framework-remove_secondary_data_source'><code>phr::Framework$remove_secondary_data_source()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="phr" data-topic="Framework" data-id="render_framework_svg"><a href='../../phr/html/Framework.html#method-Framework-render_framework_svg'><code>phr::Framework$render_framework_svg()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="phr" data-topic="Framework" data-id="set_master_schema"><a href='../../phr/html/Framework.html#method-Framework-set_master_schema'><code>phr::Framework$set_master_schema()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="phr" data-topic="Framework" data-id="set_master_svg"><a href='../../phr/html/Framework.html#method-Framework-set_master_svg'><code>phr::Framework$set_master_svg()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Framework" data-id="update_adjusted_schema"><a href='../../phr/html/Framework.html#method-Framework-update_adjusted_schema'><code>phr::Framework$update_adjusted_schema()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="phr" data-topic="Framework" data-id="set_primary_indicators"><a href='../../phr/html/Framework.html#method-Framework-set_primary_indicators'><code>phr::Framework$set_primary_indicators()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="phr" data-topic="Framework" data-id="set_primary_objectives"><a href='../../phr/html/Framework.html#method-Framework-set_primary_objectives'><code>phr::Framework$set_primary_objectives()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="phr" data-topic="Framework" data-id="set_secondary_indicators"><a href='../../phr/html/Framework.html#method-Framework-set_secondary_indicators'><code>phr::Framework$set_secondary_indicators()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="phr" data-topic="Framework" data-id="set_secondary_objectives"><a href='../../phr/html/Framework.html#method-Framework-set_secondary_objectives'><code>phr::Framework$set_secondary_objectives()</code></a></span></li>
 </ul>
 </details>
 }}
@@ -50,102 +54,18 @@ Preset selections based on the columns of the master schema
 \subsection{Method \code{new()}}{
 Creates a new ANAFramework object.
 
-The bundled \code{reference.xlsx} is loaded as \code{master_schema} and
+The bundled \code{reference_objectives.xlsx} is loaded as
+\code{master_objectives_schema} and \code{reference_indicator_bank.xlsx}
+is loaded as both \code{master_indicator_bank} and
+\code{modified_indicator_bank}.  All are stored as separate fields.
 \code{ana_framework.svg} is loaded as \code{master_svg}.  Warnings are
-issued if either file cannot be found or read.
+issued if any file cannot be found or read.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{ANAFramework$new()}\if{html}{\out{</div>}}
 }
 
 \subsection{Returns}{
 A new ANAFramework object.
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-ANAFramework-filter_schema_by_pillar"></a>}}
-\if{latex}{\out{\hypertarget{method-ANAFramework-filter_schema_by_pillar}{}}}
-\subsection{Method \code{filter_schema_by_pillar()}}{
-Filter the master schema to objectives whose \code{pillar}
-  matches one or more of the supplied pillar names.
-
-This corresponds to the pillar-dimension filter used in the Shiny module
-(\code{reference_objectives[reference_objectives$pillar %in%
-selected_pillars, ]}).
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ANAFramework$filter_schema_by_pillar(pillars)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{pillars}}{Character vector of pillar names to retain.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Data frame subset of \code{master_schema}.
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-ANAFramework-get_preset_objectives"></a>}}
-\if{latex}{\out{\hypertarget{method-ANAFramework-get_preset_objectives}{}}}
-\subsection{Method \code{get_preset_objectives()}}{
-Return the \code{short_objective} values for a named preset.
-
-Preset definitions mirror the column-based presets from the ANA Shiny
-module (core, extended, outcomes, fsl, wash, health).
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ANAFramework$get_preset_objectives(preset)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{preset}}{Character. One of \code{"core"}, \code{"extended"},
-\code{"outcomes"}, \code{"fsl"}, \code{"wash"}, or \code{"health"}.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Character vector of \code{short_objective} values.
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-ANAFramework-update_adjusted_svg"></a>}}
-\if{latex}{\out{\hypertarget{method-ANAFramework-update_adjusted_svg}{}}}
-\subsection{Method \code{update_adjusted_svg()}}{
-Update the adjusted SVG by highlighting blocks for the
-  currently selected objectives.
-
-For each unique \code{sub_pillar} value in \code{adjusted_schema} the
-corresponding \code{<g id="...">} group's primary \code{<rect>} element
-(the one with \code{stroke="black"}) has its \code{fill} attribute
-changed to \code{highlight_colour}.  All other block rects are reset to
-\code{default_colour}.
-
-This mirrors the JavaScript highlight logic from the ANA Shiny module
-(\code{r.setAttribute('fill','lightgreen')}) but uses pure R string
-manipulation so it works outside of Shiny.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ANAFramework$update_adjusted_svg(
-  highlight_colour = "lightgreen",
-  default_colour = "white"
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{highlight_colour}}{Character. Fill colour for selected blocks.
-Defaults to \code{"lightgreen"}.}
-
-\item{\code{default_colour}}{Character. Fill colour for unselected blocks.
-Defaults to \code{"white"}.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly returns \code{self} for method chaining.
 }
 }
 \if{html}{\out{<hr>}}

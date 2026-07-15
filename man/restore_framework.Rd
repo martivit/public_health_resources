@@ -7,8 +7,8 @@
 restore_framework(framework_data)
 }
 \arguments{
-\item{framework_data}{Named list as produced by
-\code{Framework$export_framework()}.  Must contain a \code{class} element.}
+\item{framework_data}{Named list containing framework data.
+Must contain a \code{class} element.}
 }
 \value{
 A \code{Framework} or \code{ANAFramework} object with fields
@@ -16,5 +16,5 @@ A \code{Framework} or \code{ANAFramework} object with fields
 }
 \description{
 Reconstructs a \code{\link{Framework}} or \code{\link{ANAFramework}} object
-from a plain list produced by \code{Framework$export_framework()}.
+from a plain list produced by \code{Protocol$export_protocol()$framework}.
 }

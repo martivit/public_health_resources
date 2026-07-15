@@ -4,26 +4,117 @@
 \alias{SurveyProtocol}
 \title{SurveyProtocol R6 Class}
 \description{
-Subclass of \code{\link{Protocol}} for managing survey-based protocol
-workflows.  Extends the base \code{Protocol} class with strata definition,
-sample size calculations, sampling frame management, and sample drawing.
-
-In addition to all capabilities inherited from \code{Protocol}, this class
-provides:
-1. Strata Definition and Sample Size Calculations (\code{add_stratum()})
-2. Sampling Frame Validation (\code{set_sampling_frame()})
-3. Sample Drawing (\code{draw_sample()})
+Protocol subclass for survey-based assessments. `SurveyProtocol` extends
+`Protocol` with sampling-frame management, sample-table synchronization,
+survey sampling metadata, sample-size summaries, and Quarto parameters used
+in survey Terms of Reference and reporting workflows.
 }
-\section{Super class}{
-\code{\link[phr:Protocol]{phr::Protocol}} -> \code{SurveyProtocol}
+\details{
+`SurveyProtocol` maintains a nested `Sample` object and a nested
+`SamplingFrame` object. It synchronizes key sampling outputs into public
+fields, including strata names, sampling methods, sampling-frame population
+summaries, and drawn samples. It also extends coherence checks to compare
+strata defined in the sample table against strata available in the sampling
+frame.
+
+The class is intended as a reusable base for survey protocol subclasses,
+including IPHRA-style survey protocols with additional report tables,
+active bindings, and tool-specific outputs.
+}
+\section{Inheritance}{
+
+Inherits from [`Protocol`], which itself inherits document generation,
+framework, tool, metadata, and Quarto parameter functionality.
+}
+
+\section{Public fields}{
+
+\describe{
+  \item{sample_object}{A `Sample` object storing sample table and sample-size workflows.}
+  \item{sample_table}{Data frame mirror of `sample_object$sample_table`.}
+  \item{strata_names}{Character vector of strata names synced from the sample object.}
+  \item{sampling_methods}{Character vector of unique sampling methods.}
+  \item{sampling_frame}{A `SamplingFrame` object storing and validating frame data.}
+  \item{sampling_frame_strata_names}{Character vector of strata in the sampling frame.}
+  \item{sampling_frame_strata_population}{Data frame of stratum-level population totals.}
+  \item{drawn_sample}{Data frame of selected PSUs.}
+  \item{drawn_sample_full}{Full sampling frame with sampling outputs.}
+  \item{drawn_sample_from_frame}{Data-table-style sampled rows from the nested sample object.}
+}
+}
+
+\section{Key methods}{
+
+\describe{
+  \item{`initialize()`}{Create a new survey protocol.}
+  \item{`set_sampling_frame()`}{Validate and store a sampling frame.}
+  \item{`validate_strata_table()`}{Validate the nested sample table.}
+  \item{`get_sample_table()`}{Return the sample table from the nested `Sample` object.}
+  \item{`get_sampling_methods()`}{Return unique sampling methods.}
+  \item{`get_strata_names()`}{Return stratum names from the sample table.}
+  \item{`get_frame_column()`}{Extract a column from the sampling frame.}
+  \item{`diagnose_coherence()`}{Run protocol coherence checks plus strata consistency checks.}
+  \item{`post_sync_state()`}{Synchronize sampling and sampling-frame state after nested updates.}
+  \item{`get_quarto_params()`}{Return survey-specific parameters for Quarto rendering.}
+}
+}
+
+\section{Active bindings}{
+
+The class provides read-only active bindings for survey-type flags,
+sampling-method flags, population summaries, sample-size summaries,
+sample-size tables, fieldwork planning values, and formatted strata names.
+These bindings are primarily used to populate Quarto parameters.
+}
+
+\examples{
+\dontrun{
+protocol <- SurveyProtocol$new(
+  assessment_title = "Example Survey",
+  country_name = "Example Country",
+  month_year = "January 2027",
+  framework_type = "ana"
+)
+
+protocol$set_sampling_frame(frame_df)
+protocol$get_strata_names()
+protocol$get_sampling_methods()
+protocol$diagnose_coherence()
+}
+
+}
+\keyword{internal}
+\section{Super classes}{
+\code{\link[phr:Orchestrator]{phr::Orchestrator}} -> \code{\link[phr:Document]{phr::Document}} -> \code{phr::Protocol} -> \code{SurveyProtocol}
 }
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
 \describe{
-\item{\code{sample_table}}{Master data frame with one row per stratum and all
-relevant population, sample-size, and logistics parameters}
+\item{\code{sample_object}}{A \code{\link{Sample}} object that stores the
+strata/sample table and sample-size workflows.}
 
-\item{\code{sampling_frame}}{Data frame with sampling units and strata}
+\item{\code{sample_table}}{Data frame mirror of \code{sample_object$sample_table}.}
+
+\item{\code{strata_names}}{Character vector of strata names synced from
+\code{sample_object}.}
+
+\item{\code{sampling_methods}}{Character vector of unique sampling methods synced
+from \code{sample_object}.}
+
+\item{\code{sampling_frame_strata_population}}{Data frame of strata-level
+population totals aggregated from \code{sampling_frame$log_df}.}
+
+\item{\code{drawn_sample_from_frame}}{Data-table-style data frame of sampled rows
+synced from the nested \code{Sample} object.}
+
+\item{\code{sampling_frame}}{A \code{\link{SamplingFrame}} object holding and
+validating the sampling frame data.  Initialised to an empty
+\code{SamplingFrame} on construction; populated via
+\code{set_sampling_frame()} or by passing a data frame on
+initialisation.}
+
+\item{\code{sampling_frame_strata_names}}{Character vector of unique strata names
+currently available in the held \code{SamplingFrame}, when present.}
 
 \item{\code{drawn_sample}}{Data frame with selected PSUs (filtered from drawn_sample_full)}
 
@@ -35,27 +126,33 @@ relevant population, sample-size, and logistics parameters}
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-SurveyProtocol-new}{\code{SurveyProtocol$new()}}
-\item \href{#method-SurveyProtocol-add_stratum}{\code{SurveyProtocol$add_stratum()}}
 \item \href{#method-SurveyProtocol-set_sampling_frame}{\code{SurveyProtocol$set_sampling_frame()}}
-\item \href{#method-SurveyProtocol-draw_sample}{\code{SurveyProtocol$draw_sample()}}
 \item \href{#method-SurveyProtocol-validate_strata_table}{\code{SurveyProtocol$validate_strata_table()}}
 \item \href{#method-SurveyProtocol-get_sample_table}{\code{SurveyProtocol$get_sample_table()}}
-\item \href{#method-SurveyProtocol-get_protocol_summary}{\code{SurveyProtocol$get_protocol_summary()}}
-\item \href{#method-SurveyProtocol-export_protocol}{\code{SurveyProtocol$export_protocol()}}
-\item \href{#method-SurveyProtocol-generate_report}{\code{SurveyProtocol$generate_report()}}
+\item \href{#method-SurveyProtocol-get_sampling_methods}{\code{SurveyProtocol$get_sampling_methods()}}
+\item \href{#method-SurveyProtocol-get_strata_names}{\code{SurveyProtocol$get_strata_names()}}
+\item \href{#method-SurveyProtocol-get_frame_column}{\code{SurveyProtocol$get_frame_column()}}
+\item \href{#method-SurveyProtocol-diagnose_coherence}{\code{SurveyProtocol$diagnose_coherence()}}
+\item \href{#method-SurveyProtocol-post_sync_state}{\code{SurveyProtocol$post_sync_state()}}
+\item \href{#method-SurveyProtocol-get_quarto_params}{\code{SurveyProtocol$get_quarto_params()}}
 \item \href{#method-SurveyProtocol-clone}{\code{SurveyProtocol$clone()}}
 }
 }
 \if{html}{\out{
 <details><summary>Inherited methods</summary>
 <ul>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Protocol" data-id="add_objective"><a href='../../phr/html/Protocol.html#method-Protocol-add_objective'><code>phr::Protocol$add_objective()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Protocol" data-id="add_target_stratum"><a href='../../phr/html/Protocol.html#method-Protocol-add_target_stratum'><code>phr::Protocol$add_target_stratum()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="phr" data-topic="Orchestrator" data-id="access_nested"><a href='../../phr/html/Orchestrator.html#method-Orchestrator-access_nested'><code>phr::Orchestrator$access_nested()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="phr" data-topic="Orchestrator" data-id="pre_sync_state"><a href='../../phr/html/Orchestrator.html#method-Orchestrator-pre_sync_state'><code>phr::Orchestrator$pre_sync_state()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="phr" data-topic="Orchestrator" data-id="set_nested"><a href='../../phr/html/Orchestrator.html#method-Orchestrator-set_nested'><code>phr::Orchestrator$set_nested()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="phr" data-topic="Orchestrator" data-id="sync_state"><a href='../../phr/html/Orchestrator.html#method-Orchestrator-sync_state'><code>phr::Orchestrator$sync_state()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="phr" data-topic="Document" data-id="generate_quarto_doc"><a href='../../phr/html/Document.html#method-Document-generate_quarto_doc'><code>phr::Document$generate_quarto_doc()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="phr" data-topic="Document" data-id="generate_quarto_ppt"><a href='../../phr/html/Document.html#method-Document-generate_quarto_ppt'><code>phr::Document$generate_quarto_ppt()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="phr" data-topic="Protocol" data-id="add_tools"><a href='../../phr/html/Protocol.html#method-Protocol-add_tools'><code>phr::Protocol$add_tools()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="phr" data-topic="Protocol" data-id="get_dap_table"><a href='../../phr/html/Protocol.html#method-Protocol-get_dap_table'><code>phr::Protocol$get_dap_table()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="phr" data-topic="Protocol" data-id="get_issues"><a href='../../phr/html/Protocol.html#method-Protocol-get_issues'><code>phr::Protocol$get_issues()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Protocol" data-id="remove_objective"><a href='../../phr/html/Protocol.html#method-Protocol-remove_objective'><code>phr::Protocol$remove_objective()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Protocol" data-id="select_indicators"><a href='../../phr/html/Protocol.html#method-Protocol-select_indicators'><code>phr::Protocol$select_indicators()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Protocol" data-id="set_objectives"><a href='../../phr/html/Protocol.html#method-Protocol-set_objectives'><code>phr::Protocol$set_objectives()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="phr" data-topic="Protocol" data-id="get_tool_names"><a href='../../phr/html/Protocol.html#method-Protocol-get_tool_names'><code>phr::Protocol$get_tool_names()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="phr" data-topic="Protocol" data-id="is_tool_included"><a href='../../phr/html/Protocol.html#method-Protocol-is_tool_included'><code>phr::Protocol$is_tool_included()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="phr" data-topic="Protocol" data-id="validate_objective_schema"><a href='../../phr/html/Protocol.html#method-Protocol-validate_objective_schema'><code>phr::Protocol$validate_objective_schema()</code></a></span></li>
 </ul>
 </details>
 }}
@@ -68,7 +165,11 @@ Creates a new SurveyProtocol object
 \if{html}{\out{<div class="r">}}\preformatted{SurveyProtocol$new(
   assessment_title = NULL,
   country_name = NULL,
-  month_year = NULL
+  month_year = NULL,
+  framework_type = "none",
+  sampling_frame = NULL,
+  reference_doc_filename = NULL,
+  reference_ppt_filename = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -80,214 +181,22 @@ Creates a new SurveyProtocol object
 \item{\code{country_name}}{Character. Country where assessment takes place}
 
 \item{\code{month_year}}{Character. Month and year of data collection (e.g., "January 2024")}
+
+\item{\code{framework_type}}{Character. Type of framework to initialise.  One of
+\code{"none"} or \code{"ana"}.  Defaults to \code{"none"}.}
+
+\item{\code{sampling_frame}}{Optional data frame to initialise the
+\code{\link{SamplingFrame}} with.  When \code{NULL} (default), an empty
+\code{SamplingFrame} is created.}
+
+\item{\code{reference_doc_filename}}{Optional document template filename/path.}
+
+\item{\code{reference_ppt_filename}}{Optional PowerPoint template filename/path.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
 A new SurveyProtocol object
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-SurveyProtocol-add_stratum"></a>}}
-\if{latex}{\out{\hypertarget{method-SurveyProtocol-add_stratum}{}}}
-\subsection{Method \code{add_stratum()}}{
-Add a stratum row to the master sample table
-
-Each call appends one row to \code{sample_table}.  Every column in the
-master table is included; columns that are not supplied default to
-\code{NA}.  Parameters that have clear equivalents in the master table
-schema are mapped automatically (e.g. \code{population_size} maps to
-\code{Total_Population}).
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SurveyProtocol$add_stratum(
-  stratum_id,
-  stratum_name,
-  population_size = NA_real_,
-  total_households = NA_real_,
-  sampling_method = "srs",
-  allocation_method = NULL,
-  n_psu = NA_real_,
-  n_clusters = NA_real_,
-  cluster_size = NA_real_,
-  n_sites = NA_real_,
-  pop_indicator = "General",
-  pop_expected_prevalence = NA_real_,
-  pop_precision = NA_real_,
-  pop_nonresponse = NA_real_,
-  pop_design_effect = NA_real_,
-  pop_fpc = FALSE,
-  pop_result_dummy = NA_real_,
-  ind_indicator = NA_character_,
-  ind_expected_prevalence = NA_real_,
-  ind_precision = NA_real_,
-  ind_nonresponse = NA_real_,
-  ind_design_effect = NA_real_,
-  ind_avg_hh_size = NA_real_,
-  ind_subpop_prop = NA_real_,
-  ind_fpc = FALSE,
-  ind_result_dummy = NA_real_,
-  mort_indicator = NA_character_,
-  mort_expected_death_rate = NA_real_,
-  mort_precision = NA_real_,
-  mort_nonresponse = NA_real_,
-  mort_design_effect = NA_real_,
-  mort_recall_days = NA_real_,
-  mort_avg_hh_size = NA_real_,
-  mort_fpc = FALSE,
-  mort_result_dummy = NA_real_,
-  teams = NA_real_,
-  avg_interview_time = NA_real_,
-  clusters_per_day = NA_real_,
-  enumerators_per_team = NA_real_,
-  avg_rest_time = NA_real_,
-  avg_travel_time = NA_real_,
-  start_time = NA_character_,
-  end_time = NA_character_,
-  design_effect = NULL,
-  precision = NULL,
-  confidence_level = NULL
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{stratum_id}}{Character. Unique identifier for the stratum (used as
-the row key and for cross-referencing the sampling frame).}
-
-\item{\code{stratum_name}}{Character. Human-readable name (stored as
-\code{Population_Name}).}
-
-\item{\code{population_size}}{Numeric. Total population for this stratum
-(stored as \code{Total_Population}).}
-
-\item{\code{total_households}}{Numeric. Total number of households (stored as
-\code{Total_Households}).  Defaults to \code{NA}.}
-
-\item{\code{sampling_method}}{Character. Primary sampling method for the
-stratum (stored as \code{Sampling_Method}).  Also accepted via the
-legacy alias \code{allocation_method}.  Defaults to \code{"srs"}.}
-
-\item{\code{allocation_method}}{Deprecated alias for \code{sampling_method}.}
-
-\item{\code{n_psu}}{Integer.  Number of PSUs to select.  Used by
-\code{draw_sample()} when \code{Sampling_Method} is \code{"srs"}.}
-
-\item{\code{n_clusters}}{Integer.  Number of clusters.  Used by
-\code{draw_sample()} when \code{Sampling_Method} is \code{"pps_cluster"}.}
-
-\item{\code{cluster_size}}{Integer.  Households per cluster.  Used by
-\code{draw_sample()} when \code{Sampling_Method} is \code{"pps_cluster"}
-or \code{"rlc"} (defaults to \code{3} for \code{"rlc"} if not set).}
-
-\item{\code{n_sites}}{Integer.  Number of sites to select.  Used by
-\code{draw_sample()} when \code{Sampling_Method} is \code{"systematic"}.}
-
-\item{\code{pop_indicator}}{Character. Indicator label for population-level
-sample size calculation (default \code{"General"}).}
-
-\item{\code{pop_expected_prevalence}}{Numeric. Expected prevalence used for
-population-level sample size (\%).}
-
-\item{\code{pop_precision}}{Numeric. Desired precision for population-level
-estimate (\%).}
-
-\item{\code{pop_nonresponse}}{Numeric. Expected non-response rate for
-population-level calculation (\%).}
-
-\item{\code{pop_design_effect}}{Numeric. Design effect for population-level
-calculation.  Also accepted via the legacy alias \code{design_effect}.}
-
-\item{\code{pop_fpc}}{Logical. Apply finite population correction at population
-level?  Defaults to \code{FALSE}.}
-
-\item{\code{pop_result_dummy}}{Numeric. Calculated (or placeholder) sample size
-at population level.}
-
-\item{\code{ind_indicator}}{Character. Indicator label for individual-level
-sample size calculation.}
-
-\item{\code{ind_expected_prevalence}}{Numeric. Expected prevalence for
-individual-level calculation (\%).}
-
-\item{\code{ind_precision}}{Numeric. Desired precision for individual-level
-estimate (\%).}
-
-\item{\code{ind_nonresponse}}{Numeric. Expected non-response rate for
-individual-level calculation (\%).}
-
-\item{\code{ind_design_effect}}{Numeric. Design effect for individual-level
-calculation.}
-
-\item{\code{ind_avg_hh_size}}{Numeric. Average household size (individual
-level).}
-
-\item{\code{ind_subpop_prop}}{Numeric. Sub-population proportion (\%) for
-individual-level calculation.}
-
-\item{\code{ind_fpc}}{Logical. Apply finite population correction at individual
-level?  Defaults to \code{FALSE}.}
-
-\item{\code{ind_result_dummy}}{Numeric. Calculated (or placeholder) sample size
-at individual level.}
-
-\item{\code{mort_indicator}}{Character. Indicator label for mortality-level
-sample size calculation.}
-
-\item{\code{mort_expected_death_rate}}{Numeric. Expected crude death rate used
-for mortality sample size calculation.}
-
-\item{\code{mort_precision}}{Numeric. Desired precision for mortality estimate.}
-
-\item{\code{mort_nonresponse}}{Numeric. Expected non-response rate for
-mortality calculation (\%).}
-
-\item{\code{mort_design_effect}}{Numeric. Design effect for mortality
-calculation.}
-
-\item{\code{mort_recall_days}}{Integer. Recall period in days for mortality
-estimate.}
-
-\item{\code{mort_avg_hh_size}}{Numeric. Average household size (mortality
-level).}
-
-\item{\code{mort_fpc}}{Logical. Apply finite population correction at mortality
-level?  Defaults to \code{FALSE}.}
-
-\item{\code{mort_result_dummy}}{Numeric. Calculated (or placeholder) sample
-size at mortality level.}
-
-\item{\code{teams}}{Numeric. Number of field teams.}
-
-\item{\code{avg_interview_time}}{Numeric. Average interview time in minutes.}
-
-\item{\code{clusters_per_day}}{Numeric. Number of clusters visited per day per
-team.}
-
-\item{\code{enumerators_per_team}}{Numeric. Number of enumerators per team.}
-
-\item{\code{avg_rest_time}}{Numeric. Average rest/break time in minutes per
-day.}
-
-\item{\code{avg_travel_time}}{Numeric. Average travel time to cluster in
-minutes.}
-
-\item{\code{start_time}}{Character. Planned work start time (e.g.
-\code{"08:00"}).}
-
-\item{\code{end_time}}{Character. Planned work end time (e.g.
-\code{"17:00"}).}
-
-\item{\code{design_effect}}{Deprecated alias for \code{pop_design_effect}.}
-
-\item{\code{precision}}{Deprecated alias for \code{pop_precision}.}
-
-\item{\code{confidence_level}}{Deprecated / ignored in the new schema.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly returns \code{self} for method chaining.
 }
 }
 \if{html}{\out{<hr>}}
@@ -319,77 +228,19 @@ Invisibly returns \code{self} for method chaining.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-SurveyProtocol-draw_sample"></a>}}
-\if{latex}{\out{\hypertarget{method-SurveyProtocol-draw_sample}{}}}
-\subsection{Method \code{draw_sample()}}{
-Draw sample from the sampling frame
-
-Applies PSU-level sampling methods to the eligible PSUs in the sampling
-frame.  Results are stored in \code{drawn_sample_full} (the full frame
-annotated with \code{sampled_psu} and \code{allocated_sample} columns)
-and \code{drawn_sample} (only the selected rows).
-
-Sampling method and all method-specific parameters (\code{n_psu},
-\code{n_clusters}, \code{cluster_size}, \code{n_sites}) are read
-from the strata table row(s).  When the frame contains a \code{stratum}
-column and the strata table has multiple rows, sampling is applied
-independently per stratum using that stratum's own method and parameters.
-
-Supported \code{Sampling_Method} values in the strata table:
-\itemize{
-  \item \code{"srs"} — simple random sampling; requires \code{n_psu}.
-  \item \code{"proportional"} — proportional allocation; requires
-    \code{population_size} in the frame.
-  \item \code{"pps_cluster"} — PPS cluster sampling; requires
-    \code{n_clusters} and \code{cluster_size}.
-  \item \code{"rlc"} — random location cluster; \code{cluster_size}
-    defaults to \code{3} if not set.
-  \item \code{"systematic"} — systematic sampling; requires
-    \code{n_sites}.
-  \item \code{"purposive"} — purposive / convenience sampling; returns
-    \code{NA} for \code{sampled_psu} and \code{allocated_sample} —
-    the user manually designates selected PSUs.
-}
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SurveyProtocol$draw_sample(frame = NULL, strata_table = NULL, seed = 42)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{frame}}{Data frame.  The sampling frame to draw from.  If
-\code{NULL} (default), uses \code{self$sampling_frame}.}
-
-\item{\code{strata_table}}{Data frame.  The strata table supplying
-\code{Sampling_Method}, \code{Final_HH_Sample_Size}, and sampling
-parameters (\code{n_psu}, \code{n_clusters}, \code{cluster_size},
-\code{n_sites}).  If \code{NULL} (default), uses
-\code{self$sample_table}.}
-
-\item{\code{seed}}{Integer. Random seed for reproducibility (default \code{42}).}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly returns \code{self} for method chaining.
-}
-}
-\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-SurveyProtocol-validate_strata_table"></a>}}
 \if{latex}{\out{\hypertarget{method-SurveyProtocol-validate_strata_table}{}}}
 \subsection{Method \code{validate_strata_table()}}{
 Validate the structure of the master sample table
 
 Checks that \code{sample_table} exists and contains all required master
-table columns.  Returns a list with a \code{valid} flag and a
-\code{message}.
+table columns.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{SurveyProtocol$validate_strata_table()}\if{html}{\out{</div>}}
 }
 
 \subsection{Returns}{
-Named list with elements \code{valid} (logical) and
-  \code{message} (character).
+\code{TRUE} if valid, \code{FALSE} otherwise.
 }
 }
 \if{html}{\out{<hr>}}
@@ -406,65 +257,125 @@ Data frame containing the sample table
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-SurveyProtocol-get_protocol_summary"></a>}}
-\if{latex}{\out{\hypertarget{method-SurveyProtocol-get_protocol_summary}{}}}
-\subsection{Method \code{get_protocol_summary()}}{
-Get protocol summary including sampling information
+\if{html}{\out{<a id="method-SurveyProtocol-get_sampling_methods"></a>}}
+\if{latex}{\out{\hypertarget{method-SurveyProtocol-get_sampling_methods}{}}}
+\subsection{Method \code{get_sampling_methods()}}{
+Return the unique sampling methods used across all strata.
+
+Reads the \code{sampling_method} column of \code{self$get_sample_table()}.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SurveyProtocol$get_protocol_summary()}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{SurveyProtocol$get_sampling_methods()}\if{html}{\out{</div>}}
 }
 
 \subsection{Returns}{
-List with protocol summary information
+Character vector of unique, non-NA sampling method values.
+  Empty character vector when no sample table is set.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-SurveyProtocol-export_protocol"></a>}}
-\if{latex}{\out{\hypertarget{method-SurveyProtocol-export_protocol}{}}}
-\subsection{Method \code{export_protocol()}}{
-Export protocol to a list including sampling data
+\if{html}{\out{<a id="method-SurveyProtocol-get_strata_names"></a>}}
+\if{latex}{\out{\hypertarget{method-SurveyProtocol-get_strata_names}{}}}
+\subsection{Method \code{get_strata_names()}}{
+Return the stratum names from the sample table.
+
+Uses \code{Population_Name} when available, falling back to
+\code{stratum_id}.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SurveyProtocol$export_protocol()}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{SurveyProtocol$get_strata_names()}\if{html}{\out{</div>}}
 }
 
 \subsection{Returns}{
-List containing all protocol data
+Character vector of stratum names.  Empty character vector
+  when no sample table is set.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-SurveyProtocol-generate_report"></a>}}
-\if{latex}{\out{\hypertarget{method-SurveyProtocol-generate_report}{}}}
-\subsection{Method \code{generate_report()}}{
-Generate a Word document report including sampling information
-
-Extends \code{Protocol$generate_report()} by inserting a
-\strong{Sampling Design} sub-section within the Protocol Data section,
-summarising strata definitions, household sample sizes, and (when
-\code{draw_sample()} has been called) a table of selected PSUs.
+\if{html}{\out{<a id="method-SurveyProtocol-get_frame_column"></a>}}
+\if{latex}{\out{\hypertarget{method-SurveyProtocol-get_frame_column}{}}}
+\subsection{Method \code{get_frame_column()}}{
+Extract a column vector from the sampling frame, optionally
+  filtered to a specific stratum and/or to included PSUs only.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{SurveyProtocol$generate_report(
-  output_file = "protocol_report.docx",
-  reference_docx = NULL,
-  open = FALSE
+\if{html}{\out{<div class="r">}}\preformatted{SurveyProtocol$get_frame_column(col_name, strata = NULL, included_only = TRUE)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{col_name}}{Character. Column to extract.}
+
+\item{\code{strata}}{Optional character vector of stratum names to filter to.
+\code{NULL} (default) returns all strata.}
+
+\item{\code{included_only}}{Logical. When \code{TRUE} (default) only return
+rows where the \code{inclusion} column is \code{TRUE}.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+Vector of values from the requested column.  \code{NULL} when
+  the sampling frame is not set or the column does not exist.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-SurveyProtocol-diagnose_coherence"></a>}}
+\if{latex}{\out{\hypertarget{method-SurveyProtocol-diagnose_coherence}{}}}
+\subsection{Method \code{diagnose_coherence()}}{
+Override \code{diagnose_coherence} to additionally check
+  strata consistency between the sampling frame and the sample table.
+
+Calls the base \code{Protocol$diagnose_coherence()} and then appends
+strata consistency checks to \code{self$issues_coherence}.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{SurveyProtocol$diagnose_coherence()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+Invisibly returns \code{self} for method chaining.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-SurveyProtocol-post_sync_state"></a>}}
+\if{latex}{\out{\hypertarget{method-SurveyProtocol-post_sync_state}{}}}
+\subsection{Method \code{post_sync_state()}}{
+Post-sync hook for sampling-related state.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{SurveyProtocol$post_sync_state(
+  field = NULL,
+  member = NULL,
+  target_field = NULL,
+  name = NULL,
+  role = NULL
 )}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{output_file}}{Character. Output \code{.docx} file path.
-Defaults to \code{"protocol_report.docx"}.}
+\item{\code{field}}{Optional top-level field name.}
 
-\item{\code{reference_docx}}{Character or \code{NULL}. Path to a custom
-\code{.docx} template.  Uses the bundled REACH TOR template by default.}
+\item{\code{member}}{Optional nested member name.}
 
-\item{\code{open}}{Logical. Open the file after writing.  Defaults to \code{FALSE}.}
+\item{\code{target_field}}{Optional destination field path.}
+
+\item{\code{name}}{Optional named list entry inside \code{field}.}
+
+\item{\code{role}}{Optional role-based list resolution key.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-Invisibly returns \code{self} for method chaining.
+Invisibly returns \code{NULL}.
 }
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-SurveyProtocol-get_quarto_params"></a>}}
+\if{latex}{\out{\hypertarget{method-SurveyProtocol-get_quarto_params}{}}}
+\subsection{Method \code{get_quarto_params()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{SurveyProtocol$get_quarto_params()}\if{html}{\out{</div>}}
+}
+
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-SurveyProtocol-clone"></a>}}

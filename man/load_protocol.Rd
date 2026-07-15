@@ -10,8 +10,9 @@ load_protocol(file)
 \item{file}{Character. File path to load from}
 }
 \value{
-List containing protocol data
+A \code{Protocol} or \code{SurveyProtocol} object
 }
 \description{
-Load protocol from RDS file
+Loads a \code{Protocol} or \code{SurveyProtocol} object saved with
+\code{\link{save_protocol}}.
 }

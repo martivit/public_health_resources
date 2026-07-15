@@ -10,7 +10,7 @@ validate_sampling_frame(frame, required_cols = character(0))
 \item{frame}{Data frame. The sampling frame to validate.}
 
 \item{required_cols}{Character vector. Additional required column names
-beyond \code{"psu"} (default \code{character(0)}).}
+beyond the standard set (default \code{character(0)}).}
 }
 \value{
 List with \code{valid} (logical), \code{message} (character on
@@ -24,7 +24,10 @@ Validate sampling frame structure
 Validates a sampling frame for use in sample drawing operations.  Uses
 existing \pkg{phr} validator helpers where possible.
 
-Required column: \code{psu} (primary sampling unit identifier).
+Required columns (in the prescribed order for a compliant frame):
+\code{stratum}, \code{psu}, \code{population_size}, \code{inclusion}.
+The columns \code{sampled_psu} and \code{allocated_sample} are added
+automatically by \code{draw_sample()} and are not required on input.
 
 Optional but validated if present:
 \itemize{
@@ -32,6 +35,5 @@ Optional but validated if present:
     created with all \code{TRUE} values by \code{set_sampling_frame()} if
     absent.
   \item \code{population_size} — positive numeric sizes.
-  \item \code{stratum} — strata labels (empty strata are flagged).
 }
 }

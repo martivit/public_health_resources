@@ -26,6 +26,7 @@
 ObservationTool <- R6::R6Class(
 "ObservationTool",
 inherit = Tool,
+cloneable = TRUE,
 public = list(
 
   #' @description
@@ -109,23 +110,6 @@ public = list(
     is_binary <- grepl("select_one\\s+(yes_?no|yesno|binary|true_?false)", survey$type,
                        ignore.case = TRUE)
     survey[is_binary, , drop = FALSE]
-  },
-
-  #' @description
-  #' Print summary of the observation tool.
-  print = function() {
-    cat("XLSForm Observation Tool\n")
-    cat("--------------------------\n")
-    cat("Name:", private$.name, "\n")
-    cat("Type:", private$.tool_type, "\n")
-    cat("Observation Type:", private$.observation_type, "\n")
-    cat("Created:", format(private$.created_at, "%Y-%m-%d %H:%M:%S"), "\n")
-    cat("Modified:", format(private$.modified_at, "%Y-%m-%d %H:%M:%S"), "\n")
-    cat("Questions:", nrow(self$survey), "\n")
-    cat("Checklist Items:", nrow(self$get_checklist_items()), "\n")
-    cat("Choice Lists:", length(unique(self$choices$list_name)), "\n")
-    cat("Selected Indicators:", length(private$.selected_indicators), "\n")
-    invisible(self)
   }
 ),
 

@@ -8,11 +8,10 @@ validate_strata_table(sample_table)
 }
 \arguments{
 \item{sample_table}{A data frame to validate (typically
-\code{protocol$sample_table}).}
+\code{protocol$sample_object} / \code{protocol$sample_table}).}
 }
 \value{
-Named list with elements \code{valid} (logical) and
-  \code{message} (character).
+\code{TRUE} if the table is valid, \code{FALSE} otherwise.
 }
 \description{
 Checks that a data frame conforms to the expected master strata table

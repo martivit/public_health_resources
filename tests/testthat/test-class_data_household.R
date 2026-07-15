@@ -1326,3 +1326,214 @@ test_that("generate_data_analytics with mortality type succeeds when linked rost
   expect_false(is.null(result$linked_ind_roster_data))
   expect_false(is.null(result$linked_ind_deaths_data))
 })
+
+
+# generate_weights ####
+
+test_that("generate_weights skips when no SamplingFrame is available", {
+
+  hh <- suppressMessages(suppressWarnings(
+    HouseholdData$new(
+      data = tibble::tibble(
+        uuid = c("1", "2"),
+        consent = "yes",
+        interview_date = Sys.Date(),
+        enumerator_id = "E1",
+        stratum = c("A", "B")
+      ),
+      variable_map = list(stratum = "stratum")
+    )
+  ))
+
+  # No sampling_frame set, no argument provided — should skip silently
+  expect_message(
+    hh$generate_weights(),
+    regexp = "No SamplingFrame available"
+  )
+})
+
+test_that("generate_weights skips when stratum not mapped in variable_map", {
+
+  sf_df <- tibble::tibble(
+    stratum          = c("A", "B"),
+    psu              = c("PSU1", "PSU2"),
+    population_size  = c(1000, 2000),
+    inclusion        = c(TRUE, TRUE),
+    sampled_psu      = NA_character_,
+    allocated_sample = NA_real_
+  )
+  sf <- SamplingFrame$new(log_df = sf_df)
+
+  hh <- suppressMessages(suppressWarnings(
+    HouseholdData$new(
+      data = tibble::tibble(
+        uuid = c("1", "2"),
+        consent = "yes",
+        interview_date = Sys.Date(),
+        enumerator_id = "E1",
+        stratum = c("A", "B")
+      )
+      # no stratum mapped in variable_map
+    )
+  ))
+
+  expect_message(
+    hh$generate_weights(sampling_frame = sf),
+    regexp = "No stratum role"
+  )
+})
+
+test_that("generate_weights computes correct weights and writes to 'survey_weight' when no weight mapped", {
+
+  sf_df <- tibble::tibble(
+    stratum          = c("Urban", "Rural"),
+    psu              = c("PSU1", "PSU2"),
+    population_size  = c(1000, 3000),
+    inclusion        = c(TRUE, TRUE),
+    sampled_psu      = NA_character_,
+    allocated_sample = NA_real_
+  )
+  sf <- SamplingFrame$new(log_df = sf_df)
+
+  hh <- suppressMessages(suppressWarnings(
+    HouseholdData$new(
+      data = tibble::tibble(
+        uuid = c("h1", "h2", "h3", "h4"),
+        consent = "yes",
+        interview_date = Sys.Date(),
+        enumerator_id = "E1",
+        stratum = c("Urban", "Urban", "Rural", "Rural")
+      ),
+      variable_map = list(stratum = "stratum")
+    )
+  ))
+
+  suppressMessages(
+    hh$generate_weights(sampling_frame = sf, stage = "raw")
+  )
+
+  df <- hh$raw_data
+  expect_true("survey_weight" %in% names(df))
+  # N=4000, n=4
+  # Urban: (1000/4000) / (2/4) = 0.25 / 0.5 = 0.5
+  expect_equal(df$survey_weight[df$stratum == "Urban"], c(0.5, 0.5))
+  # Rural: (3000/4000) / (2/4) = 0.75 / 0.5 = 1.5
+  expect_equal(df$survey_weight[df$stratum == "Rural"], c(1.5, 1.5))
+  # variable_map should be updated
+  expect_equal(hh$variable_map$weight, "survey_weight")
+})
+
+test_that("generate_weights uses existing mapped weight column when available", {
+
+  sf_df <- tibble::tibble(
+    stratum          = c("Urban", "Rural"),
+    psu              = c("PSU1", "PSU2"),
+    population_size  = c(800, 2000),
+    inclusion        = c(TRUE, TRUE),
+    sampled_psu      = NA_character_,
+    allocated_sample = NA_real_
+  )
+  sf <- SamplingFrame$new(log_df = sf_df)
+
+  hh <- suppressMessages(suppressWarnings(
+    HouseholdData$new(
+      data = tibble::tibble(
+        uuid = c("h1", "h2", "h3"),
+        consent = "yes",
+        interview_date = Sys.Date(),
+        enumerator_id = "E1",
+        stratum = c("Urban", "Rural", "Rural"),
+        wt = c(1, 1, 1)   # pre-existing weight column
+      ),
+      variable_map = list(stratum = "stratum", weight = "wt")
+    )
+  ))
+
+  suppressMessages(
+    hh$generate_weights(sampling_frame = sf, stage = "raw")
+  )
+
+  df <- hh$raw_data
+  # Should have written into 'wt', not created 'survey_weight'
+  expect_false("survey_weight" %in% names(df))
+  expect_equal(hh$variable_map$weight, "wt")
+  # N=2800, n=3
+  # Urban: (800/2800) / (1/3) = (2/7) / (1/3) = 6/7
+  expect_equal(df$wt[df$stratum == "Urban"], 6/7)
+  # Rural: (2000/2800) / (2/3) = (5/7) / (2/3) = 15/14
+  expect_equal(df$wt[df$stratum == "Rural"], c(15/14, 15/14))
+})
+
+test_that("generate_weights produces NA and warns for strata not in SamplingFrame", {
+
+  sf_df <- tibble::tibble(
+    stratum          = "Urban",
+    psu              = "PSU1",
+    population_size  = 500,
+    inclusion        = TRUE,
+    sampled_psu      = NA_character_,
+    allocated_sample = NA_real_
+  )
+  sf <- SamplingFrame$new(log_df = sf_df)
+
+  hh <- suppressMessages(suppressWarnings(
+    HouseholdData$new(
+      data = tibble::tibble(
+        uuid = c("h1", "h2"),
+        consent = "yes",
+        interview_date = Sys.Date(),
+        enumerator_id = "E1",
+        stratum = c("Urban", "Rural")   # Rural not in SamplingFrame
+      ),
+      variable_map = list(stratum = "stratum")
+    )
+  ))
+
+  expect_warning(
+    suppressMessages(hh$generate_weights(sampling_frame = sf, stage = "raw")),
+    regexp = "Rural"
+  )
+
+  df <- hh$raw_data
+  # Urban: N=500 (only stratum), N_s=500, n=2 valid rows, n_s=1 -> (500/500)/(1/2) = 2
+  expect_equal(df$survey_weight[df$stratum == "Urban"], 2)
+  expect_true(is.na(df$survey_weight[df$stratum == "Rural"]))
+})
+
+test_that("generate_weights is called automatically inside pre_standardize when sampling_frame is set", {
+
+  sf_df <- tibble::tibble(
+    stratum          = c("A", "B"),
+    psu              = c("PSU1", "PSU2"),
+    population_size  = c(600, 900),
+    inclusion        = c(TRUE, TRUE),
+    sampled_psu      = NA_character_,
+    allocated_sample = NA_real_
+  )
+  sf <- SamplingFrame$new(log_df = sf_df)
+
+  hh <- suppressMessages(suppressWarnings(
+    HouseholdData$new(
+      data = tibble::tibble(
+        uuid = c("h1", "h2", "h3"),
+        consent = "yes",
+        interview_date = Sys.Date(),
+        enumerator_id = "E1",
+        stratum = c("A", "B", "B")
+      ),
+      variable_map = list(stratum = "stratum")
+    )
+  ))
+
+  hh$sampling_frame <- sf
+
+  suppressMessages(suppressWarnings(hh$standardize()))
+
+  df <- hh$standardized_data
+  expect_true("survey_weight" %in% names(df))
+  # N=1500, n=3
+  # A: (600/1500) / (1/3) = 0.4 / (1/3) = 1.2
+  expect_equal(df$survey_weight[df$stratum == "A"], 1.2)
+  # B: (900/1500) / (2/3) = 0.6 / (2/3) = 0.9
+  expect_equal(df$survey_weight[df$stratum == "B"], c(0.9, 0.9))
+})

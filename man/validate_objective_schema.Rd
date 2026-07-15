@@ -19,6 +19,14 @@ Invisibly returns \code{TRUE} if the schema is valid.  Throws an
 }
 \description{
 Checks that a data frame conforms to the expected objective schema
-structure (required columns present, no duplicate short-objective names,
-non-empty sector values).
+structure: required columns are present, key columns are complete (not
+all-NA), and text columns are character typed.  Duplicate rows are
+permitted because the schema may contain multiple rows per objective when
+each row corresponds to a distinct indicator.
+}
+\details{
+Columns that must be of character type:
+\code{sector}, \code{pillar}, \code{sub_pillar}, \code{text_objective}.
+\code{short_objective} is allowed to be character or numeric/integer (it
+is used as a code and may be imported as an integer).
 }

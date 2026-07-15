@@ -4,45 +4,117 @@
 \alias{Protocol}
 \title{Protocol R6 Class}
 \description{
-Base class for managing protocol pipeline workflows.
-Handles core components shared across all protocol types:
-1. Objective Selection (nested by sector, pillar, sub-pillar, and data source)
-2. Tool and Indicator Selection
+Base protocol class for planning, managing, validating, and reporting an
+assessment protocol. A `Protocol` stores assessment metadata, manages a
+collection of data collection tools, links the protocol to a conceptual
+framework, checks coherence between framework objectives and tool indicators,
+and prepares parameters for Quarto-based report generation.
+}
+\details{
+`Protocol` inherits from `Document` and therefore also supports document
+generation workflows defined by the parent class. The protocol maintains a
+`Framework` object, a named list of `Tool` objects, metadata fields used in
+Terms of Reference and reporting templates, and helper methods for producing
+data analysis planning outputs.
 
-For survey protocols that require strata definition, sample size
-calculations, sampling frame management, and sample drawing, use
-the \code{\link{SurveyProtocol}} subclass instead.
+The class is intended to be subclassed for specific protocol types, such as
+IPHRA protocols, where additional active bindings, Quarto parameters, tool
+types, or reporting tables may be defined.
+}
+\section{Public fields}{
+
+\describe{
+  \item{framework}{A `Framework` or subclass instance associated with the protocol.}
+  \item{tools}{Named list of registered tool objects.}
+  \item{valid_tool_types}{Character vector of allowed tool types.}
+  \item{issues}{List of validation or protocol issues.}
+  \item{issues_coherence}{List of coherence issues between framework and tools.}
+  \item{metadata}{Named list of protocol metadata used for reporting and documentation.}
+  \item{secondary_data}{Optional secondary data sources keyed by objective code.}
+}
+}
+
+\section{Key methods}{
+
+\describe{
+  \item{`initialize()`}{Create a new protocol object.}
+  \item{`add_tools()`}{Add a tool object to the protocol.}
+  \item{`get_tool_names()`}{Return registered tool names.}
+  \item{`is_tool_included()`}{Check whether a tool is registered.}
+  \item{`validate_objective_schema()`}{Validate an objective schema.}
+  \item{`diagnose_coherence()`}{Check alignment between framework indicators and tool indicators.}
+  \item{`get_dap_table()`}{Build a data analysis plan table for a selected tool.}
+  \item{`get_quarto_params()`}{Return protocol parameters for Quarto rendering.}
+}
+}
+
+\section{Active bindings}{
+
+\describe{
+  \item{`.release_date`}{Read-only binding returning the current system date.}
+  \item{`.objectives_research_questions_df`}{Returns a table of pillars, sub-pillars, objectives, and research questions linked to indicators used across tools.}
+  \item{`.secondary_data_sources_df`}{Returns the framework secondary data sources table.}
+  \item{`.modified_framework_svg`}{Returns a temporary SVG file path for the adjusted or master framework diagram.}
+}
+}
+
+\examples{
+\dontrun{
+protocol <- Protocol$new(
+  assessment_title = "Example Assessment",
+  country_name = "Example Country",
+  month_year = "January 2027",
+  framework_type = "ana"
+)
+
+protocol$add_tools(tool_type = "household", tool_name = "household")
+protocol$get_tool_names()
+protocol$diagnose_coherence()
+}
+
+}
+\section{Super classes}{
+\code{\link[phr:Orchestrator]{phr::Orchestrator}} -> \code{\link[phr:Document]{phr::Document}} -> \code{Protocol}
 }
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
 \describe{
-\item{\code{objectives}}{Nested list of research objectives structured as
-\code{sector → pillar → sub_pillar → data_source → [list of objectives]}.
-Use \code{add_objective()}, \code{remove_objective()}, and
-\code{set_objectives()} to manage; use \code{flatten_objectives()} or
-\code{objectives_to_df()} to inspect.}
-
 \item{\code{framework}}{A \code{\link{Framework}} object (e.g.
 \code{\link{ANAFramework}}) that holds the master and adjusted
 reference schemas and SVG diagrams for this protocol.  Assign a
 Framework instance to this field to associate a conceptual framework
 with the protocol.}
 
-\item{\code{objective_schema}}{Data frame containing the objective schema.
-This field is no longer auto-populated on initialisation.  When a
-\code{\link{Framework}} is associated with this protocol, access the
-schema via \code{self$framework$master_schema} or
-\code{self$framework$adjusted_schema}.  \code{objective_schema} may
-still be set manually for custom schemas that do not require a full
-Framework object.}
-
 \item{\code{tools}}{List of Tool objects (placeholder for Tool class instances)}
 
-\item{\code{selected_indicators}}{List of selected indicators}
+\item{\code{valid_tool_types}}{Character vector of allowed tool types for
+\code{add_tools()}.}
 
 \item{\code{issues}}{List of validation issues and discrepancies}
 
+\item{\code{issues_coherence}}{List of coherence issues found between the
+\code{modified_objectives_schema} indicator codes and the tool indicator
+codes.  Populated by \code{diagnose_coherence()}.}
+
 \item{\code{metadata}}{List containing protocol metadata}
+
+\item{\code{secondary_data}}{Named list of secondary data sources keyed by
+objective code.  Each element is a character string naming the source
+or a URL.  Objective codes must match codes available in the
+\code{master_objectives_schema} of the associated \code{\link{Framework}}.}
+}
+\if{html}{\out{</div>}}
+}
+\section{Active bindings}{
+\if{html}{\out{<div class="r6-active-bindings">}}
+\describe{
+\item{\code{.release_date}}{Active binding returning the current system date.
+This binding is read-only; attempts to assign return \code{invisible(FALSE)}.}
+
+\item{\code{.modified_framework_svg}}{Active binding returning a temporary SVG
+file path created from \code{framework$adjusted_svg}; falls back to
+\code{framework$master_svg} when adjusted SVG is unavailable.
+Returns \code{NULL} if no SVG text is available. This binding is read-only.}
 }
 \if{html}{\out{</div>}}
 }
@@ -50,26 +122,44 @@ Framework object.}
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-Protocol-new}{\code{Protocol$new()}}
-\item \href{#method-Protocol-set_objectives}{\code{Protocol$set_objectives()}}
-\item \href{#method-Protocol-add_objective}{\code{Protocol$add_objective()}}
-\item \href{#method-Protocol-remove_objective}{\code{Protocol$remove_objective()}}
-\item \href{#method-Protocol-add_target_stratum}{\code{Protocol$add_target_stratum()}}
 \item \href{#method-Protocol-add_tools}{\code{Protocol$add_tools()}}
-\item \href{#method-Protocol-select_indicators}{\code{Protocol$select_indicators()}}
 \item \href{#method-Protocol-get_issues}{\code{Protocol$get_issues()}}
-\item \href{#method-Protocol-get_protocol_summary}{\code{Protocol$get_protocol_summary()}}
-\item \href{#method-Protocol-export_protocol}{\code{Protocol$export_protocol()}}
-\item \href{#method-Protocol-generate_report}{\code{Protocol$generate_report()}}
+\item \href{#method-Protocol-get_tool_names}{\code{Protocol$get_tool_names()}}
+\item \href{#method-Protocol-is_tool_included}{\code{Protocol$is_tool_included()}}
+\item \href{#method-Protocol-validate_objective_schema}{\code{Protocol$validate_objective_schema()}}
+\item \href{#method-Protocol-diagnose_coherence}{\code{Protocol$diagnose_coherence()}}
+\item \href{#method-Protocol-get_dap_table}{\code{Protocol$get_dap_table()}}
+\item \href{#method-Protocol-get_quarto_params}{\code{Protocol$get_quarto_params()}}
 \item \href{#method-Protocol-clone}{\code{Protocol$clone()}}
 }
 }
+\if{html}{\out{
+<details><summary>Inherited methods</summary>
+<ul>
+<li><span class="pkg-link" data-pkg="phr" data-topic="Orchestrator" data-id="access_nested"><a href='../../phr/html/Orchestrator.html#method-Orchestrator-access_nested'><code>phr::Orchestrator$access_nested()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="phr" data-topic="Orchestrator" data-id="post_sync_state"><a href='../../phr/html/Orchestrator.html#method-Orchestrator-post_sync_state'><code>phr::Orchestrator$post_sync_state()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="phr" data-topic="Orchestrator" data-id="pre_sync_state"><a href='../../phr/html/Orchestrator.html#method-Orchestrator-pre_sync_state'><code>phr::Orchestrator$pre_sync_state()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="phr" data-topic="Orchestrator" data-id="set_nested"><a href='../../phr/html/Orchestrator.html#method-Orchestrator-set_nested'><code>phr::Orchestrator$set_nested()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="phr" data-topic="Orchestrator" data-id="sync_state"><a href='../../phr/html/Orchestrator.html#method-Orchestrator-sync_state'><code>phr::Orchestrator$sync_state()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="phr" data-topic="Document" data-id="generate_quarto_doc"><a href='../../phr/html/Document.html#method-Document-generate_quarto_doc'><code>phr::Document$generate_quarto_doc()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="phr" data-topic="Document" data-id="generate_quarto_ppt"><a href='../../phr/html/Document.html#method-Document-generate_quarto_ppt'><code>phr::Document$generate_quarto_ppt()</code></a></span></li>
+</ul>
+</details>
+}}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Protocol-new"></a>}}
 \if{latex}{\out{\hypertarget{method-Protocol-new}{}}}
 \subsection{Method \code{new()}}{
 Creates a new Protocol object
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Protocol$new(assessment_title = NULL, country_name = NULL, month_year = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{Protocol$new(
+  assessment_title = NULL,
+  country_name = NULL,
+  month_year = NULL,
+  framework_type = "none",
+  reference_doc_filename = NULL,
+  reference_ppt_filename = NULL
+)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -80,6 +170,16 @@ Creates a new Protocol object
 \item{\code{country_name}}{Character. Country where assessment takes place}
 
 \item{\code{month_year}}{Character. Month and year of data collection (e.g., "January 2024")}
+
+\item{\code{framework_type}}{Character. Type of framework to initialise.  Must be
+one of \code{"none"} (creates a generic \code{\link{Framework}} object) or
+\code{"ana"} (creates an \code{\link{ANAFramework}} object).}
+
+\item{\code{reference_doc_filename}}{Optional document template filename/path
+passed to \code{Document$initialize()}.}
+
+\item{\code{reference_ppt_filename}}{Optional PowerPoint template filename/path
+passed to \code{Document$initialize()}.}
 }
 \if{html}{\out{</div>}}
 }
@@ -88,105 +188,13 @@ A new Protocol object
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Protocol-set_objectives"></a>}}
-\if{latex}{\out{\hypertarget{method-Protocol-set_objectives}{}}}
-\subsection{Method \code{set_objectives()}}{
-Set all objectives at once, replacing the current objectives
-
-Accepts either a flat list of objectives (as produced by
-\code{create_objective()} or \code{create_objectives_from_df()}) or an
-already-nested structure (sector → pillar → sub_pillar → data_source).
-Flat lists are automatically converted with \code{nest_objectives()}.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Protocol$set_objectives(objectives)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{objectives}}{List.  Flat or nested objectives.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly returns \code{self} for method chaining.
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Protocol-add_objective"></a>}}
-\if{latex}{\out{\hypertarget{method-Protocol-add_objective}{}}}
-\subsection{Method \code{add_objective()}}{
-Add a single objective to the protocol
-
-The objective is placed into the nested structure under its
-\code{sector}, \code{pillar}, \code{sub_pillar}, and \code{data_source}
-keys.  Use \code{create_objective()} to build a conforming objective
-list.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Protocol$add_objective(objective)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{objective}}{Named list. Objective to add (see \code{create_objective()}).}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly returns \code{self} for method chaining.
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Protocol-remove_objective"></a>}}
-\if{latex}{\out{\hypertarget{method-Protocol-remove_objective}{}}}
-\subsection{Method \code{remove_objective()}}{
-Remove an objective from the protocol by its short_objective label
-
-Searches the entire nested objectives structure and removes the first
-objective whose \code{short_objective} matches the supplied value.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Protocol$remove_objective(short_objective)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{short_objective}}{Character. The \code{short_objective} value of the
-objective to remove.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly returns \code{self} for method chaining.
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Protocol-add_target_stratum"></a>}}
-\if{latex}{\out{\hypertarget{method-Protocol-add_target_stratum}{}}}
-\subsection{Method \code{add_target_stratum()}}{
-Add a target stratum to metadata
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Protocol$add_target_stratum(stratum_id, stratum_name)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{stratum_id}}{Character. Unique identifier}
-
-\item{\code{stratum_name}}{Character. Human-readable name}
-}
-\if{html}{\out{</div>}}
-}
-}
-\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Protocol-add_tools"></a>}}
 \if{latex}{\out{\hypertarget{method-Protocol-add_tools}{}}}
 \subsection{Method \code{add_tools()}}{
 Add a single Tool object to the protocol by specifying its type.
 A new tool of the requested type is instantiated (loading its bundled
-default XLSForm template) and appended to the \code{tools} list.
+default XLSForm template) and stored in the \code{tools} named list under
+\code{tool_name} so it is accessible via \code{protocol$tools$<name>}.
 Call this method once per tool you wish to add.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Protocol$add_tools(tool_type = "household", tool_name = NULL)}\if{html}{\out{</div>}}
@@ -199,29 +207,14 @@ Call this method once per tool you wish to add.
 \code{"household"}, \code{"key_informant"}, \code{"observation"}, or
 \code{"generic"}.  Defaults to \code{"household"}.}
 
-\item{\code{tool_name}}{Optional character. Name for the new tool.}
+\item{\code{tool_name}}{Optional character. Name/key for the tool in the
+\code{tools} list.  When \code{NULL} a key is generated automatically
+from \code{tool_type} and the current count (e.g. \code{"household_1"}).}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
 Invisibly returns self for method chaining.
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Protocol-select_indicators"></a>}}
-\if{latex}{\out{\hypertarget{method-Protocol-select_indicators}{}}}
-\subsection{Method \code{select_indicators()}}{
-Select indicators for data collection
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Protocol$select_indicators(indicator_list)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{indicator_list}}{List of indicators}
-}
-\if{html}{\out{</div>}}
 }
 }
 \if{html}{\out{<hr>}}
@@ -238,74 +231,129 @@ List of validation issues
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Protocol-get_protocol_summary"></a>}}
-\if{latex}{\out{\hypertarget{method-Protocol-get_protocol_summary}{}}}
-\subsection{Method \code{get_protocol_summary()}}{
-Get protocol summary
+\if{html}{\out{<a id="method-Protocol-get_tool_names"></a>}}
+\if{latex}{\out{\hypertarget{method-Protocol-get_tool_names}{}}}
+\subsection{Method \code{get_tool_names()}}{
+Return the names of all currently registered tools.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Protocol$get_protocol_summary()}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{Protocol$get_tool_names()}\if{html}{\out{</div>}}
 }
 
 \subsection{Returns}{
-List with protocol summary information
+Character vector of tool names (keys of \code{self$tools}).
+  Empty character vector when no tools are registered.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Protocol-export_protocol"></a>}}
-\if{latex}{\out{\hypertarget{method-Protocol-export_protocol}{}}}
-\subsection{Method \code{export_protocol()}}{
-Export protocol to a list
+\if{html}{\out{<a id="method-Protocol-is_tool_included"></a>}}
+\if{latex}{\out{\hypertarget{method-Protocol-is_tool_included}{}}}
+\subsection{Method \code{is_tool_included()}}{
+Check whether a specific tool is registered.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Protocol$export_protocol()}\if{html}{\out{</div>}}
-}
-
-\subsection{Returns}{
-List containing all protocol data
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Protocol-generate_report"></a>}}
-\if{latex}{\out{\hypertarget{method-Protocol-generate_report}{}}}
-\subsection{Method \code{generate_report()}}{
-Generate a Word document report based on the REACH TOR template
-
-Creates a \code{.docx} file based on the bundled REACH Terms of Reference
-template (\code{inst/resources/reach_tor_template.docx}).  The document
-inherits the template's formatting, branding, section structure (Executive
-Summary, Rationale, Methodology, DAP, etc.) and key placeholder strings are
-replaced with protocol metadata.  A new \strong{Protocol Data} section is
-inserted directly after the Executive Summary table and contains:
-\itemize{
-  \item Research Objectives table
-  \item Data Collection Tools (one sub-section per tool with indicator list)
-}
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Protocol$generate_report(
-  output_file = "protocol_report.docx",
-  reference_docx = NULL,
-  open = FALSE
-)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{Protocol$is_tool_included(tool_name)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{output_file}}{Character. Output file path including the \code{.docx}
-extension.  Defaults to \code{"protocol_report.docx"} in the current
-working directory.}
-
-\item{\code{reference_docx}}{Character or \code{NULL}.  Path to a custom
-\code{.docx} template.  When \code{NULL} (default) the package-bundled
-REACH TOR template is used.}
-
-\item{\code{open}}{Logical.  Whether to open the generated file after writing.
-Defaults to \code{FALSE}.}
+\item{\code{tool_name}}{Character. Tool name to look up.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
+\code{TRUE} if the tool is present in \code{self$tools},
+  \code{FALSE} otherwise.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-Protocol-validate_objective_schema"></a>}}
+\if{latex}{\out{\hypertarget{method-Protocol-validate_objective_schema}{}}}
+\subsection{Method \code{validate_objective_schema()}}{
+Validate an objective schema data frame.
+
+Validates that \code{schema} is a non-NULL data frame with at least one
+row, contains all required columns, and passes completeness and type
+checks.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Protocol$validate_objective_schema(schema, soft = FALSE)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{schema}}{Data frame to validate as an objective schema.}
+
+\item{\code{soft}}{Logical. When \code{TRUE} issues warnings rather than errors
+for recoverable problems.  Defaults to \code{FALSE}.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+Invisibly returns \code{TRUE} if valid.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-Protocol-diagnose_coherence"></a>}}
+\if{latex}{\out{\hypertarget{method-Protocol-diagnose_coherence}{}}}
+\subsection{Method \code{diagnose_coherence()}}{
+Diagnose coherence between the \code{modified_objectives_schema}
+indicator codes and the \code{indicator_code} values across all tools in
+\code{self$tools} (using each tool's \code{revised_survey}).
+
+Checks performed:
+\enumerate{
+  \item Objectives in the legacy \code{objectives} list whose sectors are
+    not represented by any registered tool.
+  \item Objectives in \code{modified_objectives_schema} that have no
+    matching \code{indicator_code} in any tool's \code{revised_survey}.
+  \item \code{indicator_code} values present in tools but absent from
+    \code{modified_objectives_schema}.
+}
+
+Results are stored in \code{self$issues_coherence} as a named list.
+An empty list means no coherence issues were found.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Protocol$diagnose_coherence()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
 Invisibly returns \code{self} for method chaining.
 }
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-Protocol-get_dap_table"></a>}}
+\if{latex}{\out{\hypertarget{method-Protocol-get_dap_table}{}}}
+\subsection{Method \code{get_dap_table()}}{
+Build a data analysis plan (DAP) table from framework primary
+  objectives and tool survey data.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Protocol$get_dap_table(tool_name)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{tool_name}}{Character. Name of the tool to use for survey questions
+and responses. Must match a key in \code{self$tools}.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+Data frame with columns: Research Question, Indicator Code,
+  Indicator / Variable, Disaggregation, Questionnaire Question,
+  Questionnaire Responses, Data Collection Level. Returns \code{NULL} when
+  framework is not configured, no primary objectives are set, or the
+  specified tool is not found.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-Protocol-get_quarto_params"></a>}}
+\if{latex}{\out{\hypertarget{method-Protocol-get_quarto_params}{}}}
+\subsection{Method \code{get_quarto_params()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Protocol$get_quarto_params()}\if{html}{\out{</div>}}
+}
+
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Protocol-clone"></a>}}

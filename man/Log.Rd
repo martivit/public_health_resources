@@ -40,6 +40,8 @@ Get Summary
 \item{\code{autosave}}{Logical for automatic saving (not yet implemented)}
 
 \item{\code{issues}}{List of validation issues found}
+
+\item{\code{metadata}}{List containing sample metadata.}
 }
 \if{html}{\out{</div>}}
 }

@@ -33,6 +33,7 @@ Imports:
     scales,
     srvyr,
     survey,
+    xml2,
     tibble,
     tidyr,
     zscorer
@@ -43,6 +44,7 @@ Suggests:
     ggridges,
     ggradar,
     mockery,
+    rsvg,
     shiny,
     stringr,
     testthat (>= 3.0.0),
@@ -51,3 +53,6 @@ Suggests:
 Encoding: UTF-8
 RoxygenNote: 7.3.3
 Config/testthat/edition: 3
+Collate:
+    'class_orchestrator.R'
+    'class_document.R'

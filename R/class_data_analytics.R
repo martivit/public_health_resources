@@ -2086,6 +2086,9 @@ DataAnalytics <- R6::R6Class(
     #' \code{self$analysis_results} as a named list with elements
     #' \code{survey_design} and \code{base}.
     #'
+    #' After storing the results, \code{self$post_run_analysis()} is called to
+    #' allow subclasses to perform additional analysis steps.
+    #'
     #' @return Invisibly returns self.
     run_analysis = function() {
       origin <- paste0(self$dataset_name, "$run_analysis")
@@ -2139,6 +2142,21 @@ DataAnalytics <- R6::R6Class(
       )
 
       phr_message(origin, "Analysis completed successfully.")
+
+      # Call the post-analysis hook so subclasses can perform additional steps.
+      self$post_run_analysis()
+
+      invisible(self)
+    },
+
+    #' @description Post-analysis hook called at the end of \code{run_analysis()}.
+    #'
+    #' The default implementation is a no-op.  Subclasses can override this
+    #' method to perform additional analysis steps after the standard analysis
+    #' plan has been executed and stored in \code{self$analysis_results}.
+    #'
+    #' @return Invisibly returns self.
+    post_run_analysis = function() {
       invisible(self)
     },
 

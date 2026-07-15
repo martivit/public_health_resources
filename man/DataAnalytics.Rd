@@ -127,6 +127,7 @@ Key design principles:
 \item \href{#method-DataAnalytics-validate_schema}{\code{DataAnalytics$validate_schema()}}
 \item \href{#method-DataAnalytics-validate_plan}{\code{DataAnalytics$validate_plan()}}
 \item \href{#method-DataAnalytics-run_analysis}{\code{DataAnalytics$run_analysis()}}
+\item \href{#method-DataAnalytics-post_run_analysis}{\code{DataAnalytics$post_run_analysis()}}
 \item \href{#method-DataAnalytics-get_results}{\code{DataAnalytics$get_results()}}
 \item \href{#method-DataAnalytics-export_results}{\code{DataAnalytics$export_results()}}
 \item \href{#method-DataAnalytics-export_state_object}{\code{DataAnalytics$export_state_object()}}
@@ -438,13 +439,17 @@ A list of check results (invisibly)
 \subsection{Method \code{execute_check()}}{
 Execute a single quality check using statistical tests
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DataAnalytics$execute_check(check)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{DataAnalytics$execute_check(check, survey_design = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{check}}{A single check definition from the schema}
+
+\item{\code{survey_design}}{Optional srvyr survey design to use. Defaults to
+\code{self$base_survey_design} (or \code{self$survey_design} as fallback)
+when \code{NULL}.}
 }
 \if{html}{\out{</div>}}
 }
@@ -906,8 +911,28 @@ Executes every indicator twice: once using the full survey design (weighted)
 and once using a simple unweighted design.  Both sets are stored in
 \code{self$analysis_results} as a named list with elements
 \code{survey_design} and \code{base}.
+
+After storing the results, \code{self$post_run_analysis()} is called to
+allow subclasses to perform additional analysis steps.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{DataAnalytics$run_analysis()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+Invisibly returns self.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-DataAnalytics-post_run_analysis"></a>}}
+\if{latex}{\out{\hypertarget{method-DataAnalytics-post_run_analysis}{}}}
+\subsection{Method \code{post_run_analysis()}}{
+Post-analysis hook called at the end of \code{run_analysis()}.
+
+The default implementation is a no-op.  Subclasses can override this
+method to perform additional analysis steps after the standard analysis
+plan has been executed and stored in \code{self$analysis_results}.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{DataAnalytics$post_run_analysis()}\if{html}{\out{</div>}}
 }
 
 \subsection{Returns}{

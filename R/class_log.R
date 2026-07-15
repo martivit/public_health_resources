@@ -28,8 +28,6 @@ Log <- R6::R6Class(
   classname = "Log",
 
   public = list(
-
-
     # Fields
 
     log_df = NULL,
@@ -38,11 +36,14 @@ Log <- R6::R6Class(
     schema = NULL,
 
     validated = FALSE,
-    metadata = NULL,   # <- must be declared here
+    #' @field metadata List containing sample metadata.
+    metadata = list(
+      created_datetime = NULL,
+      modified_datetime = NULL
+    ),
     autosave = FALSE,
 
-    issues = NULL,     # <- must be declared here
-
+    issues = NULL, # <- must be declared here
 
     #' @description
     #' Creates a new Log object with optional initial data, required columns, and schema
@@ -61,11 +62,12 @@ Log <- R6::R6Class(
     #' 3. Adds missing required columns (filled with NA)
     #' 4. Reorders columns (required columns first)
     #' 5. Initializes metadata with current timestamp
-    initialize = function(log_df = NULL,
-                          log_name = "Log",
-                          required_columns = NULL,
-                          schema = NULL) {
-
+    initialize = function(
+      log_df = NULL,
+      log_name = "Log",
+      required_columns = NULL,
+      schema = NULL
+    ) {
       self$log_name <- log_name
       self$required_columns <- required_columns %||% character(0)
       self$schema <- schema %||% list()
@@ -76,7 +78,11 @@ Log <- R6::R6Class(
       }
 
       # ---- VALIDATION: must be a data.frame
-      phr_validate_dataframe(log_df, origin = paste0(log_name, "$initialize"), soft = FALSE)
+      phr_validate_dataframe(
+        log_df,
+        origin = paste0(log_name, "$initialize"),
+        soft = FALSE
+      )
 
       # ---- Ensure required columns exist (add empty ones if missing)
       for (col in self$required_columns) {
@@ -86,20 +92,23 @@ Log <- R6::R6Class(
       }
 
       # reorder columns (required first)
-      log_df <- log_df[, unique(c(self$required_columns, names(log_df))), drop = FALSE]
+      log_df <- log_df[,
+        unique(c(self$required_columns, names(log_df))),
+        drop = FALSE
+      ]
 
       self$log_df <- tibble::as_tibble(log_df)
 
       # guarantee metadata exists
-      if (is.null(self$metadata)) {
-        self$metadata <- list(updated = Sys.time())
-      } else {
-        self$metadata$updated <- Sys.time()
-      }
+      timestamp <- Sys.time()
+      self$metadata$created_datetime <- timestamp
+      self$metadata$modified_datetime <- timestamp
 
       self$issues <- list()
 
-      phr_message(phr_txt(glue::glue("{log_name} initialized with {nrow(log_df)} entries.")))
+      phr_message(phr_txt(glue::glue(
+        "{log_name} initialized with {nrow(log_df)} entries."
+      )))
     },
 
     #' Set Schema
@@ -140,127 +149,124 @@ Log <- R6::R6Class(
     #' Sets self$validated to TRUE if no issues found, updates self$issues.
     #' Attempts safe type coercion (e.g., "123" to 123) when possible.
     validate = function(schema_override = NULL) {
+      phr_try(
+        {
+          schema_to_use <- schema_override %||% self$schema
+          issues <- list()
 
-      phr_try({
+          # 1. BASIC STRUCTURAL VALIDATION
 
-        schema_to_use <- schema_override %||% self$schema
-        issues <- list()
-
-
-        # 1. BASIC STRUCTURAL VALIDATION
-
-
-        phr_validate_dataframe(self$log_df, origin = self$log_name, soft = TRUE)
-
-        # Required columns must exist
-        missing_req <- setdiff(self$required_columns, names(self$log_df))
-        if (length(missing_req) > 0) {
-          issues$missing_required_columns <- missing_req
-        }
-
-
-
-        # 2. SCHEMA VALIDATION (types + allowed_values)
-
-
-        if (!is.null(schema_to_use) && length(schema_to_use) > 0) {
-
-          # ---- TYPE CHECKS ----
-          if (!is.null(schema_to_use$types)) {
-
-            for (nm in names(schema_to_use$types)) {
-
-              if (!nm %in% names(self$log_df)) next
-
-              want <- schema_to_use$types[[nm]]
-              got  <- class(self$log_df[[nm]])[1]
-
-              # Safe coercion classification
-              coercible <- .is_safely_coercible(self$log_df[[nm]], want)
-
-              # Soft-coercion when safe
-              if (!identical(got, want) && coercible) {
-
-                new_vec <- tryCatch(
-                  {
-                    if (want == "numeric") {
-                      suppressWarnings(as.numeric(self$log_df[[nm]]))
-                    } else if (want == "character") {
-                      as.character(self$log_df[[nm]])
-                    } else if (want == "logical") {
-                      suppressWarnings(as.logical(self$log_df[[nm]]))
-                    } else if (want == "date" || want == "Date") {
-                      phr_convert_date(self$log_df[[nm]])
-                    } else {
-                      self$log_df[[nm]]
-                    }
-                  },
-                  error = function(e) self$log_df[[nm]]
-                )
-
-                self$log_df[[nm]] <- new_vec
-
-                phr_message(
-                  phr_txt(glue::glue("Coerced column '{nm}' to type '{want}'."))
-                )
-              }
-
-              # Re-check type after possible coercion
-              final_type <- class(self$log_df[[nm]])[1]
-
-              if (!identical(final_type, want)) {
-                issues$type_mismatch[[nm]] <- paste0("want=", want, ", got=", final_type)
-              }
-            }
-          }
-
-          # ---- ALLOWED VALUES CHECK
-          if (!is.null(schema_to_use$allowed_values)) {
-
-            for (nm in names(schema_to_use$allowed_values)) {
-
-              if (!nm %in% names(self$log_df)) next
-
-              allowed <- schema_to_use$allowed_values[[nm]]
-              vals <- unique(self$log_df[[nm]])
-
-              bad <- setdiff(vals, allowed)
-
-              if (length(bad) > 0) {
-                issues$disallowed_values[[nm]] <- bad
-              }
-            }
-          }
-        }
-
-
-
-        # 3. FINALIZE
-
-
-        if (length(issues) > 0) {
-          phr_warning(
-            self$log_name,
-            phr_txt(glue::glue("Log validation completed with issues: {paste(names(issues), collapse=', ')}"))
+          phr_validate_dataframe(
+            self$log_df,
+            origin = self$log_name,
+            soft = TRUE
           )
-        }
 
-        self$validated <- length(issues) == 0
-        self$issues <- issues %||% list()
+          # Required columns must exist
+          missing_req <- setdiff(self$required_columns, names(self$log_df))
+          if (length(missing_req) > 0) {
+            issues$missing_required_columns <- missing_req
+          }
 
-        # metadata sync if present
-        if (!is.null(self$metadata)) {
-          self$metadata$updated <- Sys.time()
-        }
+          # 2. SCHEMA VALIDATION (types + allowed_values)
 
-        invisible(issues)
+          if (!is.null(schema_to_use) && length(schema_to_use) > 0) {
+            # ---- TYPE CHECKS
+            if (!is.null(schema_to_use$types)) {
+              for (nm in names(schema_to_use$types)) {
+                if (!nm %in% names(self$log_df)) {
+                  next
+                }
 
-      },
-      on_error = "abort",
-      origin = paste0(self$log_name, "$validate"))
+                want <- schema_to_use$types[[nm]]
+                got <- class(self$log_df[[nm]])[1]
+
+                # Safe coercion classification
+                coercible <- .is_safely_coercible(self$log_df[[nm]], want)
+
+                # Soft-coercion when safe
+                if (!identical(got, want) && coercible) {
+                  new_vec <- tryCatch(
+                    {
+                      if (want == "numeric") {
+                        suppressWarnings(as.numeric(self$log_df[[nm]]))
+                      } else if (want == "character") {
+                        as.character(self$log_df[[nm]])
+                      } else if (want == "logical") {
+                        suppressWarnings(as.logical(self$log_df[[nm]]))
+                      } else if (want == "date" || want == "Date") {
+                        phr_convert_date(self$log_df[[nm]])
+                      } else {
+                        self$log_df[[nm]]
+                      }
+                    },
+                    error = function(e) self$log_df[[nm]]
+                  )
+
+                  self$log_df[[nm]] <- new_vec
+
+                  phr_message(
+                    phr_txt(glue::glue(
+                      "Coerced column '{nm}' to type '{want}'."
+                    ))
+                  )
+                }
+
+                # Re-check type after possible coercion
+                final_type <- class(self$log_df[[nm]])[1]
+
+                if (!identical(final_type, want)) {
+                  issues$type_mismatch[[nm]] <- paste0(
+                    "want=",
+                    want,
+                    ", got=",
+                    final_type
+                  )
+                }
+              }
+            }
+
+            # ---- ALLOWED VALUES CHECK
+            if (!is.null(schema_to_use$allowed_values)) {
+              for (nm in names(schema_to_use$allowed_values)) {
+                if (!nm %in% names(self$log_df)) {
+                  next
+                }
+
+                allowed <- schema_to_use$allowed_values[[nm]]
+                vals <- unique(self$log_df[[nm]])
+
+                bad <- setdiff(vals, allowed)
+
+                if (length(bad) > 0) {
+                  issues$disallowed_values[[nm]] <- bad
+                }
+              }
+            }
+          }
+
+          # 3. FINALIZE
+
+          if (length(issues) > 0) {
+            phr_warning(
+              self$log_name,
+              phr_txt(glue::glue(
+                "Log validation completed with issues: {paste(names(issues), collapse=', ')}"
+              ))
+            )
+          }
+
+          self$validated <- length(issues) == 0
+          self$issues <- issues %||% list()
+
+          private$..touch()
+
+          invisible(issues)
+        },
+        on_error = "abort",
+        origin = paste0(self$log_name, "$validate")
+      )
     },
-
-
 
     #' Append Log Entry
     #'
@@ -276,15 +282,20 @@ Log <- R6::R6Class(
     #' Converts list to data.frame row and appends via dplyr::bind_rows().
     #' Updates metadata timestamp.
     append_entry = function(row_list) {
-
-      if (!is.list(row_list))
-        phr_error(self$log_name, phr_txt("append_entry() requires a named list."))
+      if (!is.list(row_list)) {
+        phr_error(
+          self$log_name,
+          phr_txt("append_entry() requires a named list.")
+        )
+      }
 
       missing_cols <- setdiff(self$required_columns, names(row_list))
       if (length(missing_cols) > 0) {
         phr_error(
           self$log_name,
-          phr_txt(glue::glue("Missing required fields in new log entry: {paste(missing_cols, collapse=', ')}"))
+          phr_txt(glue::glue(
+            "Missing required fields in new log entry: {paste(missing_cols, collapse=', ')}"
+          ))
         )
       }
 
@@ -292,12 +303,11 @@ Log <- R6::R6Class(
       df_row <- as.data.frame(row_list, stringsAsFactors = FALSE)
       self$log_df <- dplyr::bind_rows(self$log_df, df_row)
 
-      self$metadata$updated <- Sys.time()
+      private$..touch()
+
       phr_message(phr_txt(glue::glue("Added new entry to {self$log_name}.")))
       invisible(TRUE)
     },
-
-
 
     #' Clear Log
     #'
@@ -311,12 +321,10 @@ Log <- R6::R6Class(
     #' Updates metadata timestamp.
     clear = function() {
       self$log_df <- self$log_df[0, , drop = FALSE]
-      self$metadata$updated <- Sys.time()
+      private$..touch()
       phr_message(phr_txt(glue::glue("{self$log_name} cleared.")))
       invisible(TRUE)
     },
-
-
 
     #' Export Log
     #'
@@ -333,31 +341,36 @@ Log <- R6::R6Class(
     #' * csv: Comma-separated values via utils::write.csv
     #' * rds: R data structure via saveRDS
     #' * xlsx: Excel workbook via openxlsx (requires openxlsx package)
-    export = function(path, format = c("csv","rds","xlsx")) {
+    export = function(path, format = c("csv", "rds", "xlsx")) {
       format <- match.arg(format)
 
-      phr_try({
-
-        if (format == "csv") {
-          utils::write.csv(self$log_df, path, row.names = FALSE)
-        }
-        if (format == "rds") {
-          saveRDS(self$log_df, path)
-        }
-        if (format == "xlsx") {
-          if (!requireNamespace("openxlsx", quietly = TRUE)) {
-            phr_error(self$log_name, phr_txt("Package 'openxlsx' is required for XLSX export."))
+      phr_try(
+        {
+          if (format == "csv") {
+            utils::write.csv(self$log_df, path, row.names = FALSE)
           }
-          openxlsx::write.xlsx(self$log_df, file = path)
-        }
+          if (format == "rds") {
+            saveRDS(self$log_df, path)
+          }
+          if (format == "xlsx") {
+            if (!requireNamespace("openxlsx", quietly = TRUE)) {
+              phr_error(
+                self$log_name,
+                phr_txt("Package 'openxlsx' is required for XLSX export.")
+              )
+            }
+            openxlsx::write.xlsx(self$log_df, file = path)
+          }
 
-        phr_message(phr_txt(glue::glue("Exported {self$log_name} to {path}.")))
-        invisible(path)
-
-      }, on_error = "abort", origin = paste0(self$log_name, "$export"))
+          phr_message(phr_txt(glue::glue(
+            "Exported {self$log_name} to {path}."
+          )))
+          invisible(path)
+        },
+        on_error = "abort",
+        origin = paste0(self$log_name, "$export")
+      )
     },
-
-
 
     #' Get Hash Fingerprint
     #'
@@ -373,12 +386,13 @@ Log <- R6::R6Class(
     #' @note Requires digest package
     get_hash = function() {
       if (!requireNamespace("digest", quietly = TRUE)) {
-        phr_error(self$log_name, phr_txt("Package 'digest' is required for hashing."))
+        phr_error(
+          self$log_name,
+          phr_txt("Package 'digest' is required for hashing.")
+        )
       }
       digest::digest(self$log_df)
     },
-
-
 
     #' Get Summary
     #'
@@ -401,11 +415,9 @@ Log <- R6::R6Class(
         validated = self$validated,
         required_columns = self$required_columns,
         schema_attached = !is.null(self$schema),
-        last_updated = self$metadata$updated
+        last_updated = self$metadata$modified_datetime
       )
     },
-
-
 
     #' Pre-Validation Hook
     #'
@@ -413,19 +425,18 @@ Log <- R6::R6Class(
     #' Hook method called before validation; override in subclasses for custom logic
     #'
     #' @return NULL (default implementation is empty)
-    pre_validate   = function() {},
-    
+    pre_validate = function() {},
+
     #' Post-Validation Hook
     #'
     #' @description
     #' Hook method called after validation; override in subclasses for custom logic
     #'
     #' @return NULL (default implementation is empty)
-    post_validate  = function() {}
+    post_validate = function() {}
   ),
 
   private = list(
-
     # Build Empty Log Template
     #
     # Creates an empty tibble with correct column types from schema
@@ -439,7 +450,6 @@ Log <- R6::R6Class(
 
       # If schema has types, use them for empty vectors
       if (!is.null(self$schema$types)) {
-
         df <- lapply(cols, function(col) {
           type <- self$schema$types[[col]] %||% "character"
 
@@ -453,7 +463,6 @@ Log <- R6::R6Class(
             return(character())
           }
         })
-
       } else {
         # default all-character template
         df <- lapply(cols, function(col) character())
@@ -461,6 +470,12 @@ Log <- R6::R6Class(
 
       names(df) <- cols
       tibble::as_tibble(df)
+    },
+    #' @description Update modified timestamp.
+    #' @return Invisibly returns NULL.
+    ..touch = function() {
+      self$metadata$modified_datetime <- Sys.time()
+      invisible(NULL)
     }
   )
 )

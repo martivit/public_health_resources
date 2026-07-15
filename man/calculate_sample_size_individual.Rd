@@ -20,39 +20,39 @@ calculate_sample_size_individual(
 }
 \arguments{
 \item{expected_proportion}{Numeric. Expected proportion/prevalence in
-  percentages (0–100).}
+percentages (0–100).}
 
 \item{desired_precision}{Numeric. Desired half-width of the confidence
-  interval in percentage points (0–100, exclusive).}
+interval in percentage points (0–100, exclusive).}
 
 \item{non_response_rate}{Numeric. Anticipated non-response rate in
-  percentages (0–100, default = 5).}
+percentages (0–100, default = 5).}
 
 \item{design}{Character. Sampling design: \code{"simple_random"} or
-  \code{"cluster"} (default = \code{"simple_random"}).}
+\code{"cluster"} (default = \code{"simple_random"}).}
 
 \item{design_effect}{Numeric. Design effect for cluster sampling; must be
-  \eqn{\ge 1} (default = 1.5, ignored when \code{design = "simple_random"}).}
+\eqn{\ge 1} (default = 1.5, ignored when \code{design = "simple_random"}).}
 
 \item{fpc}{Logical. Whether to apply the finite population correction
-  (default = \code{FALSE}).}
+(default = \code{FALSE}).}
 
 \item{total_population}{Numeric. Total population size; required (and must
-  be positive) when \code{fpc = TRUE}.}
+be positive) when \code{fpc = TRUE}.}
 
 \item{num_clusters}{Integer or \code{NULL}. Number of clusters; passed to
-  \code{\link{calculate_sample_size_general}} as \code{number_clusters}
-  (default = \code{NULL}).}
+\code{\link{calculate_sample_size_general}} as \code{number_clusters}
+(default = \code{NULL}).}
 
 \item{average_household_size}{Numeric. Average number of individuals per
-  household (must be positive).}
+household (must be positive).}
 
 \item{sub_population_percent}{Numeric. The percentage of the household
-  population belonging to the target sub-population (0–100, default = 100).
-  Values below 100 inflate the individual sample size proportionally.}
+population belonging to the target sub-population (0–100, default = 100).
+Values below 100 inflate the individual sample size proportionally.}
 
 \item{confidence_level}{Numeric. Desired confidence level as a proportion
-  (default = 0.95).}
+(default = 0.95).}
 }
 \value{
 A named list with four elements:

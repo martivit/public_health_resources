@@ -81,7 +81,7 @@ Documentation for the major processes and workflows in the public_health_resourc
 
 ### General Documentation
 
-- **[naming_conventions.md](naming_conventions.md)** - Naming conventions used throughout the codebase
+- **[coding_conventions.md](coding_conventions.md)** - Coding standards and naming conventions used throughout the codebase
 
 ## Quick Start Guide
 
@@ -177,9 +177,9 @@ Systematic checking of data for:
 ### Protocol Design
 The `Protocol` class orchestrates the full assessment design lifecycle, from objective setting through sample drawing and tool management.
 
-## Naming Conventions
+## Coding and Naming Conventions
 
-The package uses specific naming conventions throughout. See [naming_conventions.md](naming_conventions.md) for details on:
+The package uses documented coding and naming standards. See [coding_conventions.md](coding_conventions.md) for details on:
 - Dummy columns use **period (`.`)** separator: `skills.reading`, `skills.other`
 - Text columns use **underscore (`_`)** separator: `skills_other_text`
 - Standard variable names use **underscore (`_`)**: `household_id`, `respondent_age`

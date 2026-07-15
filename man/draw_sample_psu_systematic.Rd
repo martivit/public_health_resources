@@ -9,19 +9,27 @@ draw_sample_psu_systematic(frame, n_sites, sample_size, seed = 42)
 \arguments{
 \item{frame}{Data frame. Eligible PSUs.}
 
-\item{n_sites}{Integer. Number of sites (PSUs) to select.}
+\item{n_sites}{Integer. Number of main sites (PSUs) to select.}
 
 \item{sample_size}{Integer. Total household sample size to allocate evenly
-across selected PSUs.}
+across selected main PSUs.}
 
 \item{seed}{Integer. Random seed for reproducibility (default \code{42}).}
 }
 \value{
 \code{frame} with \code{sampled_psu} and \code{allocated_sample}
-  columns added.  Unselected PSUs receive \code{NA}.
+  columns added.  Unselected PSUs receive \code{NA}.  Reserve PSUs receive
+  \code{"RC"} in \code{sampled_psu} and \code{NA} in
+  \code{allocated_sample}.
 }
 \description{
 Selects \code{n_sites} PSUs systematically (population size is ignored).
-The sampling interval is \code{n_available / n_sites} and a random start
+The sampling interval is \code{n_available / n_total} and a random start
 is drawn uniformly from \code{1} to \code{round(interval)}.
+}
+\details{
+In addition to the \code{n_sites} main PSUs, reserve clusters (RC) are
+drawn in the same systematic pass: 3 RC when \code{n_sites <= 10}, 4 when
+\code{10 < n_sites <= 20}, and 5 when \code{n_sites > 20}.  Sequential
+numbering continues across the RC positions.
 }

@@ -527,7 +527,61 @@ test_that("estimate_field_plan accepts Date objects as well as character dates",
   expect_true(is.list(result))
 })
 
-test_that("estimate_field_plan errors on number_of_teams <= 0", {
+test_that("estimate_field_plan accepts HH:MM time-of-day strings", {
+  result <- estimate_field_plan(
+    sample_design          = "simple_random",
+    number_of_teams        = 3,
+    enumerators_per_team   = 3,
+    start_time             = "10:00",
+    end_time               = "18:00",
+    average_interview_time = 20,
+    average_travel_time    = 60,
+    average_rest_time      = 30,
+    total_sample_size      = 300
+  )
+  expect_true(is.list(result))
+  expect_named(result, c("num_interview_per_enum_per_day", "num_days",
+                          "num_psu_needed", "psu_size"))
+  # 480 total - 60 travel - 30 rest = 390 effective minutes; 390/20 = 19
+  expect_equal(result$num_interview_per_enum_per_day, 19)
+  expect_true(result$num_days > 0)
+})
+
+test_that("estimate_field_plan HH:MM cluster path returns PSU estimates", {
+  result <- estimate_field_plan(
+    sample_design                  = "cluster",
+    number_of_teams                = 2,
+    enumerators_per_team           = 3,
+    number_of_psu_per_team_per_day = 2,
+    start_time                     = "08:00",
+    end_time                       = "17:00",
+    average_interview_time         = 30,
+    average_travel_time            = 60,
+    average_rest_time              = 60,
+    total_sample_size              = 200
+  )
+  expect_false(is.na(result$num_psu_needed))
+  expect_false(is.na(result$psu_size))
+  expect_true(result$num_psu_needed > 0)
+})
+
+test_that("estimate_field_plan HH:MM errors when end_time is before start_time", {
+  expect_error(
+    estimate_field_plan(
+      sample_design          = "simple_random",
+      number_of_teams        = 2,
+      enumerators_per_team   = 3,
+      start_time             = "18:00",
+      end_time               = "10:00",
+      average_interview_time = 45,
+      average_travel_time    = 30,
+      average_rest_time      = 60,
+      total_sample_size      = 300
+    )
+  )
+})
+
+
   expect_error(
     estimate_field_plan(
       sample_design          = "simple_random",

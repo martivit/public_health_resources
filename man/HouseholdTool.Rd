@@ -17,57 +17,33 @@ Household surveys typically include:
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-HouseholdTool-new}{\code{HouseholdTool$new()}}
-\item \href{#method-HouseholdTool-get_roster_groups}{\code{HouseholdTool$get_roster_groups()}}
-\item \href{#method-HouseholdTool-has_roster}{\code{HouseholdTool$has_roster()}}
-\item \href{#method-HouseholdTool-get_roster_questions}{\code{HouseholdTool$get_roster_questions()}}
-\item \href{#method-HouseholdTool-print}{\code{HouseholdTool$print()}}
 \item \href{#method-HouseholdTool-clone}{\code{HouseholdTool$clone()}}
 }
 }
 \if{html}{\out{
 <details><summary>Inherited methods</summary>
 <ul>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="add_choice"><a href='../../phr/html/Tool.html#method-Tool-add_choice'><code>phr::Tool$add_choice()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="add_question"><a href='../../phr/html/Tool.html#method-Tool-add_question'><code>phr::Tool$add_question()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="add_enumerators_to_choices"><a href='../../phr/html/Tool.html#method-Tool-add_enumerators_to_choices'><code>phr::Tool$add_enumerators_to_choices()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="add_numbered_list"><a href='../../phr/html/Tool.html#method-Tool-add_numbered_list'><code>phr::Tool$add_numbered_list()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="add_teams_to_choices"><a href='../../phr/html/Tool.html#method-Tool-add_teams_to_choices'><code>phr::Tool$add_teams_to_choices()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="change_default_language"><a href='../../phr/html/Tool.html#method-Tool-change_default_language'><code>phr::Tool$change_default_language()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="clone_tool"><a href='../../phr/html/Tool.html#method-Tool-clone_tool'><code>phr::Tool$clone_tool()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="filter_choices_from_survey"><a href='../../phr/html/Tool.html#method-Tool-filter_choices_from_survey'><code>phr::Tool$filter_choices_from_survey()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="filter_survey_by_modules"><a href='../../phr/html/Tool.html#method-Tool-filter_survey_by_modules'><code>phr::Tool$filter_survey_by_modules()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="filter_survey_by_indicator"><a href='../../phr/html/Tool.html#method-Tool-filter_survey_by_indicator'><code>phr::Tool$filter_survey_by_indicator()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="get_choice_list_names"><a href='../../phr/html/Tool.html#method-Tool-get_choice_list_names'><code>phr::Tool$get_choice_list_names()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="get_choices"><a href='../../phr/html/Tool.html#method-Tool-get_choices'><code>phr::Tool$get_choices()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="get_choices_for_list"><a href='../../phr/html/Tool.html#method-Tool-get_choices_for_list'><code>phr::Tool$get_choices_for_list()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="get_filtered_choices"><a href='../../phr/html/Tool.html#method-Tool-get_filtered_choices'><code>phr::Tool$get_filtered_choices()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="get_filtered_survey"><a href='../../phr/html/Tool.html#method-Tool-get_filtered_survey'><code>phr::Tool$get_filtered_survey()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="get_master_choices"><a href='../../phr/html/Tool.html#method-Tool-get_master_choices'><code>phr::Tool$get_master_choices()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="get_master_survey"><a href='../../phr/html/Tool.html#method-Tool-get_master_survey'><code>phr::Tool$get_master_survey()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="get_metadata"><a href='../../phr/html/Tool.html#method-Tool-get_metadata'><code>phr::Tool$get_metadata()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="get_modified_choices"><a href='../../phr/html/Tool.html#method-Tool-get_modified_choices'><code>phr::Tool$get_modified_choices()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="get_modified_survey"><a href='../../phr/html/Tool.html#method-Tool-get_modified_survey'><code>phr::Tool$get_modified_survey()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="get_indicator_codes"><a href='../../phr/html/Tool.html#method-Tool-get_indicator_codes'><code>phr::Tool$get_indicator_codes()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="get_name"><a href='../../phr/html/Tool.html#method-Tool-get_name'><code>phr::Tool$get_name()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="get_question"><a href='../../phr/html/Tool.html#method-Tool-get_question'><code>phr::Tool$get_question()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="get_selected_indicators"><a href='../../phr/html/Tool.html#method-Tool-get_selected_indicators'><code>phr::Tool$get_selected_indicators()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="get_settings"><a href='../../phr/html/Tool.html#method-Tool-get_settings'><code>phr::Tool$get_settings()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="get_survey"><a href='../../phr/html/Tool.html#method-Tool-get_survey'><code>phr::Tool$get_survey()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="get_tool_type"><a href='../../phr/html/Tool.html#method-Tool-get_tool_type'><code>phr::Tool$get_tool_type()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="get_validation_errors"><a href='../../phr/html/Tool.html#method-Tool-get_validation_errors'><code>phr::Tool$get_validation_errors()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="has_question"><a href='../../phr/html/Tool.html#method-Tool-has_question'><code>phr::Tool$has_question()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="is_valid"><a href='../../phr/html/Tool.html#method-Tool-is_valid'><code>phr::Tool$is_valid()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="remove_choice"><a href='../../phr/html/Tool.html#method-Tool-remove_choice'><code>phr::Tool$remove_choice()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="remove_question"><a href='../../phr/html/Tool.html#method-Tool-remove_question'><code>phr::Tool$remove_question()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="set_choices"><a href='../../phr/html/Tool.html#method-Tool-set_choices'><code>phr::Tool$set_choices()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="set_master_choices"><a href='../../phr/html/Tool.html#method-Tool-set_master_choices'><code>phr::Tool$set_master_choices()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="set_master_survey"><a href='../../phr/html/Tool.html#method-Tool-set_master_survey'><code>phr::Tool$set_master_survey()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="set_metadata"><a href='../../phr/html/Tool.html#method-Tool-set_metadata'><code>phr::Tool$set_metadata()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="set_name"><a href='../../phr/html/Tool.html#method-Tool-set_name'><code>phr::Tool$set_name()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="set_selected_indicators"><a href='../../phr/html/Tool.html#method-Tool-set_selected_indicators'><code>phr::Tool$set_selected_indicators()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="set_settings"><a href='../../phr/html/Tool.html#method-Tool-set_settings'><code>phr::Tool$set_settings()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="set_survey"><a href='../../phr/html/Tool.html#method-Tool-set_survey'><code>phr::Tool$set_survey()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="update_choice"><a href='../../phr/html/Tool.html#method-Tool-update_choice'><code>phr::Tool$update_choice()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="touch"><a href='../../phr/html/Tool.html#method-Tool-touch'><code>phr::Tool$touch()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="update_choice_list"><a href='../../phr/html/Tool.html#method-Tool-update_choice_list'><code>phr::Tool$update_choice_list()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="update_question"><a href='../../phr/html/Tool.html#method-Tool-update_question'><code>phr::Tool$update_question()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="update_settings"><a href='../../phr/html/Tool.html#method-Tool-update_settings'><code>phr::Tool$update_settings()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="validate"><a href='../../phr/html/Tool.html#method-Tool-validate'><code>phr::Tool$validate()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="validate_tool"><a href='../../phr/html/Tool.html#method-Tool-validate_tool'><code>phr::Tool$validate_tool()</code></a></span></li>
 </ul>
 </details>
 }}
@@ -101,62 +77,6 @@ bundled \code{iphra_tool_v2.xlsx} template stored in the package
 \subsection{Returns}{
 A new HouseholdTool object.
 }
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-HouseholdTool-get_roster_groups"></a>}}
-\if{latex}{\out{\hypertarget{method-HouseholdTool-get_roster_groups}{}}}
-\subsection{Method \code{get_roster_groups()}}{
-Get roster/repeat groups from the survey.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{HouseholdTool$get_roster_groups()}\if{html}{\out{</div>}}
-}
-
-\subsection{Returns}{
-Data frame with roster/repeat group definitions.
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-HouseholdTool-has_roster"></a>}}
-\if{latex}{\out{\hypertarget{method-HouseholdTool-has_roster}{}}}
-\subsection{Method \code{has_roster()}}{
-Check if the survey has a roster/repeat section.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{HouseholdTool$has_roster()}\if{html}{\out{</div>}}
-}
-
-\subsection{Returns}{
-Logical indicating if roster exists.
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-HouseholdTool-get_roster_questions"></a>}}
-\if{latex}{\out{\hypertarget{method-HouseholdTool-get_roster_questions}{}}}
-\subsection{Method \code{get_roster_questions()}}{
-Get questions within a specific roster/repeat group.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{HouseholdTool$get_roster_questions(roster_name)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{roster_name}}{Name of the roster/repeat group.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Data frame with questions in the roster.
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-HouseholdTool-print"></a>}}
-\if{latex}{\out{\hypertarget{method-HouseholdTool-print}{}}}
-\subsection{Method \code{print()}}{
-Print summary of the household tool.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{HouseholdTool$print()}\if{html}{\out{</div>}}
-}
-
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-HouseholdTool-clone"></a>}}

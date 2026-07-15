@@ -1,0 +1,10 @@
+---
+title: "{{title}}"
+author: "{{author}}"
+date: "{{date}}"
+format:
+  pptx:
+    reference-doc: {{reference_doc}}
+---
+
+{{content}}

@@ -10,6 +10,7 @@ This class provides Nutrition-specific (including anthropometric) functionality:
   - Anthropometric plausibility (`quality_schema_anthro`)
   - IYCF plausibility (`quality_schema_iycf`)
 * All visualizations/tables via outputs_schema
+* Optional MUAC age-adjusted analysis via \code{post_run_analysis(muac_age_weights = TRUE)}
 }
 \details{
 The `NutritionDataAnalytics` R6 class extends `DataAnalytics` for
@@ -38,6 +39,7 @@ Nutrition-specific quantitative analysis, including anthropometric data.
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-NutritionDataAnalytics-new}{\code{NutritionDataAnalytics$new()}}
+\item \href{#method-NutritionDataAnalytics-post_run_analysis}{\code{NutritionDataAnalytics$post_run_analysis()}}
 \item \href{#method-NutritionDataAnalytics-quality_diagnose}{\code{NutritionDataAnalytics$quality_diagnose()}}
 \item \href{#method-NutritionDataAnalytics-default_quality_anthro_schema}{\code{NutritionDataAnalytics$default_quality_anthro_schema()}}
 \item \href{#method-NutritionDataAnalytics-default_quality_iycf_schema}{\code{NutritionDataAnalytics$default_quality_iycf_schema()}}
@@ -142,6 +144,55 @@ Initialize a new NutritionDataAnalytics object
 }
 \subsection{Returns}{
 A new NutritionDataAnalytics object
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-NutritionDataAnalytics-post_run_analysis"></a>}}
+\if{latex}{\out{\hypertarget{method-NutritionDataAnalytics-post_run_analysis}{}}}
+\subsection{Method \code{post_run_analysis()}}{
+Post-analysis hook for MUAC age-adjustment.
+
+Called automatically at the end of \code{run_analysis()}.  When
+\code{muac_age_weights = TRUE} this method:
+\enumerate{
+  \item Filters the data analysis plan to rows whose \code{var_name}
+        contains \code{"muac"}.
+  \item If no such rows exist, returns silently.
+  \item Computes MUAC age-adjustment weights (expected proportion of
+        0–23 month children defaults to \code{1/3}; 24–59 month
+        children receive the complementary expected proportion \code{2/3}).
+  \item Multiplies the MUAC age-adjustment weight by the existing
+        survey weight (if present) to form a composite weight column.
+  \item Creates a temporary survey design object using the composite
+        weight.
+  \item Runs the filtered analysis plan against the modified design and
+        stores results in \code{self$analysis_results[["muac_weighted"]]}.
+}
+
+When \code{muac_age_weights = FALSE} (default) the method returns
+immediately without performing any additional analysis.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{NutritionDataAnalytics$post_run_analysis(
+  muac_age_weights = FALSE,
+  expected_prop_0_23 = 1/3
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{muac_age_weights}}{Logical (default \code{FALSE}).  Set to
+\code{TRUE} to compute and apply MUAC age-adjustment weights.}
+
+\item{\code{expected_prop_0_23}}{Numeric in (0, 1); expected proportion of
+children aged 0–23 months among all 0–59 month children.
+Defaults to \code{1/3} (i.e. 1/3 of children are expected to be 0–23
+months and 2/3 are expected to be 24–59 months).}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+Invisibly returns \code{self}.
 }
 }
 \if{html}{\out{<hr>}}

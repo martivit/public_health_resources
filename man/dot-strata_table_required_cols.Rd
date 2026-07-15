@@ -5,7 +5,7 @@
 \alias{.strata_table_required_cols}
 \title{Protocol Utility Functions}
 \format{
-An object of class \code{character} of length 11.
+An object of class \code{character} of length 15.
 }
 \usage{
 .strata_table_required_cols

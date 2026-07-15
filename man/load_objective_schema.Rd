@@ -8,13 +8,14 @@ load_objective_schema()
 }
 \value{
 A data frame with objective schema columns:
-  \code{sector}, \code{pillar}, \code{sub_pillar}, \code{core},
-  \code{extended}, \code{outcomes}, \code{fsl}, \code{wash},
-  \code{health}, \code{short_objective}, \code{text_objective}.
+  \code{objective_code}, \code{sector}, \code{pillar}, \code{sub_pillar},
+  \code{short_objective}, \code{text_objective},
+  \code{objective_research_question}, \code{objective_threshold_name},
+  \code{objective_threshold_description}.
   Returns an empty data frame if the file cannot be found or read.
 }
 \description{
-Reads the \code{reference.xlsx} resource file that ships with the package
-and returns its contents as a data frame.  Each row represents a standard
-humanitarian objective.
+Reads the \code{reference_objectives.xlsx} resource file that ships with the
+package and returns its contents as a data frame.  Each row represents a
+standard humanitarian objective.
 }

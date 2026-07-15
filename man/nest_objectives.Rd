@@ -8,7 +8,7 @@ nest_objectives(objectives_flat)
 }
 \arguments{
 \item{objectives_flat}{List.  Flat list of objective named lists as produced
-by \code{create_objective()} or \code{create_objectives_from_df()}.}
+by \code{create_objectives_from_df()}.}
 }
 \value{
 Nested list suitable for assignment to \code{protocol$objectives}.

@@ -7,7 +7,9 @@
 create_survey_protocol(
   assessment_title = NULL,
   country_name = NULL,
-  month_year = NULL
+  month_year = NULL,
+  framework_type = "none",
+  sampling_frame = NULL
 )
 }
 \arguments{
@@ -16,6 +18,13 @@ create_survey_protocol(
 \item{country_name}{Character. Country where assessment takes place}
 
 \item{month_year}{Character. Month and year of data collection}
+
+\item{framework_type}{Character. Type of framework to initialise.  One of
+\code{"none"} (default) or \code{"ana"}.}
+
+\item{sampling_frame}{Optional data frame to initialise the
+\code{\link{SamplingFrame}} with.  When \code{NULL} (default), an empty
+\code{SamplingFrame} is created.}
 }
 \value{
 A new SurveyProtocol object

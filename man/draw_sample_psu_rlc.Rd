@@ -4,7 +4,7 @@
 \alias{draw_sample_psu_rlc}
 \title{Draw PSUs using random location cluster (RLC) sampling}
 \usage{
-draw_sample_psu_rlc(frame, sample_size, cluster_size = 3, seed = 42)
+draw_sample_psu_rlc(frame, sample_size, n_sites, cluster_size = 3, seed = 42)
 }
 \arguments{
 \item{frame}{Data frame. Eligible PSUs with a \code{population_size} column.}
@@ -12,15 +12,34 @@ draw_sample_psu_rlc(frame, sample_size, cluster_size = 3, seed = 42)
 \item{sample_size}{Integer. Total household sample size (used to derive
 \code{n_clusters = ceiling(sample_size / cluster_size)}).}
 
+\item{n_sites}{Integer. Number of sites (PSUs) to pre-select with PPS
+before the cluster allocation step.  Required.}
+
 \item{cluster_size}{Integer. Households per cluster (default \code{3}).}
 
 \item{seed}{Integer. Random seed for reproducibility (default \code{42}).}
 }
 \value{
 \code{frame} with \code{sampled_psu} and \code{allocated_sample}
-  columns added.  Unselected PSUs receive \code{NA}.
+  columns added.  PSUs outside the pre-selected sites receive \code{NA}.
+  For pre-selected PSUs that receive at least one cluster slot,
+  \code{sampled_psu} contains comma-separated cluster labels (numbers and/or
+  \code{"RC"}).  \code{allocated_sample} counts main (non-RC) cluster
+  households only.
 }
 \description{
-Uses PPS with replacement (via \code{pps::ppswr}) and a default cluster size
-of 3 households.  Requires a \code{population_size} column.
+First selects \code{n_sites} primary sampling units using PPS sampling
+(proportional-to-size, without replacement via \code{pps::ppswor}).  Then
+distributes \code{ceiling(sample_size / cluster_size)} cluster slots
+\strong{evenly} across those pre-selected sites (Hamilton largest-remainder
+method on equal weights, i.e. simple floor + remainder distribution).
+Requires a \code{population_size} column (needed for the PPS site-selection
+step) and \code{n_sites} must be provided.
+}
+\details{
+Reserve clusters (RC) are drawn at the cluster-allocation stage: 3 RC when
+\code{n_clusters <= 10}, 4 when \code{10 < n_clusters <= 20}, and 5 when
+\code{n_clusters > 20}.  Reserve slots are labelled \code{"RC"} and main
+slots are numbered sequentially, with numbering continuing over the RC
+positions.
 }

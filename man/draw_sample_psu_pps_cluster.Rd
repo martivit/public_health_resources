@@ -9,7 +9,7 @@ draw_sample_psu_pps_cluster(frame, n_clusters, cluster_size, seed = 42)
 \arguments{
 \item{frame}{Data frame. Eligible PSUs with a \code{population_size} column.}
 
-\item{n_clusters}{Integer. Number of clusters to allocate.}
+\item{n_clusters}{Integer. Number of main clusters to allocate.}
 
 \item{cluster_size}{Integer. Number of households per cluster.}
 
@@ -18,11 +18,24 @@ draw_sample_psu_pps_cluster(frame, n_clusters, cluster_size, seed = 42)
 \value{
 \code{frame} with \code{sampled_psu} and \code{allocated_sample}
   columns added.  For PSUs receiving multiple clusters,
-  \code{allocated_sample = n_clusters_at_psu * cluster_size}.
-  Unselected PSUs receive \code{NA}.
+  \code{sampled_psu} contains comma-separated cluster labels including any
+  \code{"RC"} markers.
+  \code{allocated_sample} counts main (non-RC) clusters only
+  (\code{= n_main_clusters_at_psu * cluster_size}).
+  Unselected PSUs receive \code{NA}.  Reserve-only PSUs receive
+  \code{sampled_psu = "RC"} and \code{allocated_sample = NA}.
 }
 \description{
 Selects \code{n_clusters} clusters proportional to population size using PPS
 with replacement (via \code{pps::ppswr}).  A single PSU may receive multiple
 clusters.  Requires a \code{population_size} column.
+}
+\details{
+In addition to the \code{n_clusters} main cluster slots, reserve clusters
+(RC) are drawn in the same pass: 3 RC when \code{n_clusters <= 10}, 4 when
+\code{10 < n_clusters <= 20}, and 5 when \code{n_clusters > 20}.  Reserve
+slots are labelled \code{"RC"} and main slots are numbered sequentially, with
+numbering continuing over the RC positions.  A PSU assigned both main and
+reserve clusters will have a comma-separated \code{sampled_psu} value such as
+\code{"3, RC, 5"}.
 }

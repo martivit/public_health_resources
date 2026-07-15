@@ -15,5 +15,6 @@ create_synthetic_frame(strata_config, seed = NULL)
 Data frame. A synthetic sampling frame
 }
 \description{
-Create a synthetic sampling frame for testing
+Creates a synthetic sampling frame with the standard column structure:
+\code{stratum}, \code{psu}, \code{population_size}, \code{inclusion}.
 }

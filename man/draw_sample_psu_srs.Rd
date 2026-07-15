@@ -2,14 +2,14 @@
 % Please edit documentation in R/utils_sample_drawing.R
 \name{draw_sample_psu_srs}
 \alias{draw_sample_psu_srs}
-\title{Sample Drawing Functions}
+\title{Draw PSUs using simple random sampling (SRS)}
 \usage{
 draw_sample_psu_srs(frame, n_psu, sample_size, seed = 42)
 }
 \arguments{
 \item{frame}{Data frame. Eligible PSUs (already filtered for inclusion).}
 
-\item{n_psu}{Integer. Number of PSUs to select.}
+\item{n_psu}{Integer. Number of main PSUs to select.}
 
 \item{sample_size}{Integer. Total household sample size to allocate.}
 
@@ -18,23 +18,19 @@ draw_sample_psu_srs(frame, n_psu, sample_size, seed = 42)
 \value{
 \code{frame} with \code{sampled_psu} and \code{allocated_sample}
   columns added.  Unselected PSUs receive \code{NA} in both columns.
+  Reserve PSUs receive \code{"RC"} in \code{sampled_psu} and \code{NA} in
+  \code{allocated_sample}.
 }
 \description{
-Functions for drawing samples from sampling frames using various methods.
-PSU-level sampling functions (prefixed \code{draw_sample_psu_}) operate on an
-already-filtered frame of eligible primary sampling units and return that
-frame augmented with two new columns:
-\itemize{
-  \item \code{sampled_psu} — sequential cluster number for selected PSUs;
-    \code{NA} for unselected PSUs.
-  \item \code{allocated_sample} — number of households allocated to that
-    PSU; \code{NA} for unselected PSUs.
-}
-The filtering of non-selected PSUs is performed by the caller (e.g.
-\code{Protocol$draw_sample()}) after the full annotated frame is returned.
-Draw PSUs using simple random sampling (SRS)
-
 Randomly selects \code{n_psu} primary sampling units with equal probability
 (without replacement) and divides \code{sample_size} households evenly
 across selected PSUs.  Population sizes are not required.
+}
+\details{
+In addition to the \code{n_psu} main PSUs, a number of reserve clusters
+(RC) are drawn in the same pass and marked \code{"RC"} in
+\code{sampled_psu}: 3 RC when \code{n_psu <= 10}, 4 when
+\code{10 < n_psu <= 20}, and 5 when \code{n_psu > 20}.  Sequential
+numbering continues across the RC positions (e.g. \code{1}, \code{2},
+\code{"RC"}, \code{3}).
 }

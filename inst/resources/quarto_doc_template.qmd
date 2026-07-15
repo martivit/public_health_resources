@@ -1,0 +1,163 @@
+---
+execute:
+  echo: false
+  warning: false
+  message: false
+format:
+  docx:
+    reference-doc: reach_tor_template.docx
+    toc: false
+    toc-depth: 3
+    number-sections: true
+---
+
+```{r}
+library(flextable)
+
+tbl <- data.frame(
+  text = c(
+    "Research Terms of Reference",
+    "[Research Cycle title]",
+    "[Research Cycle ID]",
+    "[Country]",
+    "[Release date]",
+    "[Version Number]"
+  )
+)
+
+ft <- flextable(tbl)
+
+ft <- delete_part(ft, part = "header")
+
+# Page-width single column
+ft <- width(ft, j = 1, width = 6.5)
+
+# Font
+ft <- font(ft, fontname = "Arial Narrow", part = "body")
+
+# Text size
+ft <- fontsize(ft, i = 1, size = 20, part = "body")
+ft <- fontsize(ft, i = 2:4, size = 14, part = "body")
+ft <- fontsize(ft, i = 5:6, size = 14, part = "body")
+
+# Background colors
+ft <- bg(ft, i = 1:4, j = 1, bg = "#EE5859", part = "body")
+ft <- bg(ft, i = 5:6, j = 1, bg = "#58585A", part = "body")
+
+# White text
+ft <- color(ft, i = 1:6, j = 1, color = "white", part = "body")
+
+# Alignment
+ft <- align(ft, align = "left", part = "body")
+ft <- valign(ft, valign = "center", part = "body")
+
+# Line spacing
+ft <- line_spacing(ft, space = 1, part = "body")
+
+# Padding
+ft <- padding(
+  ft,
+  padding.left = 12,
+  padding.top = 1,
+  padding.bottom = 1,
+  part = "body"
+)
+
+# Optional emphasis
+ft <- bold(ft, i = 1, bold = TRUE, part = "body")
+
+# Remove all borders
+ft <- border_remove(ft)
+
+ft
+```
+
+# Executive Summary
+
+```{r}
+library(flextable)
+
+tbl <- data.frame(
+  left = c(
+    "Country of intervention",
+    "Type of Emergency",
+    "Type of Crisis",
+    "Mandating Body/ Agency",
+    "IMPACT Project Code\n\nDrafting tips: The IMPACT Project Code is NOT the same as the Research Cycle ID, but instead linked to the grant(s) funding the research cycle. It is also different from the ACTED Project Code.",
+    "Overall Research Timeframe (from research design to final outputs / M&E)",
+    "Research Timeframe\nAdd planned deadlines (for first cycle if more than 1)",
+    "",
+    "",
+    "",
+    "",
+    "Number of assessments",
+    ""
+  ),
+  middle = c(
+    "[Country]",
+    "\u2610  Natural hazard",
+    "\u2610  Sudden onset",
+    "[Specify name(s) here]",
+    "[Eg. 99BSX]",
+    "_ _/_ _/_ _ _ _ to _ _/_ _/_ _ _ _",
+    "1. Pilot/ training: _ _/_ _/_ _ _ _",
+    "2. Start collect  data: _ _/_ _/_ _ _ _",
+    "3. Data collected: _ _/_ _/_ _ _ _",
+    "4. Data analysed: _ _/_ _/_ _ _ _",
+    "5. Data sent for validation: _ _/_ _/_ _ _ _",
+    "\u2610  Single assessment (one cycle)",
+    "\u2610  Multi assessment (more than one cycle)\n[Describe here the frequency of the cycle]"
+  ),
+  right = c(
+    "",
+    "\u2610  Conflict     \u2610  Other (specify)",
+    "\u2610  Slow onset     \u2610  Protracted",
+    "",
+    "",
+    "",
+    "6. Preliminary presentation: _ _/_ _/_ _ _ _",
+    "7. Outputs sent for validation: _ _/_ _/_ _ _ _",
+    "8. Outputs published: _ _/_ _/_ _ _ _",
+    "9. Final presentation: _ _/_ _/_ _ _ _",
+    "",
+    "",
+    ""
+  ),
+  stringsAsFactors = FALSE
+)
+
+ft <- flextable(tbl)
+
+ft <- delete_part(ft, part = "header")
+
+ft <- merge_at(ft, i = 1, j = 2:3, part = "body")
+ft <- merge_at(ft, i = 4, j = 2:3, part = "body")
+ft <- merge_at(ft, i = 5, j = 2:3, part = "body")
+ft <- merge_at(ft, i = 6, j = 2:3, part = "body")
+ft <- merge_at(ft, i = 12, j = 2:3, part = "body")
+ft <- merge_at(ft, i = 13, j = 2:3, part = "body")
+
+ft <- merge_at(ft, i = 7:11, j = 1, part = "body")
+ft <- merge_at(ft, i = 12:13, j = 1, part = "body")
+
+ft <- width(ft, j = 1, width = 2.4)
+ft <- width(ft, j = 2, width = 2.2)
+ft <- width(ft, j = 3, width = 2.2)
+
+ft <- font(ft, fontname = "Arial Narrow", part = "body")
+ft <- fontsize(ft, size = 9, part = "body")
+
+ft <- bold(ft, j = 1, bold = TRUE, part = "body")
+
+ft <- align(ft, align = "left", part = "body")
+ft <- valign(ft, valign = "top", part = "body")
+
+ft <- padding(ft, padding = 4, part = "body")
+ft <- line_spacing(ft, space = 0.9, part = "body")
+
+ft <- border_outer(ft, part = "all")
+ft <- border_inner_h(ft, part = "body")
+ft <- border_inner_v(ft, part = "body")
+
+ft
+```

@@ -1,0 +1,18 @@
+{
+  "sandbox": {
+    "enabled": false
+  },
+  "permission": {
+    "edit": {
+      "*.md": "allow",
+      "*": "allow"
+    },
+    "read": {
+      "*.md": "allow"
+    },
+    "bash": {
+      "cd *": "allow",
+      "Rscript *": "allow"
+    }
+  }
+}

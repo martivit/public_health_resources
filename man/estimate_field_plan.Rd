@@ -19,37 +19,43 @@ estimate_field_plan(
 }
 \arguments{
 \item{sample_design}{Character. Sampling design: \code{"simple_random"} or
-  \code{"cluster"}.}
+\code{"cluster"}.}
 
 \item{number_of_teams}{Integer. Number of simultaneous data-collection teams
-  (must be positive).}
+(must be positive).}
 
 \item{enumerators_per_team}{Integer. Number of enumerators in each team
-  (must be positive).}
+(must be positive).}
 
 \item{number_of_psu_per_team_per_day}{Numeric or \code{NULL}. Number of PSUs
-  (clusters) each team can complete in a day; required and must be positive
-  when \code{sample_design = "cluster"} (default = \code{NULL}).}
+(clusters) each team can complete in a day; required and must be positive
+when \code{sample_design = "cluster"} (default = \code{NULL}).}
 
-\item{start_time}{Character or \code{Date}. Start date of data collection;
-  character strings are coerced via \code{as.Date()}.}
+\item{start_time}{Character, numeric, or \code{Date}. Daily work start time
+or start date.  Accepts \code{"HH:MM"} 24-hour strings (e.g.\
+\code{"08:00"}) representing the daily work start time, in which case the
+working window is computed as the difference in minutes between
+\code{start_time} and \code{end_time} on a single day.  Also accepts
+\code{Date} objects or \code{"YYYY-MM-DD"} character strings for
+multi-day campaign spans (legacy behaviour).  Numeric values are treated
+as minutes since midnight.}
 
-\item{end_time}{Character or \code{Date}. End date of data collection;
-  character strings are coerced via \code{as.Date()}.  Must be after
-  \code{start_time}.}
+\item{end_time}{Character, numeric, or \code{Date}. Daily work end time or
+end date; must use the same format as \code{start_time}.  Must yield a
+larger minute-count (or later date) than \code{start_time}.}
 
 \item{average_interview_time}{Numeric. Average time to complete one
-  interview, in minutes (must be positive).}
+interview, in minutes (must be positive).}
 
 \item{average_travel_time}{Numeric. Average travel time between clusters
-  (or households) per day, in minutes (must be non-negative).}
+(or households) per day, in minutes (must be non-negative).}
 
 \item{average_rest_time}{Numeric. Average break/rest time per day, in
-  minutes (must be non-negative).}
+minutes (must be non-negative).}
 
 \item{total_sample_size}{Integer or \code{NULL}. Total sample size needed
-  (used to compute \code{num_days} and, for cluster designs,
-  \code{num_psu_needed}).}
+(used to compute \code{num_days} and, for cluster designs,
+\code{num_psu_needed}).}
 }
 \value{
 A named list with four elements:

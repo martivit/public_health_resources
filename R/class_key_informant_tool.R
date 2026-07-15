@@ -24,6 +24,7 @@
 KeyInformantTool <- R6::R6Class(
 "KeyInformantTool",
 inherit = Tool,
+cloneable = TRUE,
 public = list(
 
   #' @description
@@ -88,22 +89,6 @@ public = list(
     }
     private$.kii_type <- kii_type
     private$.touch()
-    invisible(self)
-  },
-
-  #' @description
-  #' Print summary of the KII tool.
-  print = function() {
-    cat("XLSForm Key Informant Tool\n")
-    cat("----------------------------\n")
-    cat("Name:", private$.name, "\n")
-    cat("Type:", private$.tool_type, "\n")
-    cat("KII Type:", private$.kii_type, "\n")
-    cat("Created:", format(private$.created_at, "%Y-%m-%d %H:%M:%S"), "\n")
-    cat("Modified:", format(private$.modified_at, "%Y-%m-%d %H:%M:%S"), "\n")
-    cat("Questions:", nrow(self$survey), "\n")
-    cat("Choice Lists:", length(unique(self$choices$list_name)), "\n")
-    cat("Selected Indicators:", length(private$.selected_indicators), "\n")
     invisible(self)
   }
 ),

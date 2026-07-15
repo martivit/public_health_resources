@@ -7,7 +7,6 @@
 generate_protocol_report(
   protocol,
   output_file = "protocol_report.docx",
-  reference_docx = NULL,
   open = FALSE
 )
 }
@@ -18,9 +17,6 @@ object.}
 \item{output_file}{Character. Output \code{.docx} file path.  Defaults to
 \code{"protocol_report.docx"} in the current working directory.}
 
-\item{reference_docx}{Character or \code{NULL}. Path to a Word style
-reference document.  Uses the package-bundled template by default.}
-
 \item{open}{Logical. Whether to open the file after writing.  Defaults to
 \code{FALSE}.}
 }
@@ -28,7 +24,7 @@ reference document.  Uses the package-bundled template by default.}
 Invisibly returns the protocol object.
 }
 \description{
-Convenience wrapper around \code{Protocol$generate_report()} and
-\code{SurveyProtocol$generate_report()}.  Dispatches to the correct method
+Convenience wrapper around \code{Protocol$generate_doc()} and
+\code{SurveyProtocol$generate_doc()}.  Dispatches to the correct method
 based on the class of \code{protocol}.
 }

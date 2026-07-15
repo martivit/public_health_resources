@@ -34,12 +34,15 @@ to add linked datasets.
 * `health`: HealthIndividualData - health assessments
 
 When `standardize()` is called, the `pre_standardize()` hook will:
-1. Check linked datasets and ensure they are standardized
-2. Merge household-level variables to all linked datasets (if available):
+1. Generate survey weights via `generate_weights()` when a `SamplingFrame` is
+   stored in `self$sampling_frame` and a stratum role is mapped in `variable_map`
+   (skipped silently if either is unavailable).
+2. Check linked datasets and ensure they are standardized
+3. Merge household-level variables to all linked datasets (if available):
    `enum_id`, `device_id`, `date_survey`, `weight`, `stratum`, `cluster_id`,
    `site`, `admin1`, `admin2`, `admin3`, `admin4`. Existing variables in
    linked datasets are overwritten with household values.
-3. Aggregate data from linked datasets and add columns to household data with
+4. Aggregate data from linked datasets and add columns to household data with
    a naming convention like `linked_<name>_<column>` to show the source
 
 **Supported aggregations:**
@@ -119,10 +122,28 @@ Priority order depends on requested stage:
 
 
 
-This hook performs three key operations:
-1. Validates that linked datasets are standardized
-2. Merges household-level variables to linked datasets (enum_id, device_id, date_survey, weight, stratum, cluster_id, etc.)
-3. Aggregates data from linked datasets back to household level with prefix "linked_<name>_<column>"
+Column selection priority for writing weights:
+\enumerate{
+  \item If \code{variable_map$weight} is already set and that column exists
+    in the dataset, the existing column is overwritten.
+  \item Otherwise the weights are written to a new column called
+    \code{"survey_weight"} and \code{variable_map$weight} is updated
+    accordingly.
+}
+
+Rows whose stratum value is \code{NA}, empty, or absent from the
+\code{SamplingFrame} receive \code{NA} weights and a warning is issued.
+Pre-Standardize Hook for Household Data
+
+
+
+This hook performs four key operations:
+1. Generates survey weights via \code{generate_weights()} when a
+   \code{SamplingFrame} is stored in \code{self$sampling_frame} and a
+   stratum role is mapped in \code{variable_map}; skipped silently otherwise.
+2. Validates that linked datasets are standardized
+3. Merges household-level variables to linked datasets (enum_id, device_id, date_survey, weight, stratum, cluster_id, etc.)
+4. Aggregates data from linked datasets back to household level with prefix "linked_<name>_<column>"
 
 Supported aggregations vary by dataset type (see class documentation for details)
 Generate Cleaning Log for Household and Linked Datasets
@@ -187,18 +208,21 @@ datasets are overwritten with household values. Uses fallback logic to find avai
 \keyword{Dataset}
 \keyword{Datasets}
 \keyword{Deaths}
+\keyword{Frame}
+\keyword{Generate}
 \keyword{Health}
-\keyword{Hook}
 \keyword{Household}
 \keyword{Linked}
 \keyword{Merge}
 \keyword{Nutrition}
-\keyword{Pre-Standardize}
 \keyword{Roster}
+\keyword{Sampling}
+\keyword{Survey}
 \keyword{Variables}
 \keyword{Water}
+\keyword{Weights}
 \keyword{Women}
-\keyword{for}
+\keyword{a}
 \keyword{from}
 \keyword{internal}
 \keyword{to}
@@ -211,6 +235,9 @@ datasets are overwritten with household values. Uses fallback logic to find avai
 \item{\code{survey_design}}{Survey design object (srvyr) for weighted analyses (created at clean stage)}
 
 \item{\code{optional_columns}}{Character vector of optional columns commonly present in household data}
+
+\item{\code{sampling_frame}}{Optional \code{\link{SamplingFrame}} object used by \code{generate_weights()}
+to derive survey weights from population totals per stratum.}
 }
 \if{html}{\out{</div>}}
 }
@@ -224,6 +251,7 @@ datasets are overwritten with household values. Uses fallback logic to find avai
 \item \href{#method-HouseholdData-post_validate}{\code{HouseholdData$post_validate()}}
 \item \href{#method-HouseholdData-add_linked_dataset}{\code{HouseholdData$add_linked_dataset()}}
 \item \href{#method-HouseholdData-..get_data_with_fallback}{\code{HouseholdData$..get_data_with_fallback()}}
+\item \href{#method-HouseholdData-generate_weights}{\code{HouseholdData$generate_weights()}}
 \item \href{#method-HouseholdData-pre_standardize}{\code{HouseholdData$pre_standardize()}}
 \item \href{#method-HouseholdData-generate_cleaning_log}{\code{HouseholdData$generate_cleaning_log()}}
 \item \href{#method-HouseholdData-clean}{\code{HouseholdData$clean()}}
@@ -444,10 +472,53 @@ List with 'data' (data frame) and 'stage' (character) elements, or NULL if no da
 }
 }
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-HouseholdData-generate_weights"></a>}}
+\if{latex}{\out{\hypertarget{method-HouseholdData-generate_weights}{}}}
+\subsection{Method \code{generate_weights()}}{
+Computes survey weights for each record by matching stratum values in the
+dataset against population totals held in a \code{\link{SamplingFrame}}.
+The weight for every row in stratum \eqn{s} is:
+\deqn{w_s = \frac{N_s / N}{n_s / n}}
+where \eqn{N_s} is the total population of stratum \eqn{s} (sum of
+\code{population_size} in the \code{SamplingFrame}), \eqn{N} is the grand
+total population across all strata, \eqn{n_s} is the number of surveyed
+households in stratum \eqn{s}, and \eqn{n} is the total sample size.
+This is the standard design weight for stratified sampling (proportion of
+population in the stratum divided by the proportion of the sample in the
+stratum).
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{HouseholdData$generate_weights(
+  sampling_frame = NULL,
+  stage = c("standardized", "clean", "raw")
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{sampling_frame}}{Optional \code{\link{SamplingFrame}} object. When
+\code{NULL} (default), the method falls back to \code{self$sampling_frame}.
+If neither is available the method is skipped with an informational message.}
+
+\item{\code{stage}}{Character. Which data stage to add the weight column to.
+One of \code{"standardized"} (default), \code{"clean"}, or \code{"raw"}.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+Invisible \code{self} (for method chaining). Modifies the dataset
+  in place by adding or overwriting the mapped weight column and, if no
+  weight column was previously mapped, registers \code{"survey_weight"} as
+  the \code{weight} role in \code{variable_map}.
+}
+}
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-HouseholdData-pre_standardize"></a>}}
 \if{latex}{\out{\hypertarget{method-HouseholdData-pre_standardize}{}}}
 \subsection{Method \code{pre_standardize()}}{
-Hook method called before standardization begins. Checks linked datasets and aggregates data from them.
+Hook method called before standardization begins. Generates survey weights
+(if a SamplingFrame and stratum mapping are available), then checks linked
+datasets and aggregates data from them.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{HouseholdData$pre_standardize(stage = c("clean", "standardized", "raw"))}\if{html}{\out{</div>}}
 }

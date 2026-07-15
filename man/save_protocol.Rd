@@ -12,5 +12,6 @@ save_protocol(protocol, file)
 \item{file}{Character. File path for saving}
 }
 \description{
-Save protocol to RDS file
+Saves the \code{Protocol} or \code{SurveyProtocol} object directly to an
+RDS file.  Use \code{\link{load_protocol}} to restore it.
 }

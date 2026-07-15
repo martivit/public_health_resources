@@ -1,0 +1,25 @@
+---
+title: "{{assessment_title}}"
+subtitle: "{{country_name}}"
+author: "{{mandating_body}}"
+date: "{{month_year}}"
+format:
+  pptx:
+    reference-doc: {{reference_doc}}
+---
+
+# Assessment Overview
+
+- **Country:** {{country_name}}
+- **Type of Emergency:** {{type_of_emergency}}
+- **Type of Crisis:** {{type_of_crisis}}
+
+# General Objective
+
+{{general_objective}}
+
+# Timeline
+
+Key milestones for the assessment
+
+{{content}}

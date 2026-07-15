@@ -8,6 +8,7 @@ phr_translations <- list(
     export_tor = "Export ToR",
     validation_passed = "Validation checks passed (dummy mode).",
     tor_export_success = "ToR export simulated successfully \u2705",
+    "To assess the severity of the public health outcomes and identify initial public health priorities for response to mitigate excess morbidity, malnutrition, and mortality." = "To assess the severity of the public health outcomes and identify initial public health priorities for response to mitigate excess morbidity, malnutrition, and mortality.",
     # ---- auto-title static parts ----
     "Distribution of"            = "Distribution of",
     "Cumulative Distribution of" = "Cumulative Distribution of",
@@ -34,6 +35,7 @@ phr_translations <- list(
     export_tor = "Exporter les TdR",
     validation_passed = "V\u00e9rifications termin\u00e9es avec succ\u00e8s (mode fictif).",
     tor_export_success = "Exportation simul\u00e9e des TdR r\u00e9ussie \u2705",
+    "To assess the severity of the public health outcomes and identify initial public health priorities for response to mitigate excess morbidity, malnutrition, and mortality." = "\u00c9valuer la s\u00e9v\u00e9rit\u00e9 des r\u00e9sultats de sant\u00e9 publique et identifier les priorit\u00e9s initiales de sant\u00e9 publique pour la r\u00e9ponse afin d'atténuer l'excès de morbidit\u00e9, de malnutrition et de mortalit\u00e9.",
     # ---- auto-title static parts ----
     "Distribution of"            = "Distribution de",
     "Cumulative Distribution of" = "Distribution cumulative de",

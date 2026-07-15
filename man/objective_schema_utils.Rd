@@ -5,7 +5,9 @@
 \title{Objective Schema Utility Functions}
 \description{
 Functions for loading and validating the objective schema used in Protocol
-planning.  The default schema is loaded from the bundled
-\code{reference.xlsx} resource file, which lists standard humanitarian
-objectives across sectors (General, Health, FSL, WASH, Nutrition, Shelter).
+planning.  The default objectives schema is loaded from the bundled
+\code{reference_objectives.xlsx} resource file, and the indicator bank is
+loaded from \code{reference_indicator_bank.xlsx}.  Together these files list
+standard humanitarian objectives and their associated indicators across
+sectors (General, Health, FSL, WASH, Nutrition, Shelter).
 }
