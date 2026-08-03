@@ -23,127 +23,120 @@ Required columns:
 }
 \keyword{internal}
 \section{Super class}{
-\code{\link[phr:Log]{phr::Log}} -> \code{DeletionLog}
+\code{Log} -> \code{DeletionLog}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-DeletionLog-new}{\code{DeletionLog$new()}}
-\item \href{#method-DeletionLog-add_deletion}{\code{DeletionLog$add_deletion()}}
-\item \href{#method-DeletionLog-validate}{\code{DeletionLog$validate()}}
-\item \href{#method-DeletionLog-post_validate}{\code{DeletionLog$post_validate()}}
-\item \href{#method-DeletionLog-clone}{\code{DeletionLog$clone()}}
+  \itemize{
+    \item \href{#method-DeletionLog-initialize}{\code{DeletionLog$new()}}
+    \item \href{#method-DeletionLog-add_deletion}{\code{DeletionLog$add_deletion()}}
+    \item \href{#method-DeletionLog-validate}{\code{DeletionLog$validate()}}
+    \item \href{#method-DeletionLog-post_validate}{\code{DeletionLog$post_validate()}}
+    \item \href{#method-DeletionLog-clone}{\code{DeletionLog$clone()}}
+  }
 }
-}
-\if{html}{\out{
-<details><summary>Inherited methods</summary>
+\if{html}{\out{<details><summary>Inherited methods</summary>
 <ul>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Log" data-id="append_entry"><a href='../../phr/html/Log.html#method-Log-append_entry'><code>phr::Log$append_entry()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Log" data-id="clear"><a href='../../phr/html/Log.html#method-Log-clear'><code>phr::Log$clear()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Log" data-id="export"><a href='../../phr/html/Log.html#method-Log-export'><code>phr::Log$export()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Log" data-id="get_hash"><a href='../../phr/html/Log.html#method-Log-get_hash'><code>phr::Log$get_hash()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Log" data-id="pre_validate"><a href='../../phr/html/Log.html#method-Log-pre_validate'><code>phr::Log$pre_validate()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Log" data-id="set_schema"><a href='../../phr/html/Log.html#method-Log-set_schema'><code>phr::Log$set_schema()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Log" data-id="summary"><a href='../../phr/html/Log.html#method-Log-summary'><code>phr::Log$summary()</code></a></span></li>
+  <li><code>Log$append_entry()</code></li>
+  <li><code>Log$clear()</code></li>
+  <li><code>Log$export()</code></li>
+  <li><code>Log$get_hash()</code></li>
+  <li><code>Log$pre_validate()</code></li>
+  <li><code>Log$set_schema()</code></li>
+  <li><code>Log$summary()</code></li>
 </ul>
-</details>
-}}
+</details>}}
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-DeletionLog-new"></a>}}
-\if{latex}{\out{\hypertarget{method-DeletionLog-new}{}}}
-\subsection{Method \code{new()}}{
-Creates a new DeletionLog with default schema and required columns
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DeletionLog$new(
+\if{html}{\out{<a id="method-DeletionLog-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-DeletionLog-initialize}{}}}
+\subsection{\code{DeletionLog$new()}}{
+  Creates a new DeletionLog with default schema and required columns
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DeletionLog$new(
   log_df = NULL,
   log_name = "Deletion Log",
   required_columns = NULL,
   schema = NULL
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{log_df}}{Optional data.frame of existing deletion log entries}
-
-\item{\code{log_name}}{Character name for the log (default: "Deletion Log")}
-
-\item{\code{required_columns}}{Character vector; defaults to standard deletion log columns}
-
-\item{\code{schema}}{List; defaults to standard deletion log schema (all character types)}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Details}{
-Sets up default schema with all character types for required columns.
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{log_df}}{Optional data.frame of existing deletion log entries}
+      \item{\code{log_name}}{Character name for the log (default: "Deletion Log")}
+      \item{\code{required_columns}}{Character vector; defaults to standard deletion log columns}
+      \item{\code{schema}}{List; defaults to standard deletion log schema (all character types)}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Details}{
+    Sets up default schema with all character types for required columns.
 Calls parent Log$initialize() to complete setup.
 Add Deletion Entry
+  }
+  \subsection{Returns}{
+    A new DeletionLog R6 object
+  }
 }
 
-\subsection{Returns}{
-A new DeletionLog R6 object
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DeletionLog-add_deletion"></a>}}
 \if{latex}{\out{\hypertarget{method-DeletionLog-add_deletion}{}}}
-\subsection{Method \code{add_deletion()}}{
-Helper method to add a deletion entry with required fields
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DeletionLog$add_deletion(
+\subsection{\code{DeletionLog$add_deletion()}}{
+  Helper method to add a deletion entry with required fields
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DeletionLog$add_deletion(
   uuid,
   enum_id = NA_character_,
   device_id = NA_character_,
   issue,
   feedback = NA_character_
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{uuid}}{Character; unique identifier of record to delete}
-
-\item{\code{enum_id}}{Character; enumerator identifier (optional, defaults to NA)}
-
-\item{\code{device_id}}{Character; device identifier (optional, defaults to NA)}
-
-\item{\code{issue}}{Character; description of why record should be deleted}
-
-\item{\code{feedback}}{Character; additional comments (optional, defaults to NA)}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Details}{
-Coerces all inputs to character and calls append_entry() to add to log.
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{uuid}}{Character; unique identifier of record to delete}
+      \item{\code{enum_id}}{Character; enumerator identifier (optional, defaults to NA)}
+      \item{\code{device_id}}{Character; device identifier (optional, defaults to NA)}
+      \item{\code{issue}}{Character; description of why record should be deleted}
+      \item{\code{feedback}}{Character; additional comments (optional, defaults to NA)}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Details}{
+    Coerces all inputs to character and calls append_entry() to add to log.
 Validate Deletion Log
+  }
+  \subsection{Returns}{
+    Invisible TRUE
+  }
 }
 
-\subsection{Returns}{
-Invisible TRUE
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DeletionLog-validate"></a>}}
 \if{latex}{\out{\hypertarget{method-DeletionLog-validate}{}}}
-\subsection{Method \code{validate()}}{
-Validates deletion log structure and optionally checks alignment with dataset
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DeletionLog$validate(check_against = NULL, stage = "clean")}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{check_against}}{Optional Data object to validate log entries against}
-
-\item{\code{stage}}{Character; data stage to validate against ("raw", "standardized", "clean")}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Details}{
-Validation steps:
+\subsection{\code{DeletionLog$validate()}}{
+  Validates deletion log structure and optionally checks alignment with dataset
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DeletionLog$validate(check_against = NULL, stage = "clean")}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{check_against}}{Optional Data object to validate log entries against}
+      \item{\code{stage}}{Character; data stage to validate against ("raw", "standardized", "clean")}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Details}{
+    Validation steps:
 1. Calls parent Log$validate() for basic structure and schema validation
 2. Checks that critical fields (uuid, issue) are non-empty
 3. If check_against provided, validates that:
@@ -152,57 +145,59 @@ Validation steps:
 
 Sets self$validated and self$issues based on results.
 Post-Validate Against Dataset
+  }
+  \subsection{Returns}{
+    Invisible list of validation issues (empty if valid)
+  }
 }
 
-\subsection{Returns}{
-Invisible list of validation issues (empty if valid)
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DeletionLog-post_validate"></a>}}
 \if{latex}{\out{\hypertarget{method-DeletionLog-post_validate}{}}}
-\subsection{Method \code{post_validate()}}{
-Validates deletion log entries against an actual dataset
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DeletionLog$post_validate(data_obj, stage = "clean")}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{data_obj}}{Data object containing the dataset to validate against}
-
-\item{\code{stage}}{Character; which data stage to use ("raw", "standardized", "clean")}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Details}{
-Checks for:
+\subsection{\code{DeletionLog$post_validate()}}{
+  Validates deletion log entries against an actual dataset
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DeletionLog$post_validate(data_obj, stage = "clean")}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{data_obj}}{Data object containing the dataset to validate against}
+      \item{\code{stage}}{Character; which data stage to use ("raw", "standardized", "clean")}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Details}{
+    Checks for:
 * Missing UUIDs: UUIDs in deletion log that don't exist in dataset
 
 Helps identify if the deletion log references records that are already removed
 or never existed. Issues are returned as warnings for review.
+  }
+  \subsection{Returns}{
+    List of validation issues (empty list if no issues)
+  }
 }
 
-\subsection{Returns}{
-List of validation issues (empty list if no issues)
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DeletionLog-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-DeletionLog-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DeletionLog$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{DeletionLog$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DeletionLog$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

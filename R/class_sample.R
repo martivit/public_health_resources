@@ -71,6 +71,55 @@ Sample <- R6::R6Class(
     },
 
     #' @description Add a stratum row to the sample table.
+    #' @param stratum_id Character or numeric identifier for the stratum.
+    #' @param stratum_name Character name for the stratum.
+    #' @param population_size Numeric population size (default: NA).
+    #' @param total_households Numeric total number of households (default: NA).
+    #' @param sampling_method_site Character site sampling method (required).
+    #' @param sampling_method_hh Character household sampling method.
+    #' @param n_psu Numeric number of primary sampling units (default: NA).
+    #' @param cluster_size Numeric cluster size (default: NA).
+    #' @param n_sites Numeric number of sites (default: NA).
+    #' @param pop_indicator Character population indicator (default: "General").
+    #' @param pop_expected_prevalence Numeric expected prevalence for population (default: NA).
+    #' @param pop_precision Numeric precision for population (default: NA).
+    #' @param pop_nonresponse Numeric nonresponse rate for population (default: NA).
+    #' @param pop_design_effect Numeric design effect for population (default: NA).
+    #' @param pop_fpc Logical finite population correction for population (default: FALSE).
+    #' @param General_HH_Sample_Size Numeric general household sample size (default: NA).
+    #' @param ind_indicator Character indicator name for individual survey (default: NA).
+    #' @param ind_expected_prevalence Numeric expected prevalence for individual survey (default: NA).
+    #' @param ind_precision Numeric precision for individual survey (default: NA).
+    #' @param ind_nonresponse Numeric nonresponse rate for individual survey (default: NA).
+    #' @param ind_design_effect Numeric design effect for individual survey (default: NA).
+    #' @param ind_avg_hh_size Numeric average household size for individual survey (default: NA).
+    #' @param ind_subpop_prop Numeric subpopulation proportion for individual survey (default: NA).
+    #' @param ind_fpc Logical finite population correction for individual survey (default: FALSE).
+    #' @param Ind_Sample_Size Numeric individual sample size (default: NA).
+    #' @param Ind_HH_Sample_Size Numeric individual household sample size (default: NA).
+    #' @param rate_indicator Character indicator name for rate survey (default: NA).
+    #' @param rate_expected_rate Numeric expected rate for rate survey (default: NA).
+    #' @param rate_precision Numeric precision for rate survey (default: NA).
+    #' @param rate_nonresponse Numeric nonresponse rate for rate survey (default: NA).
+    #' @param rate_design_effect Numeric design effect for rate survey (default: NA).
+    #' @param rate_recall_days Numeric recall period in days for rate survey (default: NA).
+    #' @param rate_avg_hh_size Numeric average household size for rate survey (default: NA).
+    #' @param rate_fpc Logical finite population correction for rate survey (default: FALSE).
+    #' @param Rate_Ind_Sample_Size Numeric rate individual sample size (default: NA).
+    #' @param Rate_PT_Sample_Size Numeric rate person-time sample size (default: NA).
+    #' @param Rate_HH_Sample_Size Numeric rate household sample size (default: NA).
+    #' @param teams Numeric number of data collection teams (default: NA).
+    #' @param avg_interview_time Numeric average interview time (default: NA).
+    #' @param clusters_per_day Numeric clusters per day (default: NA).
+    #' @param enumerators_per_team Numeric enumerators per team (default: NA).
+    #' @param avg_rest_time Numeric average rest time (default: NA).
+    #' @param avg_travel_time Numeric average travel time (default: NA).
+    #' @param start_time Character start time (default: NA).
+    #' @param end_time Character end time (default: NA).
+    #' @param design_effect Numeric design effect (legacy parameter, default: NULL).
+    #' @param precision Numeric precision (legacy parameter, default: NULL).
+    #' @param confidence_level Numeric confidence level (legacy parameter, default: NULL).
+    #' @return Invisibly returns \code{self} for method chaining.
     add_stratum = function(
       stratum_id,
       stratum_name,
@@ -309,6 +358,7 @@ Sample <- R6::R6Class(
     #' @description Return unique sampling methods in the sample table.
 
     #' @description Return unique sampling methods in the sample table.
+    #' @param type Character specifying method type: "site" or "household" (default: "site").
     #' @return Character vector of unique sampling methods.
     get_sampling_methods = function(type = c("site", "household")) {
       type <- match.arg(type)
@@ -350,6 +400,8 @@ Sample <- R6::R6Class(
   private = list(
     #' @description Update modified timestamp.
     #' @return Invisibly returns NULL.
+    #' @keywords internal
+    #' @noRd
     ..touch = function() {
       self$metadata$modified_datetime <- Sys.time()
       invisible(NULL)
@@ -358,6 +410,8 @@ Sample <- R6::R6Class(
     #' @description Resolve the stratum name column from a sample table.
     #' @param st Data frame sample table.
     #' @return Character scalar naming the column, or NULL if not found.
+    #' @keywords internal
+    #' @noRd
     ..resolve_stratum_name_col = function(st) {
       if ("stratum_name" %in% names(st)) {
         "stratum_name"

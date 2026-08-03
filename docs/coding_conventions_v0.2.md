@@ -6,7 +6,7 @@
 
 This document defines the **normative coding standard** for a family of R packages. Unless an approved exception is documented, contributors **MUST** follow these conventions.
 
-The key words **MUST**, **SHOULD**, and **MAY** are used as defined in RFC 2119.
+The key words **MUST**, **MUST NOT**, **REQUIRED**, **SHALL**, **SHALL NOT**, **SHOULD**, **SHOULD NOT**, **RECOMMENDED**, **MAY**, and **OPTIONAL** in this document are to be interpreted as described in RFC 2119. These imperatives MUST be used sparingly and only where required for interoperability, safety, or to prevent harmful behavior.
 
 ------------------------------------------------------------------------
 
@@ -75,6 +75,7 @@ File names SHOULD use snake_case and reflect the primary responsibility of the c
 
 Documentation is part of the public contract of a package and MUST be maintained alongside code changes. All exported functions, R6 classes, public methods, exported datasets, and other user-facing objects MUST be documented using `roxygen2`. Documentation should explain purpose, behavior, inputs, outputs, assumptions, and side effects. Documentation should describe intent and expected usage rather than simply restating implementation details or code structure.
 
+**Changes to documented public API behavior MUST be accompanied by an appropriate Semantic Versioning increment.**
 
 ### Public Functions
 
@@ -135,6 +136,7 @@ Use appropriate directives such as:
 
 Dependencies SHOULD be imported as narrowly as possible, favoring `@importFrom` over broad package imports to maintain namespace clarity and reduce unnecessary coupling.
 
+For internal GitHub‑based dependencies declared via Remotes:, packages MUST pin to a specific tag or commit rather than an unversioned branch, except during active co‑development.
 
 ### Documentation Quality
 
@@ -218,6 +220,8 @@ Parent classes define the common contract and lifecycle for a family of related 
 
 Subclasses extend the parent contract to implement domain-specific behavior. They SHOULD contain specialized validation rules, schema requirements, defaults, calculations, transformations, and other logic that is unique to a particular dataset, workflow, or subject area. If a piece of logic would not reasonably apply to other implementations of the parent class, it belongs in the subclass. As a general rule, place shared behavior in the highest appropriate parent class and reserve subclasses for specialized behavior that customizes or extends the common workflow.
 
+**Backward‑incompatible changes to public R6 methods, required fields, or lifecycle contracts MUST trigger a MAJOR version increment under Semantic Versioning.**
+
 ## Extension Hooks
 
 Subclasses SHOULD extend parent class behavior through hooks or class-specific methods rather than replacing core parent workflows. Authoritative lifecycle methods such as `validate()`, `standardize()`, `clean()`, and `generate_doc()` should remain responsible for defining execution order, enforcing critical guards, managing state transitions, and ensuring consistent finalization. This preserves a common workflow across implementations while allowing controlled customization where needed.
@@ -298,6 +302,14 @@ Package dependencies should follow these principles:
 - Explicitly namespace non-base package functions (e.g., dplyr::mutate()) to improve code clarity and reduce namespace conflicts.
 - Remove unused dependencies promptly and avoid introducing dependencies for functionality that can be reasonably implemented within the package.
 - Evaluate new dependencies for maintenance status, licensing, community adoption, and long-term sustainability before adding them.
+- For internal GitHub Remotes dependencies, pin all references to a specific tag or commit (e.g., org/pkg@v1.2.0) rather than an unpinned branch.
+- Use unpinned Remotes only for active co‑development on shared feature branches, and bump pinned versions deliberately through reviewed changes so updates are explicit and auditable.
+
+**Version numbers MUST follow Semantic Versioning (MAJOR.MINOR.PATCH).  
+Backward‑incompatible changes to the public API MUST trigger a MAJOR version increment.  
+Backward‑compatible additions or deprecations MUST trigger a MINOR increment.  
+Backward‑compatible bug fixes MUST trigger a PATCH increment.  
+Released versions MUST NOT be modified; fixes MUST be released as new versions.**
 
 # 9. R Environment Management
 
@@ -323,6 +335,8 @@ CI pipelines should, at a minimum, verify the following:
 
 Conventions related to software architecture, object-oriented design, naming clarity, API design, and other decisions requiring engineering judgment should be evaluated through peer review rather than automated checks.
 
+**CI SHOULD verify that version increments comply with Semantic Versioning rules when public API changes are detected.**
+
 ------------------------------------------------------------------------
 
 # 11. Code Review Standard
@@ -337,3 +351,5 @@ Reviewers should verify that the following have been appropriately addressed:
 - Sufficient testing for new functionality, bug fixes, and edge cases.
 - Documentation of any changes to the public API and any approved exceptions to the coding standards.
 - Successful completion of all required CI quality checks prior to merge.
+
+**Reviewers MUST confirm that any change affecting the public API is accompanied by a correct Semantic Versioning increment.**

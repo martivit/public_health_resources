@@ -20,231 +20,239 @@ within a household.
 [Data], [HouseholdData]
 }
 \section{Super class}{
-\code{\link[phr:Data]{phr::Data}} -> \code{WaterContainerData}
+\code{\link[phr:Data]{Data}} -> \code{WaterContainerData}
 }
 \section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{household_link}}{Optional linkage back to a HouseholdData object}
+  \if{html}{\out{<div class="r6-fields">}}
+  \describe{
+    \item{\code{household_link}}{Optional linkage back to a HouseholdData object}
 
-\item{\code{optional_columns}}{Character vector of optional columns for water container data}
-}
-\if{html}{\out{</div>}}
+    \item{\code{optional_columns}}{Character vector of optional columns for water container data}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-WaterContainerData-new}{\code{WaterContainerData$new()}}
-\item \href{#method-WaterContainerData-default_schema}{\code{WaterContainerData$default_schema()}}
-\item \href{#method-WaterContainerData-default_indicator_schema}{\code{WaterContainerData$default_indicator_schema()}}
-\item \href{#method-WaterContainerData-default_dependency_schema}{\code{WaterContainerData$default_dependency_schema()}}
-\item \href{#method-WaterContainerData-post_validate}{\code{WaterContainerData$post_validate()}}
-\item \href{#method-WaterContainerData-generate_data_analytics}{\code{WaterContainerData$generate_data_analytics()}}
-\item \href{#method-WaterContainerData-clone}{\code{WaterContainerData$clone()}}
+  \itemize{
+    \item \href{#method-WaterContainerData-initialize}{\code{WaterContainerData$new()}}
+    \item \href{#method-WaterContainerData-default_schema}{\code{WaterContainerData$default_schema()}}
+    \item \href{#method-WaterContainerData-default_indicator_schema}{\code{WaterContainerData$default_indicator_schema()}}
+    \item \href{#method-WaterContainerData-default_dependency_schema}{\code{WaterContainerData$default_dependency_schema()}}
+    \item \href{#method-WaterContainerData-post_validate}{\code{WaterContainerData$post_validate()}}
+    \item \href{#method-WaterContainerData-generate_data_analytics}{\code{WaterContainerData$generate_data_analytics()}}
+    \item \href{#method-WaterContainerData-clone}{\code{WaterContainerData$clone()}}
+  }
 }
-}
-\if{html}{\out{
-<details><summary>Inherited methods</summary>
+\if{html}{\out{<details><summary>Inherited methods</summary>
 <ul>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id=".apply_cleaning_changes"><a href='../../phr/html/Data.html#method-Data-.apply_cleaning_changes'><code>phr::Data$.apply_cleaning_changes()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id=".extract_select_multiple_tokens"><a href='../../phr/html/Data.html#method-Data-.extract_select_multiple_tokens'><code>phr::Data$.extract_select_multiple_tokens()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id=".get_expression_parse_hint"><a href='../../phr/html/Data.html#method-Data-.get_expression_parse_hint'><code>phr::Data$.get_expression_parse_hint()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id=".is_select_multiple"><a href='../../phr/html/Data.html#method-Data-.is_select_multiple'><code>phr::Data$.is_select_multiple()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id=".translate_expression"><a href='../../phr/html/Data.html#method-Data-.translate_expression'><code>phr::Data$.translate_expression()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="add_linked_dataset"><a href='../../phr/html/Data.html#method-Data-add_linked_dataset'><code>phr::Data$add_linked_dataset()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="clean"><a href='../../phr/html/Data.html#method-Data-clean'><code>phr::Data$clean()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="data_diagnose"><a href='../../phr/html/Data.html#method-Data-data_diagnose'><code>phr::Data$data_diagnose()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="export_data"><a href='../../phr/html/Data.html#method-Data-export_data'><code>phr::Data$export_data()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="export_dependency_schema"><a href='../../phr/html/Data.html#method-Data-export_dependency_schema'><code>phr::Data$export_dependency_schema()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="export_indicator_schema"><a href='../../phr/html/Data.html#method-Data-export_indicator_schema'><code>phr::Data$export_indicator_schema()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="export_variable_schema"><a href='../../phr/html/Data.html#method-Data-export_variable_schema'><code>phr::Data$export_variable_schema()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="generate_cleaning_log"><a href='../../phr/html/Data.html#method-Data-generate_cleaning_log'><code>phr::Data$generate_cleaning_log()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="get_column_info"><a href='../../phr/html/Data.html#method-Data-get_column_info'><code>phr::Data$get_column_info()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="get_data"><a href='../../phr/html/Data.html#method-Data-get_data'><code>phr::Data$get_data()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="get_dependency_schema"><a href='../../phr/html/Data.html#method-Data-get_dependency_schema'><code>phr::Data$get_dependency_schema()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="get_flag_action_from_schema"><a href='../../phr/html/Data.html#method-Data-get_flag_action_from_schema'><code>phr::Data$get_flag_action_from_schema()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="get_flag_variables_from_schema"><a href='../../phr/html/Data.html#method-Data-get_flag_variables_from_schema'><code>phr::Data$get_flag_variables_from_schema()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="get_hash"><a href='../../phr/html/Data.html#method-Data-get_hash'><code>phr::Data$get_hash()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="get_indicator_schema"><a href='../../phr/html/Data.html#method-Data-get_indicator_schema'><code>phr::Data$get_indicator_schema()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="get_label"><a href='../../phr/html/Data.html#method-Data-get_label'><code>phr::Data$get_label()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="get_maps_as_df"><a href='../../phr/html/Data.html#method-Data-get_maps_as_df'><code>phr::Data$get_maps_as_df()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="get_value_labels"><a href='../../phr/html/Data.html#method-Data-get_value_labels'><code>phr::Data$get_value_labels()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="get_variable"><a href='../../phr/html/Data.html#method-Data-get_variable'><code>phr::Data$get_variable()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="get_variable_schema"><a href='../../phr/html/Data.html#method-Data-get_variable_schema'><code>phr::Data$get_variable_schema()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="import_cleaning_log"><a href='../../phr/html/Data.html#method-Data-import_cleaning_log'><code>phr::Data$import_cleaning_log()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="import_deletion_log"><a href='../../phr/html/Data.html#method-Data-import_deletion_log'><code>phr::Data$import_deletion_log()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="import_dependency_schema"><a href='../../phr/html/Data.html#method-Data-import_dependency_schema'><code>phr::Data$import_dependency_schema()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="import_indicator_schema"><a href='../../phr/html/Data.html#method-Data-import_indicator_schema'><code>phr::Data$import_indicator_schema()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="import_schema"><a href='../../phr/html/Data.html#method-Data-import_schema'><code>phr::Data$import_schema()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="import_variable_schema"><a href='../../phr/html/Data.html#method-Data-import_variable_schema'><code>phr::Data$import_variable_schema()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="load_object"><a href='../../phr/html/Data.html#method-Data-load_object'><code>phr::Data$load_object()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="map_schema_labels"><a href='../../phr/html/Data.html#method-Data-map_schema_labels'><code>phr::Data$map_schema_labels()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="map_schema_vars"><a href='../../phr/html/Data.html#method-Data-map_schema_vars'><code>phr::Data$map_schema_vars()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="post_standardize"><a href='../../phr/html/Data.html#method-Data-post_standardize'><code>phr::Data$post_standardize()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="post_standardize_domain"><a href='../../phr/html/Data.html#method-Data-post_standardize_domain'><code>phr::Data$post_standardize_domain()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="pre_standardize"><a href='../../phr/html/Data.html#method-Data-pre_standardize'><code>phr::Data$pre_standardize()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="pre_validate"><a href='../../phr/html/Data.html#method-Data-pre_validate'><code>phr::Data$pre_validate()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="repair_maps"><a href='../../phr/html/Data.html#method-Data-repair_maps'><code>phr::Data$repair_maps()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="resolve_column"><a href='../../phr/html/Data.html#method-Data-resolve_column'><code>phr::Data$resolve_column()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="run_quality_checks"><a href='../../phr/html/Data.html#method-Data-run_quality_checks'><code>phr::Data$run_quality_checks()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="save_object"><a href='../../phr/html/Data.html#method-Data-save_object'><code>phr::Data$save_object()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="set_dependency_schema"><a href='../../phr/html/Data.html#method-Data-set_dependency_schema'><code>phr::Data$set_dependency_schema()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="set_indicator_schema"><a href='../../phr/html/Data.html#method-Data-set_indicator_schema'><code>phr::Data$set_indicator_schema()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="set_label"><a href='../../phr/html/Data.html#method-Data-set_label'><code>phr::Data$set_label()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="set_value_labels"><a href='../../phr/html/Data.html#method-Data-set_value_labels'><code>phr::Data$set_value_labels()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="set_variable"><a href='../../phr/html/Data.html#method-Data-set_variable'><code>phr::Data$set_variable()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="set_variable_schema"><a href='../../phr/html/Data.html#method-Data-set_variable_schema'><code>phr::Data$set_variable_schema()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="standardize"><a href='../../phr/html/Data.html#method-Data-standardize'><code>phr::Data$standardize()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="summary"><a href='../../phr/html/Data.html#method-Data-summary'><code>phr::Data$summary()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="update_metadata"><a href='../../phr/html/Data.html#method-Data-update_metadata'><code>phr::Data$update_metadata()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="validate"><a href='../../phr/html/Data.html#method-Data-validate'><code>phr::Data$validate()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="validate_links"><a href='../../phr/html/Data.html#method-Data-validate_links'><code>phr::Data$validate_links()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id=".apply_cleaning_changes"><a href='../../phr/html/Data.html#method-Data-.apply_cleaning_changes'><code>Data$.apply_cleaning_changes()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id=".extract_select_multiple_tokens"><a href='../../phr/html/Data.html#method-Data-.extract_select_multiple_tokens'><code>Data$.extract_select_multiple_tokens()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id=".get_expression_parse_hint"><a href='../../phr/html/Data.html#method-Data-.get_expression_parse_hint'><code>Data$.get_expression_parse_hint()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id=".is_select_multiple"><a href='../../phr/html/Data.html#method-Data-.is_select_multiple'><code>Data$.is_select_multiple()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id=".translate_expression"><a href='../../phr/html/Data.html#method-Data-.translate_expression'><code>Data$.translate_expression()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="add_linked_dataset"><a href='../../phr/html/Data.html#method-Data-add_linked_dataset'><code>Data$add_linked_dataset()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="clean"><a href='../../phr/html/Data.html#method-Data-clean'><code>Data$clean()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="data_diagnose"><a href='../../phr/html/Data.html#method-Data-data_diagnose'><code>Data$data_diagnose()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="export_data"><a href='../../phr/html/Data.html#method-Data-export_data'><code>Data$export_data()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="export_dependency_schema"><a href='../../phr/html/Data.html#method-Data-export_dependency_schema'><code>Data$export_dependency_schema()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="export_indicator_schema"><a href='../../phr/html/Data.html#method-Data-export_indicator_schema'><code>Data$export_indicator_schema()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="export_variable_schema"><a href='../../phr/html/Data.html#method-Data-export_variable_schema'><code>Data$export_variable_schema()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="generate_cleaning_log"><a href='../../phr/html/Data.html#method-Data-generate_cleaning_log'><code>Data$generate_cleaning_log()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="get_column_info"><a href='../../phr/html/Data.html#method-Data-get_column_info'><code>Data$get_column_info()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="get_data"><a href='../../phr/html/Data.html#method-Data-get_data'><code>Data$get_data()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="get_dependency_schema"><a href='../../phr/html/Data.html#method-Data-get_dependency_schema'><code>Data$get_dependency_schema()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="get_flag_action_from_schema"><a href='../../phr/html/Data.html#method-Data-get_flag_action_from_schema'><code>Data$get_flag_action_from_schema()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="get_flag_variables_from_schema"><a href='../../phr/html/Data.html#method-Data-get_flag_variables_from_schema'><code>Data$get_flag_variables_from_schema()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="get_hash"><a href='../../phr/html/Data.html#method-Data-get_hash'><code>Data$get_hash()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="get_indicator_schema"><a href='../../phr/html/Data.html#method-Data-get_indicator_schema'><code>Data$get_indicator_schema()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="get_label"><a href='../../phr/html/Data.html#method-Data-get_label'><code>Data$get_label()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="get_maps_as_df"><a href='../../phr/html/Data.html#method-Data-get_maps_as_df'><code>Data$get_maps_as_df()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="get_value_labels"><a href='../../phr/html/Data.html#method-Data-get_value_labels'><code>Data$get_value_labels()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="get_variable"><a href='../../phr/html/Data.html#method-Data-get_variable'><code>Data$get_variable()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="get_variable_schema"><a href='../../phr/html/Data.html#method-Data-get_variable_schema'><code>Data$get_variable_schema()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="import_cleaning_log"><a href='../../phr/html/Data.html#method-Data-import_cleaning_log'><code>Data$import_cleaning_log()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="import_deletion_log"><a href='../../phr/html/Data.html#method-Data-import_deletion_log'><code>Data$import_deletion_log()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="import_dependency_schema"><a href='../../phr/html/Data.html#method-Data-import_dependency_schema'><code>Data$import_dependency_schema()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="import_indicator_schema"><a href='../../phr/html/Data.html#method-Data-import_indicator_schema'><code>Data$import_indicator_schema()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="import_schema"><a href='../../phr/html/Data.html#method-Data-import_schema'><code>Data$import_schema()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="import_variable_schema"><a href='../../phr/html/Data.html#method-Data-import_variable_schema'><code>Data$import_variable_schema()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="load_object"><a href='../../phr/html/Data.html#method-Data-load_object'><code>Data$load_object()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="map_schema_labels"><a href='../../phr/html/Data.html#method-Data-map_schema_labels'><code>Data$map_schema_labels()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="map_schema_vars"><a href='../../phr/html/Data.html#method-Data-map_schema_vars'><code>Data$map_schema_vars()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="post_standardize"><a href='../../phr/html/Data.html#method-Data-post_standardize'><code>Data$post_standardize()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="post_standardize_domain"><a href='../../phr/html/Data.html#method-Data-post_standardize_domain'><code>Data$post_standardize_domain()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="pre_standardize"><a href='../../phr/html/Data.html#method-Data-pre_standardize'><code>Data$pre_standardize()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="pre_validate"><a href='../../phr/html/Data.html#method-Data-pre_validate'><code>Data$pre_validate()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="repair_maps"><a href='../../phr/html/Data.html#method-Data-repair_maps'><code>Data$repair_maps()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="resolve_column"><a href='../../phr/html/Data.html#method-Data-resolve_column'><code>Data$resolve_column()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="run_quality_checks"><a href='../../phr/html/Data.html#method-Data-run_quality_checks'><code>Data$run_quality_checks()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="save_object"><a href='../../phr/html/Data.html#method-Data-save_object'><code>Data$save_object()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="set_dependency_schema"><a href='../../phr/html/Data.html#method-Data-set_dependency_schema'><code>Data$set_dependency_schema()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="set_indicator_schema"><a href='../../phr/html/Data.html#method-Data-set_indicator_schema'><code>Data$set_indicator_schema()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="set_label"><a href='../../phr/html/Data.html#method-Data-set_label'><code>Data$set_label()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="set_value_labels"><a href='../../phr/html/Data.html#method-Data-set_value_labels'><code>Data$set_value_labels()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="set_variable"><a href='../../phr/html/Data.html#method-Data-set_variable'><code>Data$set_variable()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="set_variable_schema"><a href='../../phr/html/Data.html#method-Data-set_variable_schema'><code>Data$set_variable_schema()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="standardize"><a href='../../phr/html/Data.html#method-Data-standardize'><code>Data$standardize()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="summary"><a href='../../phr/html/Data.html#method-Data-summary'><code>Data$summary()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="update_metadata"><a href='../../phr/html/Data.html#method-Data-update_metadata'><code>Data$update_metadata()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="validate"><a href='../../phr/html/Data.html#method-Data-validate'><code>Data$validate()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="validate_links"><a href='../../phr/html/Data.html#method-Data-validate_links'><code>Data$validate_links()</code></a></span></li>
 </ul>
-</details>
-}}
+</details>}}
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-WaterContainerData-new"></a>}}
-\if{latex}{\out{\hypertarget{method-WaterContainerData-new}{}}}
-\subsection{Method \code{new()}}{
-Initialize a new WaterContainerData object
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{WaterContainerData$new(
+\if{html}{\out{<a id="method-WaterContainerData-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-WaterContainerData-initialize}{}}}
+\subsection{\code{WaterContainerData$new()}}{
+  Initialize a new WaterContainerData object
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{WaterContainerData$new(
   data,
   dataset_name = "WaterContainerData",
   metadata = NULL,
   variable_map = NULL
-)}\if{html}{\out{</div>}}
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{data}}{A data frame containing water container assessment records}
+      \item{\code{dataset_name}}{A name for this dataset}
+      \item{\code{metadata}}{Optional list of metadata}
+      \item{\code{variable_map}}{Optional named list mapping standard variable names to data columns}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A new WaterContainerData object
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{data}}{A data frame containing water container assessment records}
-
-\item{\code{dataset_name}}{A name for this dataset}
-
-\item{\code{metadata}}{Optional list of metadata}
-
-\item{\code{variable_map}}{Optional named list mapping standard variable names to data columns}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A new WaterContainerData object
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-WaterContainerData-default_schema"></a>}}
 \if{latex}{\out{\hypertarget{method-WaterContainerData-default_schema}{}}}
-\subsection{Method \code{default_schema()}}{
-Load the default variable schema for water container data
+\subsection{\code{WaterContainerData$default_schema()}}{
+  Load the default variable schema for water container data
 
 Reads the variable_schema_data_water_container_template.xlsx file from package resources
 and converts it to a nested list of variable definitions for container characteristics.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{WaterContainerData$default_schema()}\if{html}{\out{</div>}}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{WaterContainerData$default_schema()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A list containing the water container variable schema
+  }
 }
 
-\subsection{Returns}{
-A list containing the water container variable schema
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-WaterContainerData-default_indicator_schema"></a>}}
 \if{latex}{\out{\hypertarget{method-WaterContainerData-default_indicator_schema}{}}}
-\subsection{Method \code{default_indicator_schema()}}{
-Load the default indicator schema for water container data
+\subsection{\code{WaterContainerData$default_indicator_schema()}}{
+  Load the default indicator schema for water container data
 
 Reads the indicator_schema_data_water_container_template.xlsx file from package resources
 and converts it to a nested list of indicator definitions (e.g., water quality metrics).
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{WaterContainerData$default_indicator_schema()}\if{html}{\out{</div>}}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{WaterContainerData$default_indicator_schema()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A list containing the water container indicator schema
+  }
 }
 
-\subsection{Returns}{
-A list containing the water container indicator schema
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-WaterContainerData-default_dependency_schema"></a>}}
 \if{latex}{\out{\hypertarget{method-WaterContainerData-default_dependency_schema}{}}}
-\subsection{Method \code{default_dependency_schema()}}{
-Load the default dependency schema for water container data
+\subsection{\code{WaterContainerData$default_dependency_schema()}}{
+  Load the default dependency schema for water container data
 
 Reads the dependency_schema_data_water_container_template.xlsx file from package resources
 and converts it to a nested list of variable dependency rules.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{WaterContainerData$default_dependency_schema()}\if{html}{\out{</div>}}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{WaterContainerData$default_dependency_schema()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A list containing the water container dependency schema
+  }
 }
 
-\subsection{Returns}{
-A list containing the water container dependency schema
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-WaterContainerData-post_validate"></a>}}
 \if{latex}{\out{\hypertarget{method-WaterContainerData-post_validate}{}}}
-\subsection{Method \code{post_validate()}}{
-Perform container-specific post-validation checks
+\subsection{\code{WaterContainerData$post_validate()}}{
+  Perform container-specific post-validation checks
 
 Validates range values, categorical values, and logical consistency
 specific to water container data (e.g., E.coli results only when tested).
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{WaterContainerData$post_validate(df = NULL)}\if{html}{\out{</div>}}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{WaterContainerData$post_validate(df = NULL)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{df}}{Optional data frame to validate (defaults to raw data)}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    TRUE if validation passed without issues, FALSE if warnings were raised
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{df}}{Optional data frame to validate (defaults to raw data)}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-TRUE if validation passed without issues, FALSE if warnings were raised
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-WaterContainerData-generate_data_analytics"></a>}}
 \if{latex}{\out{\hypertarget{method-WaterContainerData-generate_data_analytics}{}}}
-\subsection{Method \code{generate_data_analytics()}}{
-Generate a WaterContainerDataAnalytics object for this water container dataset.
+\subsection{\code{WaterContainerData$generate_data_analytics()}}{
+  Generate a WaterContainerDataAnalytics object for this water container dataset.
 Combines quality checks and quantitative analysis in one object.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{WaterContainerData$generate_data_analytics(
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{WaterContainerData$generate_data_analytics(
   stage = c("standardized", "clean"),
   analysis_config = NULL
-)}\if{html}{\out{</div>}}
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{stage}}{The data stage to use ("standardized" or "clean")}
+      \item{\code{analysis_config}}{Optional data analysis plan (tibble)}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A WaterContainerDataAnalytics object or NULL
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{stage}}{The data stage to use ("standardized" or "clean")}
-
-\item{\code{analysis_config}}{Optional data analysis plan (tibble)}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A WaterContainerDataAnalytics object or NULL
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-WaterContainerData-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-WaterContainerData-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{WaterContainerData$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{WaterContainerData$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{WaterContainerData$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

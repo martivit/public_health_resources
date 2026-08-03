@@ -530,7 +530,7 @@ HouseholdData <- R6::R6Class(
     #' * If "standardized": standardized -> clean -> raw
     #' * If "raw": raw -> clean -> standardized
     #'
-    #' @keywords internal
+    #' @noRd
     ..get_data_with_fallback = function(data_obj, stage = c("clean", "standardized", "raw")) {
       stage <- match.arg(stage)
 
@@ -1241,7 +1241,7 @@ HouseholdData <- R6::R6Class(
     #' naming convention "linked_<name>_<column>". See class documentation for specific
     #' aggregation rules by dataset type.
     #'
-    #' @keywords internal
+    #' @noRd
     ..aggregate_linked_data = function(hh_data, stage = c("clean", "standardized", "raw")) {
       stage <- match.arg(stage)
 
@@ -1376,7 +1376,7 @@ HouseholdData <- R6::R6Class(
     #' death_migration, death_last_location, death_birth, person_time, person_time_under5,
     #' person_time_male, person_time_female
     #'
-    #' @keywords internal
+    #' @noRd
     ..aggregate_deaths_data = function(hh_data, deaths_data, hh_uuid_col, linked_hh_col, link_name, linked_obj) {
 
       phr_try({
@@ -1418,6 +1418,20 @@ HouseholdData <- R6::R6Class(
             .groups = "drop"
           )
 
+        # Aggregate calc_month_death into comma-separated list per household
+        if ("calc_month_death" %in% names(deaths_data)) {
+          death_months_agg <- deaths_data |>
+            dplyr::group_by(!!rlang::sym(linked_hh_col)) |>
+            dplyr::summarise(
+              death_month = paste(
+                stats::na.omit(calc_month_death), collapse = ", "
+              ),
+              .groups = "drop"
+            )
+          names(death_months_agg) <- c(linked_hh_col, "death_month")
+          agg_data <- dplyr::left_join(agg_data, death_months_agg, by = linked_hh_col)
+        }
+
         # Rename columns with prefix to show they come from linked dataset
         prefix <- paste0("linked_", link_name, "_")
         col_names <- names(agg_data)
@@ -1443,10 +1457,17 @@ HouseholdData <- R6::R6Class(
         # Replace NA values with 0 for all linked columns
         # Households with no linked records will have NA after left_join.
         # For count/sum aggregations, 0 is semantically correct (measured as zero).
+        # For text aggregations (comma-separated lists), use empty string.
         linked_cols <- setdiff(names(agg_data), hh_uuid_col)
-        if (length(linked_cols) > 0) {
+        text_cols <- intersect(linked_cols, grep("death_month$", linked_cols, value = TRUE))
+        numeric_cols <- setdiff(linked_cols, text_cols)
+        if (length(numeric_cols) > 0) {
           hh_data <- hh_data |>
-            dplyr::mutate(dplyr::across(dplyr::all_of(linked_cols), ~ ifelse(is.na(.), 0, .)))
+            dplyr::mutate(dplyr::across(dplyr::all_of(numeric_cols), ~ ifelse(is.na(.), 0, .)))
+        }
+        if (length(text_cols) > 0) {
+          hh_data <- hh_data |>
+            dplyr::mutate(dplyr::across(dplyr::all_of(text_cols), ~ ifelse(is.na(.), "", .)))
         }
 
         phr_message(
@@ -1476,7 +1497,7 @@ HouseholdData <- R6::R6Class(
     #' @details
     #' Sums total liters by household and counts number of containers
     #'
-    #' @keywords internal
+    #' @noRd
     ..aggregate_water_container_data = function(hh_data, water_data, hh_uuid_col, linked_hh_col, link_name, linked_obj) {
 
       phr_try({
@@ -1563,7 +1584,7 @@ HouseholdData <- R6::R6Class(
     #' num_women_15to49, and person_time columns by household. If calc_date_birth_final is
     #' available and recall/survey dates exist, also counts births in recall period.
     #'
-    #' @keywords internal
+    #' @noRd
     ..aggregate_roster_data = function(hh_data, roster_data, hh_uuid_col, linked_hh_col, link_name, linked_obj) {
 
       phr_try({
@@ -1607,6 +1628,20 @@ HouseholdData <- R6::R6Class(
             )
         }
 
+        # Aggregate calc_month_birth into comma-separated list per household
+        if ("calc_month_birth" %in% names(roster_data)) {
+          birth_months_agg <- roster_data |>
+            dplyr::group_by(!!rlang::sym(linked_hh_col)) |>
+            dplyr::summarise(
+              roster_birth_months = paste(
+                stats::na.omit(calc_month_birth), collapse = ", "
+              ),
+              .groups = "drop"
+            )
+          names(birth_months_agg) <- c(linked_hh_col, "roster_birth_months")
+          agg_data <- dplyr::left_join(agg_data, birth_months_agg, by = linked_hh_col)
+        }
+
         # Rename columns with prefix to show they come from linked dataset
         prefix <- paste0("linked_")
         col_names <- names(agg_data)
@@ -1632,10 +1667,17 @@ HouseholdData <- R6::R6Class(
         # Replace NA values with 0 for all linked columns
         # Households with no linked records will have NA after left_join.
         # For count/sum aggregations, 0 is semantically correct (measured as zero).
+        # For text aggregations (comma-separated lists), use empty string.
         linked_cols <- setdiff(names(agg_data), hh_uuid_col)
-        if (length(linked_cols) > 0) {
+        text_cols <- intersect(linked_cols, grep("birth_months$", linked_cols, value = TRUE))
+        numeric_cols <- setdiff(linked_cols, text_cols)
+        if (length(numeric_cols) > 0) {
           hh_data <- hh_data |>
-            dplyr::mutate(dplyr::across(dplyr::all_of(linked_cols), ~ ifelse(is.na(.), 0, .)))
+            dplyr::mutate(dplyr::across(dplyr::all_of(numeric_cols), ~ ifelse(is.na(.), 0, .)))
+        }
+        if (length(text_cols) > 0) {
+          hh_data <- hh_data |>
+            dplyr::mutate(dplyr::across(dplyr::all_of(text_cols), ~ ifelse(is.na(.), "", .)))
         }
 
         phr_message(
@@ -1665,7 +1707,7 @@ HouseholdData <- R6::R6Class(
     #' @details
     #' Aggregates by age groups: children_under2, children_2to5, children_under5 based on age in months
     #'
-    #' @keywords internal
+    #' @noRd
     ..aggregate_nutrition_data = function(hh_data, nutrition_data, hh_uuid_col, linked_hh_col, link_name, linked_obj) {
 
       phr_try({
@@ -1778,7 +1820,7 @@ HouseholdData <- R6::R6Class(
     #' @details
     #' Counts total number of people recorded (rows) per household
     #'
-    #' @keywords internal
+    #' @noRd
     ..aggregate_health_data = function(hh_data, health_data, hh_uuid_col, linked_hh_col, link_name, linked_obj) {
 
       phr_try({
@@ -1847,7 +1889,7 @@ HouseholdData <- R6::R6Class(
     #' @details
     #' Counts women aged 15-49 per household (all rows in WomenIndividualData represent eligible women)
     #'
-    #' @keywords internal
+    #' @noRd
     ..aggregate_women_data = function(hh_data, women_data, hh_uuid_col, linked_hh_col, link_name, linked_obj) {
 
       phr_try({

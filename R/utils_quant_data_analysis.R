@@ -1288,8 +1288,7 @@ phr_calc_survey_ratio_single <- function(design,
       survey::svyratio(
         numerator = as.formula(paste0("~", numerator_var)),
         denominator = as.formula(paste0("~", denominator_var)),
-        design = design,
-        deff = "replace"
+        design = design
       )
     }, on_error = "warn", origin = origin, hint = "Taylor variance ratio failed")
 
@@ -1305,7 +1304,6 @@ phr_calc_survey_ratio_single <- function(design,
         ci_range <- 1.96 * se
         lower_ci <- ratio_est - ci_range
         upper_ci <- ratio_est + ci_range
-        deff <- tryCatch(as.numeric(attr(est$ratio, "deff")), error = function(e) NA_real_)
       }
     }
   }
@@ -1318,8 +1316,7 @@ phr_calc_survey_ratio_single <- function(design,
         survey::svyratio(
           numerator = as.formula(paste0("~", numerator_var)),
           denominator = as.formula(paste0("~", denominator_var)),
-          design = rep_design,
-          deff = "replace"
+          design = rep_design
         )
       }, on_error = "warn", origin = origin, hint = "Replicate variance ratio failed")
       if (!is.null(est)) {
@@ -1328,7 +1325,6 @@ phr_calc_survey_ratio_single <- function(design,
         ci_range <- 1.96 * se
         lower_ci <- ratio_est - ci_range
         upper_ci <- ratio_est + ci_range
-        deff <- tryCatch(as.numeric(attr(est$ratio, "deff")), error = function(e) NA_real_)
       }
     } else {
       phr_warning(origin, "Replicate design could not be created; using mean-based fallback.")
@@ -1342,8 +1338,19 @@ phr_calc_survey_ratio_single <- function(design,
     ratio_est <- mean(data[[numerator_var]], na.rm = TRUE) / mean(data[[denominator_var]], na.rm = TRUE)
     lower_ci <- NA_real_
     upper_ci <- NA_real_
-    deff <- NA_real_
   }
+
+  # 5b. Compute design effect separately (svyratio does not support deff)
+
+  deff <- tryCatch({
+    deff_est <- survey::svymean(
+      as.formula(paste0("~", numerator_var)),
+      design,
+      na.rm = TRUE,
+      deff = "replace"
+    )
+    as.numeric(attr(deff_est, "deff"))
+  }, error = function(e) NA_real_)
 
   # Floor lower_ci at 0
   if (!is.na(lower_ci) && lower_ci < 0) lower_ci <- 0

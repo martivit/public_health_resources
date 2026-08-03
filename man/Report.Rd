@@ -8,84 +8,84 @@ Subclass of \code{\link{Document}} for holding a protocol object, multiple
 data analytics objects, and an integrated analysis object.
 }
 \section{Super classes}{
-\code{\link[phr:Orchestrator]{phr::Orchestrator}} -> \code{\link[phr:Document]{phr::Document}} -> \code{Report}
+\code{Orchestrator} -> \code{Document} -> \code{Report}
 }
 \section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{protocol}}{A \code{\link{Protocol}} object.}
+  \if{html}{\out{<div class="r6-fields">}}
+  \describe{
+    \item{\code{protocol}}{A \code{\link{Protocol}} object.}
 
-\item{\code{data_analytics}}{Named list of \code{\link{DataAnalytics}} objects.}
+    \item{\code{data_analytics}}{Named list of \code{\link{DataAnalytics}} objects.}
 
-\item{\code{integrated_analysis}}{An \code{\link{IntegratedAnalysis}} object.}
-}
-\if{html}{\out{</div>}}
+    \item{\code{integrated_analysis}}{An \code{\link{IntegratedAnalysis}} object.}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-Report-new}{\code{Report$new()}}
-\item \href{#method-Report-clone}{\code{Report$clone()}}
+  \itemize{
+    \item \href{#method-Report-initialize}{\code{Report$new()}}
+    \item \href{#method-Report-clone}{\code{Report$clone()}}
+  }
 }
-}
-\if{html}{\out{
-<details><summary>Inherited methods</summary>
+\if{html}{\out{<details><summary>Inherited methods</summary>
 <ul>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Orchestrator" data-id="access_nested"><a href='../../phr/html/Orchestrator.html#method-Orchestrator-access_nested'><code>phr::Orchestrator$access_nested()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Orchestrator" data-id="post_sync_state"><a href='../../phr/html/Orchestrator.html#method-Orchestrator-post_sync_state'><code>phr::Orchestrator$post_sync_state()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Orchestrator" data-id="pre_sync_state"><a href='../../phr/html/Orchestrator.html#method-Orchestrator-pre_sync_state'><code>phr::Orchestrator$pre_sync_state()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Orchestrator" data-id="set_nested"><a href='../../phr/html/Orchestrator.html#method-Orchestrator-set_nested'><code>phr::Orchestrator$set_nested()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Orchestrator" data-id="sync_state"><a href='../../phr/html/Orchestrator.html#method-Orchestrator-sync_state'><code>phr::Orchestrator$sync_state()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Document" data-id="generate_quarto_doc"><a href='../../phr/html/Document.html#method-Document-generate_quarto_doc'><code>phr::Document$generate_quarto_doc()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Document" data-id="generate_quarto_ppt"><a href='../../phr/html/Document.html#method-Document-generate_quarto_ppt'><code>phr::Document$generate_quarto_ppt()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Document" data-id="get_quarto_params"><a href='../../phr/html/Document.html#method-Document-get_quarto_params'><code>phr::Document$get_quarto_params()</code></a></span></li>
+  <li><code>Orchestrator$access_nested()</code></li>
+  <li><code>Orchestrator$post_sync_state()</code></li>
+  <li><code>Orchestrator$pre_sync_state()</code></li>
+  <li><code>Orchestrator$set_nested()</code></li>
+  <li><code>Orchestrator$sync_state()</code></li>
+  <li><code>Document$generate_quarto_doc()</code></li>
+  <li><code>Document$generate_quarto_ppt()</code></li>
+  <li><code>Document$get_quarto_params()</code></li>
 </ul>
-</details>
-}}
+</details>}}
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Report-new"></a>}}
-\if{latex}{\out{\hypertarget{method-Report-new}{}}}
-\subsection{Method \code{new()}}{
-Creates a new Report object.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Report$new(
+\if{html}{\out{<a id="method-Report-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-Report-initialize}{}}}
+\subsection{\code{Report$new()}}{
+  Creates a new Report object.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Report$new(
   protocol = NULL,
   data_analytics = list(),
   integrated_analysis = NULL
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{protocol}}{Optional \code{\link{Protocol}} object.}
-
-\item{\code{data_analytics}}{Optional named list of DataAnalytics objects.}
-
-\item{\code{integrated_analysis}}{Optional \code{\link{IntegratedAnalysis}}
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{protocol}}{Optional \code{\link{Protocol}} object.}
+      \item{\code{data_analytics}}{Optional named list of DataAnalytics objects.}
+      \item{\code{integrated_analysis}}{Optional \code{\link{IntegratedAnalysis}}
 object.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A new Report object.
+  }
 }
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A new Report object.
-}
-}
+
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Report-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-Report-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Report$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{Report$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Report$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

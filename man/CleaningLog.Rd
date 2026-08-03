@@ -28,88 +28,84 @@ Required columns:
 }
 \keyword{internal}
 \section{Super class}{
-\code{\link[phr:Log]{phr::Log}} -> \code{CleaningLog}
+\code{Log} -> \code{CleaningLog}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-CleaningLog-new}{\code{CleaningLog$new()}}
-\item \href{#method-CleaningLog-validate}{\code{CleaningLog$validate()}}
-\item \href{#method-CleaningLog-post_validate}{\code{CleaningLog$post_validate()}}
-\item \href{#method-CleaningLog-add_change}{\code{CleaningLog$add_change()}}
-\item \href{#method-CleaningLog-clone}{\code{CleaningLog$clone()}}
+  \itemize{
+    \item \href{#method-CleaningLog-initialize}{\code{CleaningLog$new()}}
+    \item \href{#method-CleaningLog-validate}{\code{CleaningLog$validate()}}
+    \item \href{#method-CleaningLog-post_validate}{\code{CleaningLog$post_validate()}}
+    \item \href{#method-CleaningLog-add_change}{\code{CleaningLog$add_change()}}
+    \item \href{#method-CleaningLog-clone}{\code{CleaningLog$clone()}}
+  }
 }
-}
-\if{html}{\out{
-<details><summary>Inherited methods</summary>
+\if{html}{\out{<details><summary>Inherited methods</summary>
 <ul>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Log" data-id="append_entry"><a href='../../phr/html/Log.html#method-Log-append_entry'><code>phr::Log$append_entry()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Log" data-id="clear"><a href='../../phr/html/Log.html#method-Log-clear'><code>phr::Log$clear()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Log" data-id="export"><a href='../../phr/html/Log.html#method-Log-export'><code>phr::Log$export()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Log" data-id="get_hash"><a href='../../phr/html/Log.html#method-Log-get_hash'><code>phr::Log$get_hash()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Log" data-id="pre_validate"><a href='../../phr/html/Log.html#method-Log-pre_validate'><code>phr::Log$pre_validate()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Log" data-id="set_schema"><a href='../../phr/html/Log.html#method-Log-set_schema'><code>phr::Log$set_schema()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Log" data-id="summary"><a href='../../phr/html/Log.html#method-Log-summary'><code>phr::Log$summary()</code></a></span></li>
+  <li><code>Log$append_entry()</code></li>
+  <li><code>Log$clear()</code></li>
+  <li><code>Log$export()</code></li>
+  <li><code>Log$get_hash()</code></li>
+  <li><code>Log$pre_validate()</code></li>
+  <li><code>Log$set_schema()</code></li>
+  <li><code>Log$summary()</code></li>
 </ul>
-</details>
-}}
+</details>}}
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-CleaningLog-new"></a>}}
-\if{latex}{\out{\hypertarget{method-CleaningLog-new}{}}}
-\subsection{Method \code{new()}}{
-Creates a new CleaningLog with default schema and required columns
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{CleaningLog$new(
+\if{html}{\out{<a id="method-CleaningLog-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-CleaningLog-initialize}{}}}
+\subsection{\code{CleaningLog$new()}}{
+  Creates a new CleaningLog with default schema and required columns
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{CleaningLog$new(
   log_df = NULL,
   log_name = "Cleaning Log",
   required_columns = NULL,
   schema = NULL
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{log_df}}{Optional data.frame of existing cleaning log entries}
-
-\item{\code{log_name}}{Character name for the log (default: "Cleaning Log")}
-
-\item{\code{required_columns}}{Character vector; defaults to standard cleaning log columns}
-
-\item{\code{schema}}{List; defaults to standard cleaning log schema}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Details}{
-Sets up default schema with all character types and "changed" restricted to "yes"/"no".
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{log_df}}{Optional data.frame of existing cleaning log entries}
+      \item{\code{log_name}}{Character name for the log (default: "Cleaning Log")}
+      \item{\code{required_columns}}{Character vector; defaults to standard cleaning log columns}
+      \item{\code{schema}}{List; defaults to standard cleaning log schema}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Details}{
+    Sets up default schema with all character types and "changed" restricted to "yes"/"no".
 Calls parent Log$initialize() to complete setup.
 Validate Cleaning Log
+  }
+  \subsection{Returns}{
+    A new CleaningLog R6 object
+  }
 }
 
-\subsection{Returns}{
-A new CleaningLog R6 object
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-CleaningLog-validate"></a>}}
 \if{latex}{\out{\hypertarget{method-CleaningLog-validate}{}}}
-\subsection{Method \code{validate()}}{
-Validates cleaning log structure and optionally checks alignment with dataset
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{CleaningLog$validate(data_obj = NULL, stage = "clean")}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{data_obj}}{Optional Data object to validate log entries against}
-
-\item{\code{stage}}{Character; data stage to validate against ("raw", "standardized", "clean")}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Details}{
-Validation steps:
+\subsection{\code{CleaningLog$validate()}}{
+  Validates cleaning log structure and optionally checks alignment with dataset
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{CleaningLog$validate(data_obj = NULL, stage = "clean")}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{data_obj}}{Optional Data object to validate log entries against}
+      \item{\code{stage}}{Character; data stage to validate against ("raw", "standardized", "clean")}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Details}{
+    Validation steps:
 1. Calls parent Log$validate() for basic structure and schema validation
 2. Checks that critical fields (uuid, question.name, changed, old.value, new.value)
    are non-empty
@@ -121,32 +117,32 @@ Validation steps:
 
 Sets self$validated and self$issues based on results.
 Post-Validate Against Dataset
+  }
+  \subsection{Returns}{
+    Invisible list of validation issues (empty if valid)
+  }
 }
 
-\subsection{Returns}{
-Invisible list of validation issues (empty if valid)
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-CleaningLog-post_validate"></a>}}
 \if{latex}{\out{\hypertarget{method-CleaningLog-post_validate}{}}}
-\subsection{Method \code{post_validate()}}{
-Validates cleaning log entries against an actual dataset to ensure integrity
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{CleaningLog$post_validate(data_obj, stage = "clean")}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{data_obj}}{Data object containing the dataset to validate against}
-
-\item{\code{stage}}{Character; which data stage to use ("raw", "standardized", "clean")}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Details}{
-Checks for:
+\subsection{\code{CleaningLog$post_validate()}}{
+  Validates cleaning log entries against an actual dataset to ensure integrity
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{CleaningLog$post_validate(data_obj, stage = "clean")}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{data_obj}}{Data object containing the dataset to validate against}
+      \item{\code{stage}}{Character; which data stage to use ("raw", "standardized", "clean")}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Details}{
+    Checks for:
 * Missing UUIDs: UUIDs in log that don't exist in dataset
 * Missing enum_id: Enumerator IDs that don't exist in dataset
 * Unknown columns: question.name values not found as columns in dataset
@@ -154,19 +150,20 @@ Checks for:
 
 All issues are returned as warnings, not errors, to allow inspection.
 Add Change Entry
+  }
+  \subsection{Returns}{
+    List of validation issues (empty list if no issues)
+  }
 }
 
-\subsection{Returns}{
-List of validation issues (empty list if no issues)
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-CleaningLog-add_change"></a>}}
 \if{latex}{\out{\hypertarget{method-CleaningLog-add_change}{}}}
-\subsection{Method \code{add_change()}}{
-Helper method to add a cleaning change entry with all required fields
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{CleaningLog$add_change(
+\subsection{\code{CleaningLog$add_change()}}{
+  Helper method to add a cleaning change entry with all required fields
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{CleaningLog$add_change(
   uuid,
   enum_id,
   device_id,
@@ -176,56 +173,50 @@ Helper method to add a cleaning change entry with all required fields
   changed,
   old.value,
   new.value
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{uuid}}{Character; unique identifier of record to change}
-
-\item{\code{enum_id}}{Character; enumerator identifier}
-
-\item{\code{device_id}}{Character; device identifier}
-
-\item{\code{question.name}}{Character; variable/column name to change}
-
-\item{\code{issue}}{Character; description of the data quality issue}
-
-\item{\code{feedback}}{Character; resolution or feedback}
-
-\item{\code{changed}}{Character; "yes" or "no" indicating if change should be applied}
-
-\item{\code{old.value}}{Character; current value in dataset}
-
-\item{\code{new.value}}{Character; proposed new value}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Details}{
-Coerces all inputs to character and calls append_entry() to add to log.
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{uuid}}{Character; unique identifier of record to change}
+      \item{\code{enum_id}}{Character; enumerator identifier}
+      \item{\code{device_id}}{Character; device identifier}
+      \item{\code{question.name}}{Character; variable/column name to change}
+      \item{\code{issue}}{Character; description of the data quality issue}
+      \item{\code{feedback}}{Character; resolution or feedback}
+      \item{\code{changed}}{Character; "yes" or "no" indicating if change should be applied}
+      \item{\code{old.value}}{Character; current value in dataset}
+      \item{\code{new.value}}{Character; proposed new value}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Details}{
+    Coerces all inputs to character and calls append_entry() to add to log.
 Normalizes 'changed' to lowercase for consistency.
+  }
+  \subsection{Returns}{
+    Invisible TRUE
+  }
 }
 
-\subsection{Returns}{
-Invisible TRUE
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-CleaningLog-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-CleaningLog-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{CleaningLog$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{CleaningLog$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{CleaningLog$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

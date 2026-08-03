@@ -26,79 +26,76 @@ Required columns (matching phr_analysis_plan_template.csv):
 }
 \keyword{internal}
 \section{Super class}{
-\code{\link[phr:Log]{phr::Log}} -> \code{QuantDataAnalysisPlanLog}
+\code{Log} -> \code{QuantDataAnalysisPlanLog}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-QuantDataAnalysisPlanLog-new}{\code{QuantDataAnalysisPlanLog$new()}}
-\item \href{#method-QuantDataAnalysisPlanLog-validate}{\code{QuantDataAnalysisPlanLog$validate()}}
-\item \href{#method-QuantDataAnalysisPlanLog-add_indicator}{\code{QuantDataAnalysisPlanLog$add_indicator()}}
-\item \href{#method-QuantDataAnalysisPlanLog-clone}{\code{QuantDataAnalysisPlanLog$clone()}}
+  \itemize{
+    \item \href{#method-QuantDataAnalysisPlanLog-initialize}{\code{QuantDataAnalysisPlanLog$new()}}
+    \item \href{#method-QuantDataAnalysisPlanLog-validate}{\code{QuantDataAnalysisPlanLog$validate()}}
+    \item \href{#method-QuantDataAnalysisPlanLog-add_indicator}{\code{QuantDataAnalysisPlanLog$add_indicator()}}
+    \item \href{#method-QuantDataAnalysisPlanLog-clone}{\code{QuantDataAnalysisPlanLog$clone()}}
+  }
 }
-}
-\if{html}{\out{
-<details><summary>Inherited methods</summary>
+\if{html}{\out{<details><summary>Inherited methods</summary>
 <ul>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Log" data-id="append_entry"><a href='../../phr/html/Log.html#method-Log-append_entry'><code>phr::Log$append_entry()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Log" data-id="clear"><a href='../../phr/html/Log.html#method-Log-clear'><code>phr::Log$clear()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Log" data-id="export"><a href='../../phr/html/Log.html#method-Log-export'><code>phr::Log$export()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Log" data-id="get_hash"><a href='../../phr/html/Log.html#method-Log-get_hash'><code>phr::Log$get_hash()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Log" data-id="post_validate"><a href='../../phr/html/Log.html#method-Log-post_validate'><code>phr::Log$post_validate()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Log" data-id="pre_validate"><a href='../../phr/html/Log.html#method-Log-pre_validate'><code>phr::Log$pre_validate()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Log" data-id="set_schema"><a href='../../phr/html/Log.html#method-Log-set_schema'><code>phr::Log$set_schema()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Log" data-id="summary"><a href='../../phr/html/Log.html#method-Log-summary'><code>phr::Log$summary()</code></a></span></li>
+  <li><code>Log$append_entry()</code></li>
+  <li><code>Log$clear()</code></li>
+  <li><code>Log$export()</code></li>
+  <li><code>Log$get_hash()</code></li>
+  <li><code>Log$post_validate()</code></li>
+  <li><code>Log$pre_validate()</code></li>
+  <li><code>Log$set_schema()</code></li>
+  <li><code>Log$summary()</code></li>
 </ul>
-</details>
-}}
+</details>}}
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-QuantDataAnalysisPlanLog-new"></a>}}
-\if{latex}{\out{\hypertarget{method-QuantDataAnalysisPlanLog-new}{}}}
-\subsection{Method \code{new()}}{
-Creates a new QuantDataAnalysisPlanLog with default schema and required columns
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{QuantDataAnalysisPlanLog$new(
+\if{html}{\out{<a id="method-QuantDataAnalysisPlanLog-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-QuantDataAnalysisPlanLog-initialize}{}}}
+\subsection{\code{QuantDataAnalysisPlanLog$new()}}{
+  Creates a new QuantDataAnalysisPlanLog with default schema and required columns
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{QuantDataAnalysisPlanLog$new(
   log_df = NULL,
   log_name = "Quant Data Analysis Plan",
   required_columns = NULL,
   schema = NULL
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{log_df}}{Optional data.frame of existing analysis plan entries}
-
-\item{\code{log_name}}{Character name for the log (default: "Quant Data Analysis Plan")}
-
-\item{\code{required_columns}}{Character vector; defaults to standard analysis plan columns}
-
-\item{\code{schema}}{List; defaults to standard analysis plan schema}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Details}{
-Sets up default schema with appropriate types for each column.
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{log_df}}{Optional data.frame of existing analysis plan entries}
+      \item{\code{log_name}}{Character name for the log (default: "Quant Data Analysis Plan")}
+      \item{\code{required_columns}}{Character vector; defaults to standard analysis plan columns}
+      \item{\code{schema}}{List; defaults to standard analysis plan schema}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Details}{
+    Sets up default schema with appropriate types for each column.
 Calls parent Log$initialize() to complete setup.
 Validate Analysis Plan Log
+  }
+  \subsection{Returns}{
+    A new QuantDataAnalysisPlanLog R6 object
+  }
 }
 
-\subsection{Returns}{
-A new QuantDataAnalysisPlanLog R6 object
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantDataAnalysisPlanLog-validate"></a>}}
 \if{latex}{\out{\hypertarget{method-QuantDataAnalysisPlanLog-validate}{}}}
-\subsection{Method \code{validate()}}{
-Validates analysis plan log structure and calculation types
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{QuantDataAnalysisPlanLog$validate()}\if{html}{\out{</div>}}
-}
-
-\subsection{Details}{
-Validation steps:
+\subsection{\code{QuantDataAnalysisPlanLog$validate()}}{
+  Validates analysis plan log structure and calculation types
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{QuantDataAnalysisPlanLog$validate()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Details}{
+    Validation steps:
 1. Calls parent Log$validate() for basic structure and schema validation
 2. Checks that critical fields (indicator_name, calculation, var_name)
    are non-empty
@@ -107,19 +104,20 @@ Validation steps:
 
 Sets self$validated and self$issues based on results.
 Add Analysis Plan Entry
+  }
+  \subsection{Returns}{
+    Invisible list of validation issues (empty if valid)
+  }
 }
 
-\subsection{Returns}{
-Invisible list of validation issues (empty if valid)
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantDataAnalysisPlanLog-add_indicator"></a>}}
 \if{latex}{\out{\hypertarget{method-QuantDataAnalysisPlanLog-add_indicator}{}}}
-\subsection{Method \code{add_indicator()}}{
-Helper method to add an analysis plan entry with all required fields
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{QuantDataAnalysisPlanLog$add_indicator(
+\subsection{\code{QuantDataAnalysisPlanLog$add_indicator()}}{
+  Helper method to add an analysis plan entry with all required fields
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{QuantDataAnalysisPlanLog$add_indicator(
   indicator_name,
   calculation,
   var_name,
@@ -127,51 +125,47 @@ Helper method to add an analysis plan entry with all required fields
   disaggregation = NA_character_,
   multiplier = 100,
   indicator_unit = "\%"
-)}\if{html}{\out{</div>}}
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{indicator_name}}{Character; name/label of the indicator}
+      \item{\code{calculation}}{Character; calculation type (prop, mean, median, ratio)}
+      \item{\code{var_name}}{Character; primary variable name in the dataset}
+      \item{\code{denom_var}}{Character; denominator variable (optional, for ratios)}
+      \item{\code{disaggregation}}{Character; disaggregation variable(s) (optional)}
+      \item{\code{multiplier}}{Numeric; multiplier for the calculation (default: 100)}
+      \item{\code{indicator_unit}}{Character; unit of measurement (default: "\%")}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Details}{
+    Validates inputs and calls append_entry() to add to log.
+  }
+  \subsection{Returns}{
+    Invisible TRUE
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{indicator_name}}{Character; name/label of the indicator}
-
-\item{\code{calculation}}{Character; calculation type (prop, mean, median, ratio)}
-
-\item{\code{var_name}}{Character; primary variable name in the dataset}
-
-\item{\code{denom_var}}{Character; denominator variable (optional, for ratios)}
-
-\item{\code{disaggregation}}{Character; disaggregation variable(s) (optional)}
-
-\item{\code{multiplier}}{Numeric; multiplier for the calculation (default: 100)}
-
-\item{\code{indicator_unit}}{Character; unit of measurement (default: "\%")}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Details}{
-Validates inputs and calls append_entry() to add to log.
-}
-
-\subsection{Returns}{
-Invisible TRUE
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QuantDataAnalysisPlanLog-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-QuantDataAnalysisPlanLog-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{QuantDataAnalysisPlanLog$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{QuantDataAnalysisPlanLog$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{QuantDataAnalysisPlanLog$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

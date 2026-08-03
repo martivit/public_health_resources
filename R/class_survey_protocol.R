@@ -396,6 +396,8 @@ SurveyProtocol <- R6::R6Class(
       private$..sync_sample_frame_state()
       invisible(NULL)
     },
+    #' @description Get Quarto parameters for rendering.
+    #' @return A named list of parameters to pass to Quarto rendering.
     get_quarto_params = function() {
       params <- super$get_quarto_params()
 
@@ -1130,6 +1132,7 @@ SurveyProtocol <- R6::R6Class(
     #' @return Data frame containing the sample table, or \code{NULL} if
     #'   unavailable or on error.
     #' @keywords internal
+    #' @noRd
     ..sample_table_from_nested = function() {
       tryCatch(
         self$access_nested(
@@ -1149,6 +1152,7 @@ SurveyProtocol <- R6::R6Class(
     #' @return Character vector of unique sampling methods in lowercase.
     #'   Empty character vector if no sample table exists or no methods found.
     #' @keywords internal
+    #' @noRd
     ..sample_methods_site_used = function() {
       st <- private$..sample_table_from_nested()
       if (!is.data.frame(st) || !"sampling_method_site" %in% names(st)) {
@@ -1168,6 +1172,7 @@ SurveyProtocol <- R6::R6Class(
     #' @return Character vector of unique sampling methods in lowercase.
     #'   Empty character vector if no sample table exists or no methods found.
     #' @keywords internal
+    #' @noRd
     ..sample_methods_household_used = function() {
       st <- private$..sample_table_from_nested()
       if (!is.data.frame(st) || !"sampling_method_hh" %in% names(st)) {
@@ -1187,6 +1192,7 @@ SurveyProtocol <- R6::R6Class(
     #' @return \code{TRUE} if any provided method matches a method in use,
     #'   \code{FALSE} otherwise.
     #' @keywords internal
+    #' @noRd
     ..sample_has_any_method_site = function(methods) {
       methods_used <- private$..sample_methods_site_used()
       length(intersect(methods_used, tolower(as.character(methods)))) > 0L
@@ -1201,6 +1207,7 @@ SurveyProtocol <- R6::R6Class(
     #' @return \code{TRUE} if any provided method matches a method in use,
     #'   \code{FALSE} otherwise.
     #' @keywords internal
+    #' @noRd
     ..sample_has_any_method_household = function(methods) {
       methods_used <- private$..sample_methods_household_used()
       length(intersect(methods_used, tolower(as.character(methods)))) > 0L
@@ -1225,6 +1232,7 @@ SurveyProtocol <- R6::R6Class(
     #' filters by that criterion alone.
     #'
     #' @keywords internal
+    #' @noRd
     ..strata_names_for_method = function(method_site = NULL, method_hh = NULL) {
       st <- private$..sample_table_from_nested()
       if (!is.data.frame(st) || nrow(st) == 0L) {
@@ -1275,6 +1283,7 @@ SurveyProtocol <- R6::R6Class(
     #' @return \code{TRUE} if the household tool role exists and any indicator
     #'   codes match, \code{FALSE} otherwise.
     #' @keywords internal
+    #' @noRd
     ..household_has_any_indicator = function(indicator_codes) {
       if (!private$..has_tool_role("household")) {
         return(FALSE)
@@ -1294,6 +1303,7 @@ SurveyProtocol <- R6::R6Class(
 
     #' @description Guard to prevent recursive calls during state synchronization.
     #' @keywords internal
+    #' @noRd
     ..post_sync_guard = FALSE,
 
     #' @description Synchronize sampling-related state fields.
@@ -1312,6 +1322,7 @@ SurveyProtocol <- R6::R6Class(
     #'
     #' @return Invisibly returns \code{NULL}.
     #' @keywords internal
+    #' @noRd
     ..sync_sampling_state = function() {
       st <- tryCatch(
         self$access_nested(
@@ -1404,6 +1415,7 @@ SurveyProtocol <- R6::R6Class(
     #'
     #' @return Invisibly returns \code{NULL}.
     #' @keywords internal
+    #' @noRd
     ..sync_sample_frame_state = function() {
       sf <- tryCatch(
         self$access_nested(field = "sampling_frame", member = "log_df"),

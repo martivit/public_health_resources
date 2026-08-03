@@ -202,280 +202,262 @@ datasets are overwritten with household values. Uses fallback logic to find avai
 [Data], [IndividualData], [DeathIndividualData], [WaterContainerData],
   [NutritionIndividualData], [HealthIndividualData]
 }
-\keyword{Aggregate}
-\keyword{Container}
-\keyword{Data}
-\keyword{Dataset}
-\keyword{Datasets}
-\keyword{Deaths}
-\keyword{Frame}
-\keyword{Generate}
-\keyword{Health}
-\keyword{Household}
-\keyword{Linked}
-\keyword{Merge}
-\keyword{Nutrition}
-\keyword{Roster}
-\keyword{Sampling}
-\keyword{Survey}
-\keyword{Variables}
-\keyword{Water}
-\keyword{Weights}
-\keyword{Women}
-\keyword{a}
-\keyword{from}
 \keyword{internal}
-\keyword{to}
 \section{Super class}{
-\code{\link[phr:Data]{phr::Data}} -> \code{HouseholdData}
+\code{\link[phr:Data]{Data}} -> \code{HouseholdData}
 }
 \section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{survey_design}}{Survey design object (srvyr) for weighted analyses (created at clean stage)}
+  \if{html}{\out{<div class="r6-fields">}}
+  \describe{
+    \item{\code{survey_design}}{Survey design object (srvyr) for weighted analyses (created at clean stage)}
 
-\item{\code{optional_columns}}{Character vector of optional columns commonly present in household data}
+    \item{\code{optional_columns}}{Character vector of optional columns commonly present in household data}
 
-\item{\code{sampling_frame}}{Optional \code{\link{SamplingFrame}} object used by \code{generate_weights()}
+    \item{\code{sampling_frame}}{Optional \code{\link{SamplingFrame}} object used by \code{generate_weights()}
 to derive survey weights from population totals per stratum.}
-}
-\if{html}{\out{</div>}}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-HouseholdData-new}{\code{HouseholdData$new()}}
-\item \href{#method-HouseholdData-default_schema}{\code{HouseholdData$default_schema()}}
-\item \href{#method-HouseholdData-default_indicator_schema}{\code{HouseholdData$default_indicator_schema()}}
-\item \href{#method-HouseholdData-default_dependency_schema}{\code{HouseholdData$default_dependency_schema()}}
-\item \href{#method-HouseholdData-post_validate}{\code{HouseholdData$post_validate()}}
-\item \href{#method-HouseholdData-add_linked_dataset}{\code{HouseholdData$add_linked_dataset()}}
-\item \href{#method-HouseholdData-..get_data_with_fallback}{\code{HouseholdData$..get_data_with_fallback()}}
-\item \href{#method-HouseholdData-generate_weights}{\code{HouseholdData$generate_weights()}}
-\item \href{#method-HouseholdData-pre_standardize}{\code{HouseholdData$pre_standardize()}}
-\item \href{#method-HouseholdData-generate_cleaning_log}{\code{HouseholdData$generate_cleaning_log()}}
-\item \href{#method-HouseholdData-clean}{\code{HouseholdData$clean()}}
-\item \href{#method-HouseholdData-get_survey_design}{\code{HouseholdData$get_survey_design()}}
-\item \href{#method-HouseholdData-generate_data_analytics}{\code{HouseholdData$generate_data_analytics()}}
-\item \href{#method-HouseholdData-..aggregate_linked_data}{\code{HouseholdData$..aggregate_linked_data()}}
-\item \href{#method-HouseholdData-..aggregate_deaths_data}{\code{HouseholdData$..aggregate_deaths_data()}}
-\item \href{#method-HouseholdData-..aggregate_water_container_data}{\code{HouseholdData$..aggregate_water_container_data()}}
-\item \href{#method-HouseholdData-..aggregate_roster_data}{\code{HouseholdData$..aggregate_roster_data()}}
-\item \href{#method-HouseholdData-..aggregate_nutrition_data}{\code{HouseholdData$..aggregate_nutrition_data()}}
-\item \href{#method-HouseholdData-..aggregate_health_data}{\code{HouseholdData$..aggregate_health_data()}}
-\item \href{#method-HouseholdData-..aggregate_women_data}{\code{HouseholdData$..aggregate_women_data()}}
-\item \href{#method-HouseholdData-..merge_household_vars_to_linked}{\code{HouseholdData$..merge_household_vars_to_linked()}}
-\item \href{#method-HouseholdData-clone}{\code{HouseholdData$clone()}}
+  \itemize{
+    \item \href{#method-HouseholdData-initialize}{\code{HouseholdData$new()}}
+    \item \href{#method-HouseholdData-default_schema}{\code{HouseholdData$default_schema()}}
+    \item \href{#method-HouseholdData-default_indicator_schema}{\code{HouseholdData$default_indicator_schema()}}
+    \item \href{#method-HouseholdData-default_dependency_schema}{\code{HouseholdData$default_dependency_schema()}}
+    \item \href{#method-HouseholdData-post_validate}{\code{HouseholdData$post_validate()}}
+    \item \href{#method-HouseholdData-add_linked_dataset}{\code{HouseholdData$add_linked_dataset()}}
+    \item \href{#method-HouseholdData-..get_data_with_fallback}{\code{HouseholdData$..get_data_with_fallback()}}
+    \item \href{#method-HouseholdData-generate_weights}{\code{HouseholdData$generate_weights()}}
+    \item \href{#method-HouseholdData-pre_standardize}{\code{HouseholdData$pre_standardize()}}
+    \item \href{#method-HouseholdData-generate_cleaning_log}{\code{HouseholdData$generate_cleaning_log()}}
+    \item \href{#method-HouseholdData-clean}{\code{HouseholdData$clean()}}
+    \item \href{#method-HouseholdData-get_survey_design}{\code{HouseholdData$get_survey_design()}}
+    \item \href{#method-HouseholdData-generate_data_analytics}{\code{HouseholdData$generate_data_analytics()}}
+    \item \href{#method-HouseholdData-..aggregate_linked_data}{\code{HouseholdData$..aggregate_linked_data()}}
+    \item \href{#method-HouseholdData-..aggregate_deaths_data}{\code{HouseholdData$..aggregate_deaths_data()}}
+    \item \href{#method-HouseholdData-..aggregate_water_container_data}{\code{HouseholdData$..aggregate_water_container_data()}}
+    \item \href{#method-HouseholdData-..aggregate_roster_data}{\code{HouseholdData$..aggregate_roster_data()}}
+    \item \href{#method-HouseholdData-..aggregate_nutrition_data}{\code{HouseholdData$..aggregate_nutrition_data()}}
+    \item \href{#method-HouseholdData-..aggregate_health_data}{\code{HouseholdData$..aggregate_health_data()}}
+    \item \href{#method-HouseholdData-..aggregate_women_data}{\code{HouseholdData$..aggregate_women_data()}}
+    \item \href{#method-HouseholdData-..merge_household_vars_to_linked}{\code{HouseholdData$..merge_household_vars_to_linked()}}
+    \item \href{#method-HouseholdData-clone}{\code{HouseholdData$clone()}}
+  }
 }
-}
-\if{html}{\out{
-<details><summary>Inherited methods</summary>
+\if{html}{\out{<details><summary>Inherited methods</summary>
 <ul>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id=".apply_cleaning_changes"><a href='../../phr/html/Data.html#method-Data-.apply_cleaning_changes'><code>phr::Data$.apply_cleaning_changes()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id=".extract_select_multiple_tokens"><a href='../../phr/html/Data.html#method-Data-.extract_select_multiple_tokens'><code>phr::Data$.extract_select_multiple_tokens()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id=".get_expression_parse_hint"><a href='../../phr/html/Data.html#method-Data-.get_expression_parse_hint'><code>phr::Data$.get_expression_parse_hint()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id=".is_select_multiple"><a href='../../phr/html/Data.html#method-Data-.is_select_multiple'><code>phr::Data$.is_select_multiple()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id=".translate_expression"><a href='../../phr/html/Data.html#method-Data-.translate_expression'><code>phr::Data$.translate_expression()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="data_diagnose"><a href='../../phr/html/Data.html#method-Data-data_diagnose'><code>phr::Data$data_diagnose()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="export_data"><a href='../../phr/html/Data.html#method-Data-export_data'><code>phr::Data$export_data()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="export_dependency_schema"><a href='../../phr/html/Data.html#method-Data-export_dependency_schema'><code>phr::Data$export_dependency_schema()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="export_indicator_schema"><a href='../../phr/html/Data.html#method-Data-export_indicator_schema'><code>phr::Data$export_indicator_schema()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="export_variable_schema"><a href='../../phr/html/Data.html#method-Data-export_variable_schema'><code>phr::Data$export_variable_schema()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="get_column_info"><a href='../../phr/html/Data.html#method-Data-get_column_info'><code>phr::Data$get_column_info()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="get_data"><a href='../../phr/html/Data.html#method-Data-get_data'><code>phr::Data$get_data()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="get_dependency_schema"><a href='../../phr/html/Data.html#method-Data-get_dependency_schema'><code>phr::Data$get_dependency_schema()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="get_flag_action_from_schema"><a href='../../phr/html/Data.html#method-Data-get_flag_action_from_schema'><code>phr::Data$get_flag_action_from_schema()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="get_flag_variables_from_schema"><a href='../../phr/html/Data.html#method-Data-get_flag_variables_from_schema'><code>phr::Data$get_flag_variables_from_schema()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="get_hash"><a href='../../phr/html/Data.html#method-Data-get_hash'><code>phr::Data$get_hash()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="get_indicator_schema"><a href='../../phr/html/Data.html#method-Data-get_indicator_schema'><code>phr::Data$get_indicator_schema()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="get_label"><a href='../../phr/html/Data.html#method-Data-get_label'><code>phr::Data$get_label()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="get_maps_as_df"><a href='../../phr/html/Data.html#method-Data-get_maps_as_df'><code>phr::Data$get_maps_as_df()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="get_value_labels"><a href='../../phr/html/Data.html#method-Data-get_value_labels'><code>phr::Data$get_value_labels()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="get_variable"><a href='../../phr/html/Data.html#method-Data-get_variable'><code>phr::Data$get_variable()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="get_variable_schema"><a href='../../phr/html/Data.html#method-Data-get_variable_schema'><code>phr::Data$get_variable_schema()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="import_cleaning_log"><a href='../../phr/html/Data.html#method-Data-import_cleaning_log'><code>phr::Data$import_cleaning_log()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="import_deletion_log"><a href='../../phr/html/Data.html#method-Data-import_deletion_log'><code>phr::Data$import_deletion_log()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="import_dependency_schema"><a href='../../phr/html/Data.html#method-Data-import_dependency_schema'><code>phr::Data$import_dependency_schema()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="import_indicator_schema"><a href='../../phr/html/Data.html#method-Data-import_indicator_schema'><code>phr::Data$import_indicator_schema()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="import_schema"><a href='../../phr/html/Data.html#method-Data-import_schema'><code>phr::Data$import_schema()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="import_variable_schema"><a href='../../phr/html/Data.html#method-Data-import_variable_schema'><code>phr::Data$import_variable_schema()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="load_object"><a href='../../phr/html/Data.html#method-Data-load_object'><code>phr::Data$load_object()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="map_schema_labels"><a href='../../phr/html/Data.html#method-Data-map_schema_labels'><code>phr::Data$map_schema_labels()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="map_schema_vars"><a href='../../phr/html/Data.html#method-Data-map_schema_vars'><code>phr::Data$map_schema_vars()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="post_standardize"><a href='../../phr/html/Data.html#method-Data-post_standardize'><code>phr::Data$post_standardize()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="post_standardize_domain"><a href='../../phr/html/Data.html#method-Data-post_standardize_domain'><code>phr::Data$post_standardize_domain()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="pre_validate"><a href='../../phr/html/Data.html#method-Data-pre_validate'><code>phr::Data$pre_validate()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="repair_maps"><a href='../../phr/html/Data.html#method-Data-repair_maps'><code>phr::Data$repair_maps()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="resolve_column"><a href='../../phr/html/Data.html#method-Data-resolve_column'><code>phr::Data$resolve_column()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="run_quality_checks"><a href='../../phr/html/Data.html#method-Data-run_quality_checks'><code>phr::Data$run_quality_checks()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="save_object"><a href='../../phr/html/Data.html#method-Data-save_object'><code>phr::Data$save_object()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="set_dependency_schema"><a href='../../phr/html/Data.html#method-Data-set_dependency_schema'><code>phr::Data$set_dependency_schema()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="set_indicator_schema"><a href='../../phr/html/Data.html#method-Data-set_indicator_schema'><code>phr::Data$set_indicator_schema()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="set_label"><a href='../../phr/html/Data.html#method-Data-set_label'><code>phr::Data$set_label()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="set_value_labels"><a href='../../phr/html/Data.html#method-Data-set_value_labels'><code>phr::Data$set_value_labels()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="set_variable"><a href='../../phr/html/Data.html#method-Data-set_variable'><code>phr::Data$set_variable()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="set_variable_schema"><a href='../../phr/html/Data.html#method-Data-set_variable_schema'><code>phr::Data$set_variable_schema()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="standardize"><a href='../../phr/html/Data.html#method-Data-standardize'><code>phr::Data$standardize()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="summary"><a href='../../phr/html/Data.html#method-Data-summary'><code>phr::Data$summary()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="update_metadata"><a href='../../phr/html/Data.html#method-Data-update_metadata'><code>phr::Data$update_metadata()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="validate"><a href='../../phr/html/Data.html#method-Data-validate'><code>phr::Data$validate()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="validate_links"><a href='../../phr/html/Data.html#method-Data-validate_links'><code>phr::Data$validate_links()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id=".apply_cleaning_changes"><a href='../../phr/html/Data.html#method-Data-.apply_cleaning_changes'><code>Data$.apply_cleaning_changes()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id=".extract_select_multiple_tokens"><a href='../../phr/html/Data.html#method-Data-.extract_select_multiple_tokens'><code>Data$.extract_select_multiple_tokens()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id=".get_expression_parse_hint"><a href='../../phr/html/Data.html#method-Data-.get_expression_parse_hint'><code>Data$.get_expression_parse_hint()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id=".is_select_multiple"><a href='../../phr/html/Data.html#method-Data-.is_select_multiple'><code>Data$.is_select_multiple()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id=".translate_expression"><a href='../../phr/html/Data.html#method-Data-.translate_expression'><code>Data$.translate_expression()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="data_diagnose"><a href='../../phr/html/Data.html#method-Data-data_diagnose'><code>Data$data_diagnose()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="export_data"><a href='../../phr/html/Data.html#method-Data-export_data'><code>Data$export_data()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="export_dependency_schema"><a href='../../phr/html/Data.html#method-Data-export_dependency_schema'><code>Data$export_dependency_schema()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="export_indicator_schema"><a href='../../phr/html/Data.html#method-Data-export_indicator_schema'><code>Data$export_indicator_schema()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="export_variable_schema"><a href='../../phr/html/Data.html#method-Data-export_variable_schema'><code>Data$export_variable_schema()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="get_column_info"><a href='../../phr/html/Data.html#method-Data-get_column_info'><code>Data$get_column_info()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="get_data"><a href='../../phr/html/Data.html#method-Data-get_data'><code>Data$get_data()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="get_dependency_schema"><a href='../../phr/html/Data.html#method-Data-get_dependency_schema'><code>Data$get_dependency_schema()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="get_flag_action_from_schema"><a href='../../phr/html/Data.html#method-Data-get_flag_action_from_schema'><code>Data$get_flag_action_from_schema()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="get_flag_variables_from_schema"><a href='../../phr/html/Data.html#method-Data-get_flag_variables_from_schema'><code>Data$get_flag_variables_from_schema()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="get_hash"><a href='../../phr/html/Data.html#method-Data-get_hash'><code>Data$get_hash()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="get_indicator_schema"><a href='../../phr/html/Data.html#method-Data-get_indicator_schema'><code>Data$get_indicator_schema()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="get_label"><a href='../../phr/html/Data.html#method-Data-get_label'><code>Data$get_label()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="get_maps_as_df"><a href='../../phr/html/Data.html#method-Data-get_maps_as_df'><code>Data$get_maps_as_df()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="get_value_labels"><a href='../../phr/html/Data.html#method-Data-get_value_labels'><code>Data$get_value_labels()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="get_variable"><a href='../../phr/html/Data.html#method-Data-get_variable'><code>Data$get_variable()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="get_variable_schema"><a href='../../phr/html/Data.html#method-Data-get_variable_schema'><code>Data$get_variable_schema()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="import_cleaning_log"><a href='../../phr/html/Data.html#method-Data-import_cleaning_log'><code>Data$import_cleaning_log()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="import_deletion_log"><a href='../../phr/html/Data.html#method-Data-import_deletion_log'><code>Data$import_deletion_log()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="import_dependency_schema"><a href='../../phr/html/Data.html#method-Data-import_dependency_schema'><code>Data$import_dependency_schema()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="import_indicator_schema"><a href='../../phr/html/Data.html#method-Data-import_indicator_schema'><code>Data$import_indicator_schema()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="import_schema"><a href='../../phr/html/Data.html#method-Data-import_schema'><code>Data$import_schema()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="import_variable_schema"><a href='../../phr/html/Data.html#method-Data-import_variable_schema'><code>Data$import_variable_schema()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="load_object"><a href='../../phr/html/Data.html#method-Data-load_object'><code>Data$load_object()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="map_schema_labels"><a href='../../phr/html/Data.html#method-Data-map_schema_labels'><code>Data$map_schema_labels()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="map_schema_vars"><a href='../../phr/html/Data.html#method-Data-map_schema_vars'><code>Data$map_schema_vars()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="post_standardize"><a href='../../phr/html/Data.html#method-Data-post_standardize'><code>Data$post_standardize()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="post_standardize_domain"><a href='../../phr/html/Data.html#method-Data-post_standardize_domain'><code>Data$post_standardize_domain()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="pre_validate"><a href='../../phr/html/Data.html#method-Data-pre_validate'><code>Data$pre_validate()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="repair_maps"><a href='../../phr/html/Data.html#method-Data-repair_maps'><code>Data$repair_maps()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="resolve_column"><a href='../../phr/html/Data.html#method-Data-resolve_column'><code>Data$resolve_column()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="run_quality_checks"><a href='../../phr/html/Data.html#method-Data-run_quality_checks'><code>Data$run_quality_checks()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="save_object"><a href='../../phr/html/Data.html#method-Data-save_object'><code>Data$save_object()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="set_dependency_schema"><a href='../../phr/html/Data.html#method-Data-set_dependency_schema'><code>Data$set_dependency_schema()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="set_indicator_schema"><a href='../../phr/html/Data.html#method-Data-set_indicator_schema'><code>Data$set_indicator_schema()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="set_label"><a href='../../phr/html/Data.html#method-Data-set_label'><code>Data$set_label()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="set_value_labels"><a href='../../phr/html/Data.html#method-Data-set_value_labels'><code>Data$set_value_labels()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="set_variable"><a href='../../phr/html/Data.html#method-Data-set_variable'><code>Data$set_variable()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="set_variable_schema"><a href='../../phr/html/Data.html#method-Data-set_variable_schema'><code>Data$set_variable_schema()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="standardize"><a href='../../phr/html/Data.html#method-Data-standardize'><code>Data$standardize()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="summary"><a href='../../phr/html/Data.html#method-Data-summary'><code>Data$summary()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="update_metadata"><a href='../../phr/html/Data.html#method-Data-update_metadata'><code>Data$update_metadata()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="validate"><a href='../../phr/html/Data.html#method-Data-validate'><code>Data$validate()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Data" data-id="validate_links"><a href='../../phr/html/Data.html#method-Data-validate_links'><code>Data$validate_links()</code></a></span></li>
 </ul>
-</details>
-}}
+</details>}}
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-HouseholdData-new"></a>}}
-\if{latex}{\out{\hypertarget{method-HouseholdData-new}{}}}
-\subsection{Method \code{new()}}{
-Creates a new HouseholdData object with household-level survey data
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{HouseholdData$new(
+\if{html}{\out{<a id="method-HouseholdData-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-HouseholdData-initialize}{}}}
+\subsection{\code{HouseholdData$new()}}{
+  Creates a new HouseholdData object with household-level survey data
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{HouseholdData$new(
   data,
   dataset_name = "HouseholdData",
   metadata = NULL,
   variable_map = NULL
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{data}}{Data frame containing household-level survey data}
-
-\item{\code{dataset_name}}{Character name for the dataset (default: "HouseholdData")}
-
-\item{\code{metadata}}{Optional list of metadata attributes}
-
-\item{\code{variable_map}}{Optional named list mapping variable roles to column names.
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{data}}{Data frame containing household-level survey data}
+      \item{\code{dataset_name}}{Character name for the dataset (default: "HouseholdData")}
+      \item{\code{metadata}}{Optional list of metadata attributes}
+      \item{\code{variable_map}}{Optional named list mapping variable roles to column names.
 Common roles: uuid, consent, date_survey, enum_id, cluster_id, stratum, weight, admin1, admin2, gps_lat, gps_lon}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A new HouseholdData R6 object
+  }
 }
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A new HouseholdData R6 object
-}
-}
+
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-HouseholdData-default_schema"></a>}}
 \if{latex}{\out{\hypertarget{method-HouseholdData-default_schema}{}}}
-\subsection{Method \code{default_schema()}}{
-Loads the default variable schema from the household variable schema template Excel file
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{HouseholdData$default_schema()}\if{html}{\out{</div>}}
+\subsection{\code{HouseholdData$default_schema()}}{
+  Loads the default variable schema from the household variable schema template Excel file
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{HouseholdData$default_schema()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Named list with variable schema definitions (types, allowed values, etc.)
+  }
 }
 
-\subsection{Returns}{
-Named list with variable schema definitions (types, allowed values, etc.)
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-HouseholdData-default_indicator_schema"></a>}}
 \if{latex}{\out{\hypertarget{method-HouseholdData-default_indicator_schema}{}}}
-\subsection{Method \code{default_indicator_schema()}}{
-Loads the default indicator schema from the household indicator schema template Excel file
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{HouseholdData$default_indicator_schema()}\if{html}{\out{</div>}}
+\subsection{\code{HouseholdData$default_indicator_schema()}}{
+  Loads the default indicator schema from the household indicator schema template Excel file
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{HouseholdData$default_indicator_schema()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Named list with indicator schema definitions, or empty list if template not found
+  }
 }
 
-\subsection{Returns}{
-Named list with indicator schema definitions, or empty list if template not found
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-HouseholdData-default_dependency_schema"></a>}}
 \if{latex}{\out{\hypertarget{method-HouseholdData-default_dependency_schema}{}}}
-\subsection{Method \code{default_dependency_schema()}}{
-Loads the default dependency schema from the household dependency schema template Excel file
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{HouseholdData$default_dependency_schema()}\if{html}{\out{</div>}}
+\subsection{\code{HouseholdData$default_dependency_schema()}}{
+  Loads the default dependency schema from the household dependency schema template Excel file
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{HouseholdData$default_dependency_schema()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    List with 'dependencies' element containing dependency definitions, or empty dependencies list if template not found
+  }
 }
 
-\subsection{Returns}{
-List with 'dependencies' element containing dependency definitions, or empty dependencies list if template not found
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-HouseholdData-post_validate"></a>}}
 \if{latex}{\out{\hypertarget{method-HouseholdData-post_validate}{}}}
-\subsection{Method \code{post_validate()}}{
-Hook method called after core validation completes. Performs household-specific validation checks.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{HouseholdData$post_validate(df)}\if{html}{\out{</div>}}
+\subsection{\code{HouseholdData$post_validate()}}{
+  Hook method called after core validation completes. Performs household-specific validation checks.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{HouseholdData$post_validate(df)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{df}}{Data frame that was validated}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Logical indicating validation success (TRUE if no issues, FALSE if warnings occurred)
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{df}}{Data frame that was validated}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Logical indicating validation success (TRUE if no issues, FALSE if warnings occurred)
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-HouseholdData-add_linked_dataset"></a>}}
 \if{latex}{\out{\hypertarget{method-HouseholdData-add_linked_dataset}{}}}
-\subsection{Method \code{add_linked_dataset()}}{
-Adds a Data object to the linked_objects list with validation of link name and object type.
+\subsection{\code{HouseholdData$add_linked_dataset()}}{
+  Adds a Data object to the linked_objects list with validation of link name and object type.
 This method overrides the base Data class method to provide household-specific validation.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{HouseholdData$add_linked_dataset(
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{HouseholdData$add_linked_dataset(
   name,
   data_object,
   by_self_role = NULL,
   by_other_role = NULL
-)}\if{html}{\out{</div>}}
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{name}}{Character name for the link. Must be one of: roster, deaths, water_containers, women, nutrition, health}
+      \item{\code{data_object}}{Data class or subclass object to link. Must match expected type for the link name.}
+      \item{\code{by_self_role}}{Not used - automatically set to "uuid". Parameter included for compatibility with base class signature.}
+      \item{\code{by_other_role}}{Not used - automatically set to "hh_uuid". Parameter included for compatibility with base class signature.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    TRUE invisibly on success
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{name}}{Character name for the link. Must be one of: roster, deaths, water_containers, women, nutrition, health}
-
-\item{\code{data_object}}{Data class or subclass object to link. Must match expected type for the link name.}
-
-\item{\code{by_self_role}}{Not used - automatically set to "uuid". Parameter included for compatibility with base class signature.}
-
-\item{\code{by_other_role}}{Not used - automatically set to "hh_uuid". Parameter included for compatibility with base class signature.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-TRUE invisibly on success
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-HouseholdData-..get_data_with_fallback"></a>}}
 \if{latex}{\out{\hypertarget{method-HouseholdData-..get_data_with_fallback}{}}}
-\subsection{Method \code{..get_data_with_fallback()}}{
-Internal helper to retrieve data from a Data object with automatic fallback to available stages
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{HouseholdData$..get_data_with_fallback(
+\subsection{\code{HouseholdData$..get_data_with_fallback()}}{
+  Internal helper to retrieve data from a Data object with automatic fallback to available stages
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{HouseholdData$..get_data_with_fallback(
   data_obj,
   stage = c("clean", "standardized", "raw")
-)}\if{html}{\out{</div>}}
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{data_obj}}{Data class object to retrieve data from}
+      \item{\code{stage}}{Character string specifying preferred stage: "clean", "standardized", or "raw"}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    List with 'data' (data frame) and 'stage' (character) elements, or NULL if no data found
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{data_obj}}{Data class object to retrieve data from}
-
-\item{\code{stage}}{Character string specifying preferred stage: "clean", "standardized", or "raw"}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-List with 'data' (data frame) and 'stage' (character) elements, or NULL if no data found
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-HouseholdData-generate_weights"></a>}}
 \if{latex}{\out{\hypertarget{method-HouseholdData-generate_weights}{}}}
-\subsection{Method \code{generate_weights()}}{
-Computes survey weights for each record by matching stratum values in the
+\subsection{\code{HouseholdData$generate_weights()}}{
+  Computes survey weights for each record by matching stratum values in the
 dataset against population totals held in a \code{\link{SamplingFrame}}.
 The weight for every row in stratum \eqn{s} is:
 \deqn{w_s = \frac{N_s / N}{n_s / n}}
@@ -486,444 +468,436 @@ households in stratum \eqn{s}, and \eqn{n} is the total sample size.
 This is the standard design weight for stratified sampling (proportion of
 population in the stratum divided by the proportion of the sample in the
 stratum).
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{HouseholdData$generate_weights(
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{HouseholdData$generate_weights(
   sampling_frame = NULL,
   stage = c("standardized", "clean", "raw")
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{sampling_frame}}{Optional \code{\link{SamplingFrame}} object. When
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{sampling_frame}}{Optional \code{\link{SamplingFrame}} object. When
 \code{NULL} (default), the method falls back to \code{self$sampling_frame}.
 If neither is available the method is skipped with an informational message.}
-
-\item{\code{stage}}{Character. Which data stage to add the weight column to.
+      \item{\code{stage}}{Character. Which data stage to add the weight column to.
 One of \code{"standardized"} (default), \code{"clean"}, or \code{"raw"}.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisible \code{self} (for method chaining). Modifies the dataset
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisible \code{self} (for method chaining). Modifies the dataset
   in place by adding or overwriting the mapped weight column and, if no
   weight column was previously mapped, registers \code{"survey_weight"} as
   the \code{weight} role in \code{variable_map}.
+  }
 }
-}
+
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-HouseholdData-pre_standardize"></a>}}
 \if{latex}{\out{\hypertarget{method-HouseholdData-pre_standardize}{}}}
-\subsection{Method \code{pre_standardize()}}{
-Hook method called before standardization begins. Generates survey weights
+\subsection{\code{HouseholdData$pre_standardize()}}{
+  Hook method called before standardization begins. Generates survey weights
 (if a SamplingFrame and stratum mapping are available), then checks linked
 datasets and aggregates data from them.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{HouseholdData$pre_standardize(stage = c("clean", "standardized", "raw"))}\if{html}{\out{</div>}}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{HouseholdData$pre_standardize(stage = c("clean", "standardized", "raw"))}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{stage}}{Character string specifying source stage: "clean", "standardized", or "raw"}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    NULL (modifies household data in place by adding aggregated columns)
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{stage}}{Character string specifying source stage: "clean", "standardized", or "raw"}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-NULL (modifies household data in place by adding aggregated columns)
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-HouseholdData-generate_cleaning_log"></a>}}
 \if{latex}{\out{\hypertarget{method-HouseholdData-generate_cleaning_log}{}}}
-\subsection{Method \code{generate_cleaning_log()}}{
-Generates a cleaning log for the household dataset by calling the parent
+\subsection{\code{HouseholdData$generate_cleaning_log()}}{
+  Generates a cleaning log for the household dataset by calling the parent
 implementation, then propagates the call to all linked data objects so
 that each linked dataset produces its own cleaning log entries.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{HouseholdData$generate_cleaning_log(stage = "standardized", overwrite = FALSE)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{stage}}{Character string specifying the data stage to use:
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{HouseholdData$generate_cleaning_log(stage = "standardized", overwrite = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{stage}}{Character string specifying the data stage to use:
 "standardized" (default), "clean", or "raw"}
-
-\item{\code{overwrite}}{Logical; if TRUE, clears the existing cleaning log before
+      \item{\code{overwrite}}{Logical; if TRUE, clears the existing cleaning log before
 generating new entries (default: FALSE)}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-NULL (invisibly). Side effect: populates cleaning logs on the
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    NULL (invisibly). Side effect: populates cleaning logs on the
   household object and on every linked data object.
 Clean Household and Linked Datasets
+  }
 }
-}
+
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-HouseholdData-clean"></a>}}
 \if{latex}{\out{\hypertarget{method-HouseholdData-clean}{}}}
-\subsection{Method \code{clean()}}{
-Cleans the household dataset by calling the parent implementation, then
+\subsection{\code{HouseholdData$clean()}}{
+  Cleans the household dataset by calling the parent implementation, then
 propagates the call to all linked data objects so that each linked dataset
 is cleaned using its own cleaning and deletion logs.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{HouseholdData$clean()}\if{html}{\out{</div>}}
-}
-
-\subsection{Returns}{
-NULL (invisibly). Side effect: sets \code{clean_data} on the
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{HouseholdData$clean()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    NULL (invisibly). Side effect: sets \code{clean_data} on the
   household object and on every linked data object.
 Get Survey Design Object
+  }
 }
-}
+
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-HouseholdData-get_survey_design"></a>}}
 \if{latex}{\out{\hypertarget{method-HouseholdData-get_survey_design}{}}}
-\subsection{Method \code{get_survey_design()}}{
-Creates and returns a srvyr survey design object for weighted analyses
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{HouseholdData$get_survey_design(stage = c("clean", "standardized", "raw"))}\if{html}{\out{</div>}}
+\subsection{\code{HouseholdData$get_survey_design()}}{
+  Creates and returns a srvyr survey design object for weighted analyses
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{HouseholdData$get_survey_design(stage = c("clean", "standardized", "raw"))}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{stage}}{Character string specifying data stage: "clean", "standardized", or "raw"}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A srvyr survey design object, or NULL if required fields are missing
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{stage}}{Character string specifying data stage: "clean", "standardized", or "raw"}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A srvyr survey design object, or NULL if required fields are missing
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-HouseholdData-generate_data_analytics"></a>}}
 \if{latex}{\out{\hypertarget{method-HouseholdData-generate_data_analytics}{}}}
-\subsection{Method \code{generate_data_analytics()}}{
-Generate a thematic DataAnalytics object for household data.
+\subsection{\code{HouseholdData$generate_data_analytics()}}{
+  Generate a thematic DataAnalytics object for household data.
 
 Creates a unified analytics object integrating both data quality checks and
 quantitative analysis for the specified sector.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{HouseholdData$generate_data_analytics(
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{HouseholdData$generate_data_analytics(
   stage = c("standardized", "clean"),
   type = c("fsl", "wash", "health", "mortality", "general"),
   analysis_config = NULL
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{stage}}{The data stage to use ("standardized" or "clean")}
-
-\item{\code{type}}{The type of analytics object to create ("fsl", "wash", "health", "mortality", "general")}
-
-\item{\code{analysis_config}}{Optional analysis configuration (data analysis plan tibble)}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A DataAnalytics subclass object or NULL
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{stage}}{The data stage to use ("standardized" or "clean")}
+      \item{\code{type}}{The type of analytics object to create ("fsl", "wash", "health", "mortality", "general")}
+      \item{\code{analysis_config}}{Optional analysis configuration (data analysis plan tibble)}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A DataAnalytics subclass object or NULL
 Aggregate Linked Dataset Data
+  }
 }
-}
+
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-HouseholdData-..aggregate_linked_data"></a>}}
 \if{latex}{\out{\hypertarget{method-HouseholdData-..aggregate_linked_data}{}}}
-\subsection{Method \code{..aggregate_linked_data()}}{
-Internal helper that processes linked datasets and adds aggregated columns to household data
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{HouseholdData$..aggregate_linked_data(
+\subsection{\code{HouseholdData$..aggregate_linked_data()}}{
+  Internal helper that processes linked datasets and adds aggregated columns to household data
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{HouseholdData$..aggregate_linked_data(
   hh_data,
   stage = c("clean", "standardized", "raw")
-)}\if{html}{\out{</div>}}
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{hh_data}}{Data frame of household data to augment with aggregated columns}
+      \item{\code{stage}}{Character string specifying data stage: "clean", "standardized", or "raw"}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Modified household data frame with additional aggregated columns
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{hh_data}}{Data frame of household data to augment with aggregated columns}
-
-\item{\code{stage}}{Character string specifying data stage: "clean", "standardized", or "raw"}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Modified household data frame with additional aggregated columns
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-HouseholdData-..aggregate_deaths_data"></a>}}
 \if{latex}{\out{\hypertarget{method-HouseholdData-..aggregate_deaths_data}{}}}
-\subsection{Method \code{..aggregate_deaths_data()}}{
-Internal helper that aggregates death and person_time data from linked DeathIndividualData
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{HouseholdData$..aggregate_deaths_data(
+\subsection{\code{HouseholdData$..aggregate_deaths_data()}}{
+  Internal helper that aggregates death and person_time data from linked DeathIndividualData
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{HouseholdData$..aggregate_deaths_data(
   hh_data,
   deaths_data,
   hh_uuid_col,
   linked_hh_col,
   link_name,
   linked_obj
-)}\if{html}{\out{</div>}}
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{hh_data}}{Data frame of household data to augment}
+      \item{\code{deaths_data}}{Data frame of deaths data from linked dataset}
+      \item{\code{hh_uuid_col}}{Column name for household UUID in household data}
+      \item{\code{linked_hh_col}}{Column name for household foreign key in deaths data}
+      \item{\code{link_name}}{Character name of the link}
+      \item{\code{linked_obj}}{The linked Data object}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Modified household data frame with aggregated death columns
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{hh_data}}{Data frame of household data to augment}
-
-\item{\code{deaths_data}}{Data frame of deaths data from linked dataset}
-
-\item{\code{hh_uuid_col}}{Column name for household UUID in household data}
-
-\item{\code{linked_hh_col}}{Column name for household foreign key in deaths data}
-
-\item{\code{link_name}}{Character name of the link}
-
-\item{\code{linked_obj}}{The linked Data object}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Modified household data frame with aggregated death columns
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-HouseholdData-..aggregate_water_container_data"></a>}}
 \if{latex}{\out{\hypertarget{method-HouseholdData-..aggregate_water_container_data}{}}}
-\subsection{Method \code{..aggregate_water_container_data()}}{
-Internal helper that aggregates water container data from linked WaterContainerData
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{HouseholdData$..aggregate_water_container_data(
+\subsection{\code{HouseholdData$..aggregate_water_container_data()}}{
+  Internal helper that aggregates water container data from linked WaterContainerData
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{HouseholdData$..aggregate_water_container_data(
   hh_data,
   water_data,
   hh_uuid_col,
   linked_hh_col,
   link_name,
   linked_obj
-)}\if{html}{\out{</div>}}
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{hh_data}}{Data frame of household data to augment}
+      \item{\code{water_data}}{Data frame of water container data from linked dataset}
+      \item{\code{hh_uuid_col}}{Column name for household UUID in household data}
+      \item{\code{linked_hh_col}}{Column name for household foreign key in water data}
+      \item{\code{link_name}}{Character name of the link}
+      \item{\code{linked_obj}}{The linked Data object}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Modified household data frame with aggregated water container columns
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{hh_data}}{Data frame of household data to augment}
-
-\item{\code{water_data}}{Data frame of water container data from linked dataset}
-
-\item{\code{hh_uuid_col}}{Column name for household UUID in household data}
-
-\item{\code{linked_hh_col}}{Column name for household foreign key in water data}
-
-\item{\code{link_name}}{Character name of the link}
-
-\item{\code{linked_obj}}{The linked Data object}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Modified household data frame with aggregated water container columns
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-HouseholdData-..aggregate_roster_data"></a>}}
 \if{latex}{\out{\hypertarget{method-HouseholdData-..aggregate_roster_data}{}}}
-\subsection{Method \code{..aggregate_roster_data()}}{
-Internal helper that aggregates roster (individual) data from linked IndividualData
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{HouseholdData$..aggregate_roster_data(
+\subsection{\code{HouseholdData$..aggregate_roster_data()}}{
+  Internal helper that aggregates roster (individual) data from linked IndividualData
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{HouseholdData$..aggregate_roster_data(
   hh_data,
   roster_data,
   hh_uuid_col,
   linked_hh_col,
   link_name,
   linked_obj
-)}\if{html}{\out{</div>}}
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{hh_data}}{Data frame of household data to augment}
+      \item{\code{roster_data}}{Data frame of roster data from linked dataset}
+      \item{\code{hh_uuid_col}}{Column name for household UUID in household data}
+      \item{\code{linked_hh_col}}{Column name for household foreign key in roster data}
+      \item{\code{link_name}}{Character name of the link}
+      \item{\code{linked_obj}}{The linked Data object}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Modified household data frame with aggregated roster columns
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{hh_data}}{Data frame of household data to augment}
-
-\item{\code{roster_data}}{Data frame of roster data from linked dataset}
-
-\item{\code{hh_uuid_col}}{Column name for household UUID in household data}
-
-\item{\code{linked_hh_col}}{Column name for household foreign key in roster data}
-
-\item{\code{link_name}}{Character name of the link}
-
-\item{\code{linked_obj}}{The linked Data object}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Modified household data frame with aggregated roster columns
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-HouseholdData-..aggregate_nutrition_data"></a>}}
 \if{latex}{\out{\hypertarget{method-HouseholdData-..aggregate_nutrition_data}{}}}
-\subsection{Method \code{..aggregate_nutrition_data()}}{
-Internal helper that aggregates nutrition data from linked NutritionIndividualData
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{HouseholdData$..aggregate_nutrition_data(
+\subsection{\code{HouseholdData$..aggregate_nutrition_data()}}{
+  Internal helper that aggregates nutrition data from linked NutritionIndividualData
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{HouseholdData$..aggregate_nutrition_data(
   hh_data,
   nutrition_data,
   hh_uuid_col,
   linked_hh_col,
   link_name,
   linked_obj
-)}\if{html}{\out{</div>}}
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{hh_data}}{Data frame of household data to augment}
+      \item{\code{nutrition_data}}{Data frame of nutrition data from linked dataset}
+      \item{\code{hh_uuid_col}}{Column name for household UUID in household data}
+      \item{\code{linked_hh_col}}{Column name for household foreign key in nutrition data}
+      \item{\code{link_name}}{Character name of the link}
+      \item{\code{linked_obj}}{The linked Data object}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Modified household data frame with aggregated nutrition columns
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{hh_data}}{Data frame of household data to augment}
-
-\item{\code{nutrition_data}}{Data frame of nutrition data from linked dataset}
-
-\item{\code{hh_uuid_col}}{Column name for household UUID in household data}
-
-\item{\code{linked_hh_col}}{Column name for household foreign key in nutrition data}
-
-\item{\code{link_name}}{Character name of the link}
-
-\item{\code{linked_obj}}{The linked Data object}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Modified household data frame with aggregated nutrition columns
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-HouseholdData-..aggregate_health_data"></a>}}
 \if{latex}{\out{\hypertarget{method-HouseholdData-..aggregate_health_data}{}}}
-\subsection{Method \code{..aggregate_health_data()}}{
-Internal helper that aggregates health data from linked HealthIndividualData
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{HouseholdData$..aggregate_health_data(
+\subsection{\code{HouseholdData$..aggregate_health_data()}}{
+  Internal helper that aggregates health data from linked HealthIndividualData
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{HouseholdData$..aggregate_health_data(
   hh_data,
   health_data,
   hh_uuid_col,
   linked_hh_col,
   link_name,
   linked_obj
-)}\if{html}{\out{</div>}}
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{hh_data}}{Data frame of household data to augment}
+      \item{\code{health_data}}{Data frame of health data from linked dataset}
+      \item{\code{hh_uuid_col}}{Column name for household UUID in household data}
+      \item{\code{linked_hh_col}}{Column name for household foreign key in health data}
+      \item{\code{link_name}}{Character name of the link}
+      \item{\code{linked_obj}}{The linked Data object}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Modified household data frame with aggregated health columns
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{hh_data}}{Data frame of household data to augment}
-
-\item{\code{health_data}}{Data frame of health data from linked dataset}
-
-\item{\code{hh_uuid_col}}{Column name for household UUID in household data}
-
-\item{\code{linked_hh_col}}{Column name for household foreign key in health data}
-
-\item{\code{link_name}}{Character name of the link}
-
-\item{\code{linked_obj}}{The linked Data object}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Modified household data frame with aggregated health columns
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-HouseholdData-..aggregate_women_data"></a>}}
 \if{latex}{\out{\hypertarget{method-HouseholdData-..aggregate_women_data}{}}}
-\subsection{Method \code{..aggregate_women_data()}}{
-Internal helper that aggregates women data from linked WomenIndividualData
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{HouseholdData$..aggregate_women_data(
+\subsection{\code{HouseholdData$..aggregate_women_data()}}{
+  Internal helper that aggregates women data from linked WomenIndividualData
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{HouseholdData$..aggregate_women_data(
   hh_data,
   women_data,
   hh_uuid_col,
   linked_hh_col,
   link_name,
   linked_obj
-)}\if{html}{\out{</div>}}
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{hh_data}}{Data frame of household data to augment}
+      \item{\code{women_data}}{Data frame of women data from linked dataset}
+      \item{\code{hh_uuid_col}}{Column name for household UUID in household data}
+      \item{\code{linked_hh_col}}{Column name for household foreign key in women data}
+      \item{\code{link_name}}{Character name of the link}
+      \item{\code{linked_obj}}{The linked Data object}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Modified household data frame with aggregated women columns
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{hh_data}}{Data frame of household data to augment}
-
-\item{\code{women_data}}{Data frame of women data from linked dataset}
-
-\item{\code{hh_uuid_col}}{Column name for household UUID in household data}
-
-\item{\code{linked_hh_col}}{Column name for household foreign key in women data}
-
-\item{\code{link_name}}{Character name of the link}
-
-\item{\code{linked_obj}}{The linked Data object}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Modified household data frame with aggregated women columns
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-HouseholdData-..merge_household_vars_to_linked"></a>}}
 \if{latex}{\out{\hypertarget{method-HouseholdData-..merge_household_vars_to_linked}{}}}
-\subsection{Method \code{..merge_household_vars_to_linked()}}{
-Internal helper that merges key household-level variables to linked datasets
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{HouseholdData$..merge_household_vars_to_linked(
+\subsection{\code{HouseholdData$..merge_household_vars_to_linked()}}{
+  Internal helper that merges key household-level variables to linked datasets
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{HouseholdData$..merge_household_vars_to_linked(
   linked_obj,
   link_name,
   hh_stage = c("clean", "standardized", "raw"),
   linked_stage = c("clean", "standardized", "raw")
-)}\if{html}{\out{</div>}}
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{linked_obj}}{The linked Data object to receive merged variables}
+      \item{\code{link_name}}{Character name of the link}
+      \item{\code{hh_stage}}{Character string specifying household data stage: "clean", "standardized", or "raw"}
+      \item{\code{linked_stage}}{Character string specifying linked data stage: "clean", "standardized", or "raw"}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    TRUE invisibly on success, NULL on failure
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{linked_obj}}{The linked Data object to receive merged variables}
-
-\item{\code{link_name}}{Character name of the link}
-
-\item{\code{hh_stage}}{Character string specifying household data stage: "clean", "standardized", or "raw"}
-
-\item{\code{linked_stage}}{Character string specifying linked data stage: "clean", "standardized", or "raw"}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-TRUE invisibly on success, NULL on failure
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-HouseholdData-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-HouseholdData-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{HouseholdData$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{HouseholdData$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{HouseholdData$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

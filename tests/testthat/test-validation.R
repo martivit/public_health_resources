@@ -16,9 +16,9 @@ test_that("validate() correctly validates select_multiple mapped values", {
     )
   )
 
-  d <- suppressMessages(suppressWarnings(
+  d <- suppressMessages(
     Data$new(data = df, dataset_name = "TestData", uuid = "id")
-  ))
+  )
 
   # Schema with select_multiple question type and nested value_map
   schema <- list(
@@ -74,9 +74,9 @@ test_that("data_diagnose() correctly diagnoses select_multiple mapped values", {
     )
   )
 
-  d <- suppressMessages(suppressWarnings(
+  d <- suppressMessages(
     Data$new(data = df, dataset_name = "TestData", uuid = "id")
-  ))
+  )
 
   schema <- list(
     types = list(
@@ -137,9 +137,9 @@ test_that("validate() correctly handles select_multiple with old allowed_values 
     transport = c("car bus", "bike", "car bike")
   )
 
-  d <- suppressMessages(suppressWarnings(
+  d <- suppressMessages(
     Data$new(data = df, dataset_name = "TestData", uuid = "id")
-  ))
+  )
 
   schema <- list(
     types = list(
@@ -173,9 +173,9 @@ test_that("validate() still catches truly missing values in select_multiple", {
     food = c("rice beans", "rice", "beans")
   )
 
-  d <- suppressMessages(suppressWarnings(
+  d <- suppressMessages(
     Data$new(data = df, dataset_name = "TestData", uuid = "id")
-  ))
+  )
 
   # Manually set up a value_map with a value that doesn't exist
   d$variable_map$food <- "food"
@@ -199,9 +199,9 @@ test_that("validate() still catches truly missing values in select_multiple", {
 
 test_that(".extract_select_multiple_tokens helper works correctly", {
   df <- tibble::tibble(id = 1:3)
-  d <- suppressMessages(suppressWarnings(
+  d <- suppressMessages(
     Data$new(data = df, dataset_name = "TestData", uuid = "id")
-  ))
+  )
 
   # Test normal space-separated values
   tokens <- d$.extract_select_multiple_tokens(c("a b", "c d", "a"))
@@ -222,9 +222,9 @@ test_that(".extract_select_multiple_tokens helper works correctly", {
 
 test_that(".is_select_multiple helper works correctly", {
   df <- tibble::tibble(id = 1:3)
-  d <- suppressMessages(suppressWarnings(
+  d <- suppressMessages(
     Data$new(data = df, dataset_name = "TestData", uuid = "id")
-  ))
+  )
 
   # Without schema
   expect_false(d$.is_select_multiple("any_var"))
@@ -255,9 +255,9 @@ test_that(".is_select_multiple helper works correctly", {
 
 test_that("validate() uses raw data when neither standardized nor cleaned", {
   df <- tibble::tibble(id = 1:3, x = c("a", "b", "c"))
-  d <- suppressMessages(suppressWarnings(
+  d <- suppressMessages(
     Data$new(data = df, uuid = "id")
-  ))
+  )
 
   # No standardization or cleaning yet
   expect_false(d$standardized)
@@ -272,9 +272,9 @@ test_that("validate() uses raw data when neither standardized nor cleaned", {
 
 test_that("validate() uses standardized data when self$standardized is TRUE", {
   df <- tibble::tibble(id = 1:3, x = c("1", "2", "3"))
-  d <- suppressMessages(suppressWarnings(
+  d <- suppressMessages(
     Data$new(data = df, uuid = "id")
-  ))
+  )
 
   # Standardize the data
   d$validate()
@@ -296,9 +296,9 @@ test_that("validate() uses standardized data when self$standardized is TRUE", {
 
 test_that("validate() uses clean data when self$cleaned is TRUE", {
   df <- tibble::tibble(id = 1:3, x = c("1", "2", "3"))
-  d <- suppressMessages(suppressWarnings(
+  d <- suppressMessages(
     Data$new(data = df, uuid = "id")
-  ))
+  )
 
   # Go through full pipeline
   d$validate()
@@ -322,9 +322,9 @@ test_that("validate() uses clean data when self$cleaned is TRUE", {
 
 test_that("validate() respects explicit stage parameter over automatic selection", {
   df <- tibble::tibble(id = 1:3, x = c("1", "2", "3"))
-  d <- suppressMessages(suppressWarnings(
+  d <- suppressMessages(
     Data$new(data = df, uuid = "id")
-  ))
+  )
 
   # Standardize and clean
   d$validate()
@@ -349,9 +349,9 @@ test_that("validate() respects explicit stage parameter over automatic selection
 
 test_that("validate() automatic selection works with invalid standardized data", {
   df <- tibble::tibble(id = 1:3, x = c("1", "2", "3"))
-  d <- suppressMessages(suppressWarnings(
+  d <- suppressMessages(
     Data$new(data = df, uuid = "id")
-  ))
+  )
 
   # Standardize
   d$validate()
@@ -372,9 +372,9 @@ test_that("validate() automatic selection works with invalid standardized data",
 
 test_that("validate() automatic selection message indicates correct stage", {
   df <- tibble::tibble(id = 1:3, x = c("1", "2", "3"))
-  d <- suppressMessages(suppressWarnings(
+  d <- suppressMessages(
     Data$new(data = df, uuid = "id")
-  ))
+  )
 
   # Test with raw data (default)
   expect_message(
@@ -401,9 +401,9 @@ test_that("validate() automatic selection message indicates correct stage", {
 
 test_that("validate() works correctly when cleaned flag is TRUE but clean_data is NULL", {
   df <- tibble::tibble(id = 1:3, x = c("1", "2", "3"))
-  d <- suppressMessages(suppressWarnings(
+  d <- suppressMessages(
     Data$new(data = df, uuid = "id")
-  ))
+  )
 
   # Set cleaned flag but don't actually have clean data (edge case)
   d$cleaned <- TRUE
@@ -419,9 +419,9 @@ test_that("validate() works correctly when cleaned flag is TRUE but clean_data i
 
 test_that("validate() works correctly when standardized flag is TRUE but standardized_data is NULL", {
   df <- tibble::tibble(id = 1:3, x = c("1", "2", "3"))
-  d <- suppressMessages(suppressWarnings(
+  d <- suppressMessages(
     Data$new(data = df, uuid = "id")
-  ))
+  )
 
   # Set standardized flag but don't actually have standardized data (edge case)
   d$standardized <- TRUE
@@ -437,9 +437,9 @@ test_that("validate() works correctly when standardized flag is TRUE but standar
 
 test_that("validate() preserves backward compatibility with explicit stage calls", {
   df <- tibble::tibble(id = 1:3, x = c("1", "2", "3"))
-  d <- suppressMessages(suppressWarnings(
+  d <- suppressMessages(
     Data$new(data = df, uuid = "id")
-  ))
+  )
 
   # All explicit stage calls should still work as before
   d$validate(stage = "raw")

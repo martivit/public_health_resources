@@ -18,7 +18,10 @@
 #' \code{generate_data_analytics(type = "mortality")}. When \code{run_analysis()} or
 #' \code{run_outputs()} are called, each available dataset (household, roster, deaths) is
 #' processed using its dedicated schema and results are stored under the corresponding
-#' named sub-list.
+#' named sub-list. This is driven by the \code{pre_run_analysis()} and
+#' \code{pre_run_outputs()} hooks, which return one input set (data, schema, survey
+#' designs, analysis plan) per available dataset; the inherited \code{run_analysis()}
+#' and \code{run_outputs()} iterate over these sets.
 #'
 #' @field linked_ind_roster_data Optional linked roster dataframe
 #' @field linked_ind_roster_data_stage_name Name of linked roster data stage
@@ -633,197 +636,115 @@ MortalityDataAnalytics <- R6::R6Class(
     },
 
     #' @description
-    #' Run quantitative analysis for all available mortality datasets.
+    #' Pre-hook providing the input sets used by the inherited \code{run_analysis()}.
     #'
-    #' Analysis is run independently for each available dataset:
+    #' Returns one input set per available mortality dataset:
     #' \describe{
-    #'   \item{household}{Always run using the inherited \code{analysis_schema} and
-    #'     survey design from the household data. Results stored in
-    #'     \code{analysis_results$household}.}
-    #'   \item{roster}{Run when \code{linked_ind_roster_data} is available and
+    #'   \item{household}{Always included, using the core \code{data},
+    #'     \code{survey_design} and \code{data_analysis_plan} fields. Results
+    #'     stored in \code{analysis_results$household}.}
+    #'   \item{roster}{Included when \code{linked_ind_roster_data} is available and
     #'     \code{data_analysis_plan_roster} contains at least one indicator. Results
     #'     stored in \code{analysis_results$roster}.}
-    #'   \item{deaths}{Run when \code{linked_ind_deaths_data} is available and
+    #'   \item{deaths}{Included when \code{linked_ind_deaths_data} is available and
     #'     \code{data_analysis_plan_deaths} contains at least one indicator. Results
     #'     stored in \code{analysis_results$deaths}.}
     #' }
     #'
-    #' @return Invisibly returns self.
-    run_analysis = function() {
-      origin <- paste0(self$dataset_name, "$run_analysis")
-      phr_message(origin, "Running mortality analysis for all available datasets...")
+    #' @return A named list of field sets.
+    pre_run_analysis = function() {
+      origin <- paste0(self$dataset_name, "$pre_run_analysis")
 
-      phr_try({
+      sets <- list(
+        household = list(
+          data = "data",
+          survey_design = "survey_design",
+          data_analysis_plan = "data_analysis_plan"
+        )
+      )
 
-        # --- Household analysis (base class logic)
-        super$run_analysis()
-        household_results        <- self$analysis_results
-        self$analysis_results    <- list(household = household_results)
-
-        # --- Roster analysis
-        roster_dap_rows <- private$.dap_row_count(self$data_analysis_plan_roster)
-
-        if (!is.null(self$linked_ind_roster_data) && roster_dap_rows > 0L) {
-
-          phr_message(origin, "Running analysis for linked roster data using data_analysis_plan_roster...")
-
-          roster_survey <- private$.create_survey_design_for_dataset(
-            data         = self$linked_ind_roster_data,
-            variable_map = self$variable_map,
-            origin       = origin
+      if (!is.null(self$linked_ind_roster_data)) {
+        if (private$.dap_row_count(self$data_analysis_plan_roster) > 0L) {
+          sets$roster <- list(
+            data = "linked_ind_roster_data",
+            survey_design = "survey_design_roster",
+            data_analysis_plan = "data_analysis_plan_roster"
           )
-
-          if (!is.null(roster_survey)) {
-            roster_sd_results <- phr_try(
-              phr_calc_survey_from_plan(
-                design        = roster_survey,
-                analysis_plan = self$data_analysis_plan_roster$log_df
-              ),
-              on_error = "warn",
-              origin   = origin,
-              hint     = "Verify all variables exist in linked_ind_roster_data."
-            )
-            # survey_design carries the weighted/clustered design result; base carries
-            # the same result set. phr_calc_survey_from_plan returns a plain list so
-            # R's copy-on-modify semantics keep the two fields independent if mutated.
-            self$analysis_results[["roster"]] <- list(
-              survey_design = roster_sd_results,
-              base          = roster_sd_results
-            )
-          }
-
-        } else if (!is.null(self$linked_ind_roster_data)) {
+        } else {
           phr_message(origin, "Linked roster data present but data_analysis_plan_roster is empty. Skipping roster analysis.")
         }
+      }
 
-        # --- Deaths analysis
-        deaths_dap_rows <- private$.dap_row_count(self$data_analysis_plan_deaths)
-
-        if (!is.null(self$linked_ind_deaths_data) && deaths_dap_rows > 0L) {
-
-          phr_message(origin, "Running analysis for linked deaths data using data_analysis_plan_deaths...")
-
-          deaths_survey <- private$.create_survey_design_for_dataset(
-            data         = self$linked_ind_deaths_data,
-            variable_map = self$variable_map,
-            origin       = origin
+      if (!is.null(self$linked_ind_deaths_data)) {
+        if (private$.dap_row_count(self$data_analysis_plan_deaths) > 0L) {
+          sets$deaths <- list(
+            data = "linked_ind_deaths_data",
+            survey_design = "survey_design_deaths",
+            data_analysis_plan = "data_analysis_plan_deaths"
           )
-
-          if (!is.null(deaths_survey)) {
-            deaths_sd_results <- phr_try(
-              phr_calc_survey_from_plan(
-                design        = deaths_survey,
-                analysis_plan = self$data_analysis_plan_deaths$log_df
-              ),
-              on_error = "warn",
-              origin   = origin,
-              hint     = "Verify all variables exist in linked_ind_deaths_data."
-            )
-            # survey_design carries the weighted/clustered design result; base carries
-            # the same result set. phr_calc_survey_from_plan returns a plain list so
-            # R's copy-on-modify semantics keep the two fields independent if mutated.
-            self$analysis_results[["deaths"]] <- list(
-              survey_design = deaths_sd_results,
-              base          = deaths_sd_results
-            )
-          }
-
-        } else if (!is.null(self$linked_ind_deaths_data)) {
+        } else {
           phr_message(origin, "Linked deaths data present but data_analysis_plan_deaths is empty. Skipping deaths analysis.")
         }
+      }
 
-        phr_message(
-          origin,
-          phr_txt(glue::glue(
-            "Mortality analysis complete. Datasets analysed: {paste(names(self$analysis_results), collapse = ', ')}."
-          ))
-        )
-
-      }, on_error = "warn", origin = origin)
-
-      invisible(self)
+      sets
     },
 
     #' @description
-    #' Run all outputs for all available mortality datasets.
+    #' Pre-hook providing the input sets used by the inherited \code{run_outputs()}.
     #'
-    #' Outputs are generated independently for each available dataset and stored
-    #' in named sub-lists:
-    #' \describe{
-    #'   \item{\code{visualizations$household} / \code{tables$household}}{Household outputs
-    #'     using \code{outputs_schema}.}
-    #'   \item{\code{visualizations$roster} / \code{tables$roster}}{Roster outputs using
-    #'     \code{outputs_schema_roster} (only when \code{linked_ind_roster_data} is set and
-    #'     \code{outputs_schema_roster} is non-empty).}
-    #'   \item{\code{visualizations$deaths} / \code{tables$deaths}}{Deaths outputs using
-    #'     \code{outputs_schema_deaths} (only when \code{linked_ind_deaths_data} is set and
-    #'     \code{outputs_schema_deaths} is non-empty).}
-    #' }
+    #' Returns one input set per available mortality dataset so that outputs are
+    #' generated independently for each dataset and stored in named sub-lists
+    #' (\code{visualizations$household} / \code{tables$household},
+    #' \code{visualizations$roster} / \code{tables$roster},
+    #' \code{visualizations$deaths} / \code{tables$deaths}). Each set passes
+    #' the appropriate survey design objects for the dataset, so output entries
+    #' with \code{dataset_type = "survey_design"} receive the weighted design and
+    #' \code{"data"}/\code{"base"} entries receive the unweighted base design.
     #'
-    #' @param language Character string specifying the language for auto-generated
-    #'   titles. One of \code{"english"} (default), \code{"french"}, or
-    #'   \code{"arabic"}.
-    #' @return Invisibly returns a list with \code{visualizations} and \code{tables}.
-    run_outputs = function(language = "english") {
-      origin <- paste0(self$dataset_name, "$run_outputs")
+    #' @return A named list of field sets.
+    pre_run_outputs = function() {
+      origin <- paste0(self$dataset_name, "$pre_run_outputs")
 
-      phr_try({
+      sets <- list(
+        household = list(
+          data = "data",
+          outputs_schema = "outputs_schema",
+          base_survey_design = "base_survey_design",
+          survey_design = "survey_design",
+          variable_map = "variable_map"
+        )
+      )
 
-        # --- Household outputs: call parent, then wrap in $household
-        saved_viz        <- self$visualizations
-        saved_tbl        <- self$tables
-        self$visualizations <- list()
-        self$tables         <- list()
-
-        super$run_outputs(language = language)
-
-        saved_viz[["household"]] <- self$visualizations
-        saved_tbl[["household"]] <- self$tables
-
-        self$visualizations <- saved_viz
-        self$tables         <- saved_tbl
-
-        # --- Roster outputs
-        if (!is.null(self$linked_ind_roster_data) &&
-            !is.null(self$outputs_schema_roster) &&
-            length(self$outputs_schema_roster) > 0) {
-
-          private$.run_outputs_for_namespace(
-            data           = self$linked_ind_roster_data,
-            outputs_schema = self$outputs_schema_roster,
-            namespace      = "roster",
-            survey_design  = self$survey_design_roster,
-            language       = language
+      if (!is.null(self$linked_ind_roster_data)) {
+        if (length(self$outputs_schema_roster %||% list()) > 0) {
+          sets$roster <- list(
+            data = "linked_ind_roster_data",
+            outputs_schema = "outputs_schema_roster",
+            base_survey_design = "base_survey_design_roster",
+            survey_design = "survey_design_roster",
+            variable_map = "variable_map"
           )
-
-        } else if (!is.null(self$linked_ind_roster_data)) {
-          phr_message(phr_txt(glue::glue("{origin}: Linked roster data present but outputs_schema_roster is empty. Skipping roster outputs.")))
+        } else {
+          phr_message(origin, "Linked roster data present but outputs_schema_roster is empty. Skipping roster outputs.")
         }
+      }
 
-        # --- Deaths outputs
-        if (!is.null(self$linked_ind_deaths_data) &&
-            !is.null(self$outputs_schema_deaths) &&
-            length(self$outputs_schema_deaths) > 0) {
-
-          private$.run_outputs_for_namespace(
-            data           = self$linked_ind_deaths_data,
-            outputs_schema = self$outputs_schema_deaths,
-            namespace      = "deaths",
-            survey_design  = self$survey_design_deaths,
-            language       = language
+      if (!is.null(self$linked_ind_deaths_data)) {
+        if (length(self$outputs_schema_deaths %||% list()) > 0) {
+          sets$deaths <- list(
+            data = "linked_ind_deaths_data",
+            outputs_schema = "outputs_schema_deaths",
+            base_survey_design = "base_survey_design_deaths",
+            survey_design = "survey_design_deaths",
+            variable_map = "variable_map"
           )
-
-        } else if (!is.null(self$linked_ind_deaths_data)) {
-          phr_message(phr_txt(glue::glue("{origin}: Linked deaths data present but outputs_schema_deaths is empty. Skipping deaths outputs.")))
+        } else {
+          phr_message(origin, "Linked deaths data present but outputs_schema_deaths is empty. Skipping deaths outputs.")
         }
+      }
 
-        phr_message(phr_txt(glue::glue(
-          "{origin}: run_outputs complete. Namespaces: {paste(names(self$visualizations), collapse = ', ')}."
-        )))
-
-        invisible(list(visualizations = self$visualizations, tables = self$tables))
-
-      }, on_error = "warn", origin = origin)
+      sets
     }
 
   ),
@@ -1066,176 +987,6 @@ MortalityDataAnalytics <- R6::R6Class(
       )
 
       list(survey_design = survey_results, base = survey_results)
-    },
-
-    # Run outputs for an arbitrary dataset, storing results under a namespace sub-list.
-    #
-    # For each output defined in \code{outputs_schema}, the specified output function
-    # is called with the appropriate first positional argument (determined by
-    # \code{dataset_type} in the output entry) and any additional parameters
-    # resolved from \code{test_params}. Results are stored in
-    # \code{self$visualizations[[namespace]]} or \code{self$tables[[namespace]]}
-    # depending on \code{output_type}.
-    #
-    # Supported \code{dataset_type} values per output entry:
-    # \describe{
-    #   \item{"data"}{uses \code{data} as the first argument (default)}
-    #   \item{"survey_design"}{uses the pre-built \code{survey_design} object as the
-    #     first argument. If \code{survey_design} is \code{NULL}, outputs requesting
-    #     this type are skipped with a warning.}
-    # }
-    #
-    # @param data A data frame for the namespace dataset.
-    # @param outputs_schema A named list of output definitions (as produced by
-    #   \code{outputs_table_to_schema}).
-    # @param namespace Character; key used for the sub-list in \code{self$visualizations}
-    #   and \code{self$tables} (e.g., "roster" or "deaths").
-    # @param survey_design An srvyr survey design object for the namespace dataset,
-    #   used when an output entry has \code{dataset_type = "survey_design"}.
-    #   Should be pre-built and stored (e.g. \code{self$survey_design_roster}).
-    # @return Invisibly returns NULL.
-    .run_outputs_for_namespace = function(data, outputs_schema, namespace,
-                                          survey_design = NULL, language = "english") {
-      origin <- paste0(self$dataset_name, "$.run_outputs_for_namespace[", namespace, "]")
-
-      if (is.null(outputs_schema) || length(outputs_schema) == 0) {
-        return(invisible(NULL))
-      }
-
-      phr_message(phr_txt(glue::glue(
-        "Running {length(outputs_schema)} output(s) for '{namespace}' dataset..."
-      )))
-
-      self$visualizations[[namespace]] <- self$visualizations[[namespace]] %||% list()
-      self$tables[[namespace]]         <- self$tables[[namespace]]         %||% list()
-
-      for (out_name in names(outputs_schema)) {
-        out <- outputs_schema[[out_name]]
-
-        phr_try({
-
-          func_name <- out$output_func_name
-          if (is.null(func_name) || is.na(func_name) || !nzchar(func_name)) {
-            phr_warning(
-              message = phr_txt(glue::glue(
-                "Output '{out_name}' in '{namespace}' schema has no output_func_name. Skipping."
-              )),
-              origin = origin
-            )
-            next
-          }
-
-          output_function <- NULL
-          if (requireNamespace("phr", quietly = TRUE)) {
-            tryCatch({
-              ns_env <- asNamespace("phr")
-              if (exists(func_name, envir = ns_env, mode = "function", inherits = FALSE)) {
-                output_function <- get(func_name, envir = ns_env, mode = "function", inherits = FALSE)
-              }
-            }, error = function(e) NULL)
-          }
-          if (is.null(output_function)) {
-            tryCatch({
-              if (exists(func_name, mode = "function", inherits = TRUE)) {
-                output_function <- get(func_name, mode = "function", inherits = TRUE)
-              }
-            }, error = function(e) NULL)
-          }
-
-          if (is.null(output_function)) {
-            phr_warning(
-              message = phr_txt(glue::glue(
-                "Function '{func_name}' for '{namespace}' output '{out_name}' not found. Skipping."
-              )),
-              origin = origin
-            )
-            next
-          }
-
-          # Determine first positional argument from dataset_type.
-          # "survey_design" – the pre-built survey design for this namespace dataset.
-          # "data" (default) – the raw data frame.
-          dataset_type <- if (!is.null(out$dataset_type) &&
-                               !is.na(out$dataset_type) &&
-                               nzchar(out$dataset_type)) {
-            out$dataset_type
-          } else "data"
-
-          if (dataset_type == "survey_design") {
-            if (is.null(survey_design)) {
-              phr_warning(
-                message = phr_txt(glue::glue(
-                  "Output '{out_name}' in '{namespace}' requires dataset_type='survey_design' but ",
-                  "no survey design is available for this dataset. Skipping."
-                )),
-                origin = origin
-              )
-              next
-            }
-            func_args <- list(survey_design)
-          } else {
-            func_args <- list(data)
-          }
-
-          if (!is.null(out$test_params) && length(out$test_params) > 0) {
-            func_args <- private$.resolve_output_params(
-              func_args          = func_args,
-              test_params        = out$test_params,
-              out_name           = out_name,
-              skip_results_table = TRUE
-            )
-          }
-
-          # Storage key: use output_name field; fall back to out_name (schema list key)
-          label <- if (!is.null(out$output_name) && !is.na(out$output_name) && nzchar(out$output_name)) {
-            out$output_name
-          } else {
-            out_name
-          }
-
-          # Auto-inject title_name unless already supplied in test_params
-          if (is.null(func_args[["title_name"]])) {
-            title_field <- switch(language,
-              "french"  = "output_title_french",
-              "arabic"  = "output_title_arabic",
-              "output_title_english"
-            )
-            auto_title <- out[[title_field]]
-            if (is.null(auto_title) || is.na(auto_title) || !nzchar(auto_title)) {
-              auto_title <- out$output_title
-            }
-            if (!is.null(auto_title) && !is.na(auto_title) && nzchar(auto_title)) {
-              func_args[["title_name"]] <- auto_title
-            }
-          }
-
-          phr_message(phr_txt(glue::glue(
-            "Calling {func_name} for '{namespace}' output '{out_name}'..."
-          )))
-
-          output_result <- do.call(output_function, func_args)
-
-          if (!is.null(out$output_type) && out$output_type == "table") {
-            self$tables[[namespace]][[label]] <- output_result
-            phr_message(phr_txt(glue::glue("Table '{label}' stored in tables${namespace}.")))
-          } else if (!is.null(out$output_type) && out$output_type == "visualization") {
-            self$visualizations[[namespace]][[label]] <- output_result
-            phr_message(phr_txt(glue::glue("Visualization '{label}' stored in visualizations${namespace}.")))
-          } else {
-            phr_warning(
-              message = phr_txt(glue::glue(
-                "Output '{out_name}' in '{namespace}' schema has unrecognized output_type ",
-                "'{out$output_type}'. Expected 'visualization' or 'table'. Result not stored."
-              )),
-              origin = origin
-            )
-          }
-
-        }, on_error = "warn",
-           origin   = paste0(origin, "$", out_name))
-      }
-
-      invisible(NULL)
     }
 
   )

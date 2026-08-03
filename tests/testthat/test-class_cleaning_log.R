@@ -145,11 +145,9 @@ test_that("CleaningLog validate checks allowed values for changed", {
   expect_true("disallowed_values" %in% names(issues))
 
   # Assert the warning exists, but don't print it
-  suppressWarnings(
-    expect_warning(
-      log$validate(),
-      regexp = "Log validation completed with issues"
-    )
+  expect_warning(
+    log$validate(),
+    regexp = "Log validation completed with issues"
   )
 })
 

@@ -67,7 +67,7 @@ QuantDataAnalysisPlanLog <- R6::R6Class(
           indicator_unit = "character"
         ),
         allowed_values = list(
-          calculation = c("prop", "mean", "median", "ratio", "categorical", "select_multiple_cat")
+          calculation = c("prop", "mean", "median", "ratio", "cat", "categorical", "select_multiple_cat")
         )
       )
 

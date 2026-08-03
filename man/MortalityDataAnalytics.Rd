@@ -28,134 +28,133 @@ named sub-list.
 [DataAnalytics]
 }
 \section{Super class}{
-\code{\link[phr:DataAnalytics]{phr::DataAnalytics}} -> \code{MortalityDataAnalytics}
+\code{\link[phr:DataAnalytics]{DataAnalytics}} -> \code{MortalityDataAnalytics}
 }
 \section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{linked_ind_roster_data}}{Optional linked roster dataframe}
+  \if{html}{\out{<div class="r6-fields">}}
+  \describe{
+    \item{\code{linked_ind_roster_data}}{Optional linked roster dataframe}
 
-\item{\code{linked_ind_roster_data_stage_name}}{Name of linked roster data stage}
+    \item{\code{linked_ind_roster_data_stage_name}}{Name of linked roster data stage}
 
-\item{\code{linked_ind_roster_data_hash}}{Hash of linked roster data}
+    \item{\code{linked_ind_roster_data_hash}}{Hash of linked roster data}
 
-\item{\code{linked_ind_roster_variable_map}}{Variable mappings for linked roster data}
+    \item{\code{linked_ind_roster_variable_map}}{Variable mappings for linked roster data}
 
-\item{\code{linked_ind_roster_value_map}}{Value mappings for linked roster data}
+    \item{\code{linked_ind_roster_value_map}}{Value mappings for linked roster data}
 
-\item{\code{linked_ind_roster_variable_label}}{Variable labels for linked roster data}
+    \item{\code{linked_ind_roster_variable_label}}{Variable labels for linked roster data}
 
-\item{\code{linked_ind_roster_value_label}}{Value labels for linked roster data}
+    \item{\code{linked_ind_roster_value_label}}{Value labels for linked roster data}
 
-\item{\code{linked_ind_deaths_data}}{Optional linked deaths dataframe}
+    \item{\code{linked_ind_deaths_data}}{Optional linked deaths dataframe}
 
-\item{\code{linked_ind_deaths_data_stage_name}}{Name of linked deaths data stage}
+    \item{\code{linked_ind_deaths_data_stage_name}}{Name of linked deaths data stage}
 
-\item{\code{linked_ind_deaths_data_hash}}{Hash of linked deaths data}
+    \item{\code{linked_ind_deaths_data_hash}}{Hash of linked deaths data}
 
-\item{\code{linked_ind_deaths_variable_map}}{Variable mappings for linked deaths data}
+    \item{\code{linked_ind_deaths_variable_map}}{Variable mappings for linked deaths data}
 
-\item{\code{linked_ind_deaths_value_map}}{Value mappings for linked deaths data}
+    \item{\code{linked_ind_deaths_value_map}}{Value mappings for linked deaths data}
 
-\item{\code{linked_ind_deaths_variable_label}}{Variable labels for linked deaths data}
+    \item{\code{linked_ind_deaths_variable_label}}{Variable labels for linked deaths data}
 
-\item{\code{linked_ind_deaths_value_label}}{Value labels for linked deaths data}
+    \item{\code{linked_ind_deaths_value_label}}{Value labels for linked deaths data}
 
-\item{\code{analysis_schema_roster}}{Analysis schema for linked roster dataset}
+    \item{\code{analysis_schema_roster}}{Analysis schema for linked roster dataset}
 
-\item{\code{analysis_schema_deaths}}{Analysis schema for linked deaths dataset}
+    \item{\code{analysis_schema_deaths}}{Analysis schema for linked deaths dataset}
 
-\item{\code{outputs_schema_roster}}{Outputs schema for linked roster dataset}
+    \item{\code{outputs_schema_roster}}{Outputs schema for linked roster dataset}
 
-\item{\code{outputs_schema_deaths}}{Outputs schema for linked deaths dataset}
+    \item{\code{outputs_schema_deaths}}{Outputs schema for linked deaths dataset}
 
-\item{\code{data_analysis_plan_roster}}{Data analysis plan for linked roster dataset}
+    \item{\code{data_analysis_plan_roster}}{Data analysis plan for linked roster dataset}
 
-\item{\code{data_analysis_plan_deaths}}{Data analysis plan for linked deaths dataset}
+    \item{\code{data_analysis_plan_deaths}}{Data analysis plan for linked deaths dataset}
 
-\item{\code{survey_design_roster}}{srvyr survey design object for the linked roster dataset}
+    \item{\code{survey_design_roster}}{srvyr survey design object for the linked roster dataset}
 
-\item{\code{survey_design_deaths}}{srvyr survey design object for the linked deaths dataset}
+    \item{\code{survey_design_deaths}}{srvyr survey design object for the linked deaths dataset}
 
-\item{\code{base_survey_design_roster}}{Unfiltered base srvyr survey design object for the linked roster dataset}
+    \item{\code{base_survey_design_roster}}{Unfiltered base srvyr survey design object for the linked roster dataset}
 
-\item{\code{base_survey_design_deaths}}{Unfiltered base srvyr survey design object for the linked deaths dataset}
-}
-\if{html}{\out{</div>}}
+    \item{\code{base_survey_design_deaths}}{Unfiltered base srvyr survey design object for the linked deaths dataset}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-MortalityDataAnalytics-new}{\code{MortalityDataAnalytics$new()}}
-\item \href{#method-MortalityDataAnalytics-default_quality_schema}{\code{MortalityDataAnalytics$default_quality_schema()}}
-\item \href{#method-MortalityDataAnalytics-default_outputs_schema}{\code{MortalityDataAnalytics$default_outputs_schema()}}
-\item \href{#method-MortalityDataAnalytics-default_analysis_schema}{\code{MortalityDataAnalytics$default_analysis_schema()}}
-\item \href{#method-MortalityDataAnalytics-default_outputs_schema_roster}{\code{MortalityDataAnalytics$default_outputs_schema_roster()}}
-\item \href{#method-MortalityDataAnalytics-default_outputs_schema_deaths}{\code{MortalityDataAnalytics$default_outputs_schema_deaths()}}
-\item \href{#method-MortalityDataAnalytics-default_analysis_schema_roster}{\code{MortalityDataAnalytics$default_analysis_schema_roster()}}
-\item \href{#method-MortalityDataAnalytics-default_analysis_schema_deaths}{\code{MortalityDataAnalytics$default_analysis_schema_deaths()}}
-\item \href{#method-MortalityDataAnalytics-generate_dap_from_schema_roster}{\code{MortalityDataAnalytics$generate_dap_from_schema_roster()}}
-\item \href{#method-MortalityDataAnalytics-generate_dap_from_schema_deaths}{\code{MortalityDataAnalytics$generate_dap_from_schema_deaths()}}
-\item \href{#method-MortalityDataAnalytics-run_analysis}{\code{MortalityDataAnalytics$run_analysis()}}
-\item \href{#method-MortalityDataAnalytics-run_outputs}{\code{MortalityDataAnalytics$run_outputs()}}
-\item \href{#method-MortalityDataAnalytics-clone}{\code{MortalityDataAnalytics$clone()}}
+  \itemize{
+    \item \href{#method-MortalityDataAnalytics-initialize}{\code{MortalityDataAnalytics$new()}}
+    \item \href{#method-MortalityDataAnalytics-default_quality_schema}{\code{MortalityDataAnalytics$default_quality_schema()}}
+    \item \href{#method-MortalityDataAnalytics-default_outputs_schema}{\code{MortalityDataAnalytics$default_outputs_schema()}}
+    \item \href{#method-MortalityDataAnalytics-default_analysis_schema}{\code{MortalityDataAnalytics$default_analysis_schema()}}
+    \item \href{#method-MortalityDataAnalytics-default_outputs_schema_roster}{\code{MortalityDataAnalytics$default_outputs_schema_roster()}}
+    \item \href{#method-MortalityDataAnalytics-default_outputs_schema_deaths}{\code{MortalityDataAnalytics$default_outputs_schema_deaths()}}
+    \item \href{#method-MortalityDataAnalytics-default_analysis_schema_roster}{\code{MortalityDataAnalytics$default_analysis_schema_roster()}}
+    \item \href{#method-MortalityDataAnalytics-default_analysis_schema_deaths}{\code{MortalityDataAnalytics$default_analysis_schema_deaths()}}
+    \item \href{#method-MortalityDataAnalytics-generate_dap_from_schema_roster}{\code{MortalityDataAnalytics$generate_dap_from_schema_roster()}}
+    \item \href{#method-MortalityDataAnalytics-generate_dap_from_schema_deaths}{\code{MortalityDataAnalytics$generate_dap_from_schema_deaths()}}
+    \item \href{#method-MortalityDataAnalytics-run_analysis}{\code{MortalityDataAnalytics$run_analysis()}}
+    \item \href{#method-MortalityDataAnalytics-run_outputs}{\code{MortalityDataAnalytics$run_outputs()}}
+    \item \href{#method-MortalityDataAnalytics-clone}{\code{MortalityDataAnalytics$clone()}}
+  }
 }
-}
-\if{html}{\out{
-<details><summary>Inherited methods</summary>
+\if{html}{\out{<details><summary>Inherited methods</summary>
 <ul>
-<li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id=".compute_results_by_group"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-.compute_results_by_group'><code>phr::DataAnalytics$.compute_results_by_group()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id=".translate_canonical_to_actual_vars"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-.translate_canonical_to_actual_vars'><code>phr::DataAnalytics$.translate_canonical_to_actual_vars()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="add_indicator_dap"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-add_indicator_dap'><code>phr::DataAnalytics$add_indicator_dap()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="analysis_diagnose"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-analysis_diagnose'><code>phr::DataAnalytics$analysis_diagnose()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="calculate_overall_score"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-calculate_overall_score'><code>phr::DataAnalytics$calculate_overall_score()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="create_survey_design"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-create_survey_design'><code>phr::DataAnalytics$create_survey_design()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="evaluate_threshold_expressions"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-evaluate_threshold_expressions'><code>phr::DataAnalytics$evaluate_threshold_expressions()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="execute_check"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-execute_check'><code>phr::DataAnalytics$execute_check()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="export_analysis_schema"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-export_analysis_schema'><code>phr::DataAnalytics$export_analysis_schema()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="export_outputs_schema"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-export_outputs_schema'><code>phr::DataAnalytics$export_outputs_schema()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="export_quality_schema"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-export_quality_schema'><code>phr::DataAnalytics$export_quality_schema()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="export_results"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-export_results'><code>phr::DataAnalytics$export_results()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="export_state_object"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-export_state_object'><code>phr::DataAnalytics$export_state_object()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="generate_dap_from_schema"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-generate_dap_from_schema'><code>phr::DataAnalytics$generate_dap_from_schema()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="generate_plausibility_report"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-generate_plausibility_report'><code>phr::DataAnalytics$generate_plausibility_report()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="generate_report"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-generate_report'><code>phr::DataAnalytics$generate_report()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="get_analysis_schema"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-get_analysis_schema'><code>phr::DataAnalytics$get_analysis_schema()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="get_outputs_schema"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-get_outputs_schema'><code>phr::DataAnalytics$get_outputs_schema()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="get_quality_schema"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-get_quality_schema'><code>phr::DataAnalytics$get_quality_schema()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="get_results"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-get_results'><code>phr::DataAnalytics$get_results()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="get_variable"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-get_variable'><code>phr::DataAnalytics$get_variable()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="import_analysis_schema"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-import_analysis_schema'><code>phr::DataAnalytics$import_analysis_schema()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="import_outputs_schema"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-import_outputs_schema'><code>phr::DataAnalytics$import_outputs_schema()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="import_quality_schema"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-import_quality_schema'><code>phr::DataAnalytics$import_quality_schema()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="import_schema_from_table"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-import_schema_from_table'><code>phr::DataAnalytics$import_schema_from_table()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="load_state_object"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-load_state_object'><code>phr::DataAnalytics$load_state_object()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="outputs_diagnose"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-outputs_diagnose'><code>phr::DataAnalytics$outputs_diagnose()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="post_run_analysis"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-post_run_analysis'><code>phr::DataAnalytics$post_run_analysis()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="quality_diagnose"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-quality_diagnose'><code>phr::DataAnalytics$quality_diagnose()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="remove_indicator_dap"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-remove_indicator_dap'><code>phr::DataAnalytics$remove_indicator_dap()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="results_to_table"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-results_to_table'><code>phr::DataAnalytics$results_to_table()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="run_quality_checks"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-run_quality_checks'><code>phr::DataAnalytics$run_quality_checks()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="schema_to_table"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-schema_to_table'><code>phr::DataAnalytics$schema_to_table()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="set_analysis_schema"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-set_analysis_schema'><code>phr::DataAnalytics$set_analysis_schema()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="set_outputs_schema"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-set_outputs_schema'><code>phr::DataAnalytics$set_outputs_schema()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="set_quality_schema"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-set_quality_schema'><code>phr::DataAnalytics$set_quality_schema()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="summary"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-summary'><code>phr::DataAnalytics$summary()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="to_list_schema"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-to_list_schema'><code>phr::DataAnalytics$to_list_schema()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="validate_plan"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-validate_plan'><code>phr::DataAnalytics$validate_plan()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="validate_quality_schema"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-validate_quality_schema'><code>phr::DataAnalytics$validate_quality_schema()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="validate_schema"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-validate_schema'><code>phr::DataAnalytics$validate_schema()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="visualize"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-visualize'><code>phr::DataAnalytics$visualize()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id=".compute_results_by_group"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-.compute_results_by_group'><code>DataAnalytics$.compute_results_by_group()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id=".translate_canonical_to_actual_vars"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-.translate_canonical_to_actual_vars'><code>DataAnalytics$.translate_canonical_to_actual_vars()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="add_indicator_dap"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-add_indicator_dap'><code>DataAnalytics$add_indicator_dap()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="analysis_diagnose"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-analysis_diagnose'><code>DataAnalytics$analysis_diagnose()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="calculate_overall_score"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-calculate_overall_score'><code>DataAnalytics$calculate_overall_score()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="create_survey_design"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-create_survey_design'><code>DataAnalytics$create_survey_design()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="evaluate_threshold_expressions"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-evaluate_threshold_expressions'><code>DataAnalytics$evaluate_threshold_expressions()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="execute_check"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-execute_check'><code>DataAnalytics$execute_check()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="export_analysis_schema"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-export_analysis_schema'><code>DataAnalytics$export_analysis_schema()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="export_outputs_schema"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-export_outputs_schema'><code>DataAnalytics$export_outputs_schema()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="export_quality_schema"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-export_quality_schema'><code>DataAnalytics$export_quality_schema()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="export_results"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-export_results'><code>DataAnalytics$export_results()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="export_state_object"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-export_state_object'><code>DataAnalytics$export_state_object()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="generate_dap_from_schema"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-generate_dap_from_schema'><code>DataAnalytics$generate_dap_from_schema()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="generate_plausibility_report"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-generate_plausibility_report'><code>DataAnalytics$generate_plausibility_report()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="generate_report"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-generate_report'><code>DataAnalytics$generate_report()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="get_analysis_schema"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-get_analysis_schema'><code>DataAnalytics$get_analysis_schema()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="get_outputs_schema"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-get_outputs_schema'><code>DataAnalytics$get_outputs_schema()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="get_quality_schema"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-get_quality_schema'><code>DataAnalytics$get_quality_schema()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="get_results"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-get_results'><code>DataAnalytics$get_results()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="get_variable"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-get_variable'><code>DataAnalytics$get_variable()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="import_analysis_schema"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-import_analysis_schema'><code>DataAnalytics$import_analysis_schema()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="import_outputs_schema"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-import_outputs_schema'><code>DataAnalytics$import_outputs_schema()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="import_quality_schema"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-import_quality_schema'><code>DataAnalytics$import_quality_schema()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="import_schema_from_table"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-import_schema_from_table'><code>DataAnalytics$import_schema_from_table()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="load_state_object"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-load_state_object'><code>DataAnalytics$load_state_object()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="outputs_diagnose"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-outputs_diagnose'><code>DataAnalytics$outputs_diagnose()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="post_run_analysis"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-post_run_analysis'><code>DataAnalytics$post_run_analysis()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="quality_diagnose"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-quality_diagnose'><code>DataAnalytics$quality_diagnose()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="remove_indicator_dap"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-remove_indicator_dap'><code>DataAnalytics$remove_indicator_dap()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="results_to_table"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-results_to_table'><code>DataAnalytics$results_to_table()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="run_quality_checks"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-run_quality_checks'><code>DataAnalytics$run_quality_checks()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="schema_to_table"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-schema_to_table'><code>DataAnalytics$schema_to_table()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="set_analysis_schema"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-set_analysis_schema'><code>DataAnalytics$set_analysis_schema()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="set_outputs_schema"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-set_outputs_schema'><code>DataAnalytics$set_outputs_schema()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="set_quality_schema"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-set_quality_schema'><code>DataAnalytics$set_quality_schema()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="summary"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-summary'><code>DataAnalytics$summary()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="to_list_schema"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-to_list_schema'><code>DataAnalytics$to_list_schema()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="validate_plan"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-validate_plan'><code>DataAnalytics$validate_plan()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="validate_quality_schema"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-validate_quality_schema'><code>DataAnalytics$validate_quality_schema()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="validate_schema"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-validate_schema'><code>DataAnalytics$validate_schema()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="visualize"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-visualize'><code>DataAnalytics$visualize()</code></a></span></li>
 </ul>
-</details>
-}}
+</details>}}
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-MortalityDataAnalytics-new"></a>}}
-\if{latex}{\out{\hypertarget{method-MortalityDataAnalytics-new}{}}}
-\subsection{Method \code{new()}}{
-Initialize a new MortalityDataAnalytics object
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MortalityDataAnalytics$new(
+\if{html}{\out{<a id="method-MortalityDataAnalytics-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-MortalityDataAnalytics-initialize}{}}}
+\subsection{\code{MortalityDataAnalytics$new()}}{
+  Initialize a new MortalityDataAnalytics object
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MortalityDataAnalytics$new(
   data,
   dap = NULL,
   parent_data_object = NULL,
@@ -181,200 +180,195 @@ Initialize a new MortalityDataAnalytics object
   linked_ind_deaths_value_map = NULL,
   linked_ind_deaths_variable_label = NULL,
   linked_ind_deaths_value_label = NULL
-)}\if{html}{\out{</div>}}
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{data}}{A required data frame (standardized or clean household/mortality data)}
+      \item{\code{dap}}{Optional data analysis plan (tibble)}
+      \item{\code{parent_data_object}}{The Data object that generated this}
+      \item{\code{dataset_name}}{A name for this analytics assessment}
+      \item{\code{data_stage_name}}{Name of the data stage (e.g., "standardized", "clean")}
+      \item{\code{data_hash}}{Hash of the data from parent Data object}
+      \item{\code{variable_map}}{Variable mappings from Data object}
+      \item{\code{value_map}}{Value mappings from Data object}
+      \item{\code{variable_label}}{Variable labels from Data object}
+      \item{\code{value_label}}{Value labels from Data object}
+      \item{\code{quality_schema}}{Optional quality check schema}
+      \item{\code{linked_ind_roster_data}}{Optional linked roster dataframe}
+      \item{\code{linked_ind_roster_data_stage_name}}{Name of linked roster data stage}
+      \item{\code{linked_ind_roster_data_hash}}{Hash of linked roster data}
+      \item{\code{linked_ind_roster_variable_map}}{Variable mappings for linked roster data}
+      \item{\code{linked_ind_roster_value_map}}{Value mappings for linked roster data}
+      \item{\code{linked_ind_roster_variable_label}}{Variable labels for linked roster data}
+      \item{\code{linked_ind_roster_value_label}}{Value labels for linked roster data}
+      \item{\code{linked_ind_deaths_data}}{Optional linked deaths dataframe}
+      \item{\code{linked_ind_deaths_data_stage_name}}{Name of linked deaths data stage}
+      \item{\code{linked_ind_deaths_data_hash}}{Hash of linked deaths data}
+      \item{\code{linked_ind_deaths_variable_map}}{Variable mappings for linked deaths data}
+      \item{\code{linked_ind_deaths_value_map}}{Value mappings for linked deaths data}
+      \item{\code{linked_ind_deaths_variable_label}}{Variable labels for linked deaths data}
+      \item{\code{linked_ind_deaths_value_label}}{Value labels for linked deaths data}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A new MortalityDataAnalytics object
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{data}}{A required data frame (standardized or clean household/mortality data)}
-
-\item{\code{dap}}{Optional data analysis plan (tibble)}
-
-\item{\code{parent_data_object}}{The Data object that generated this}
-
-\item{\code{dataset_name}}{A name for this analytics assessment}
-
-\item{\code{data_stage_name}}{Name of the data stage (e.g., "standardized", "clean")}
-
-\item{\code{data_hash}}{Hash of the data from parent Data object}
-
-\item{\code{variable_map}}{Variable mappings from Data object}
-
-\item{\code{value_map}}{Value mappings from Data object}
-
-\item{\code{variable_label}}{Variable labels from Data object}
-
-\item{\code{value_label}}{Value labels from Data object}
-
-\item{\code{quality_schema}}{Optional quality check schema}
-
-\item{\code{linked_ind_roster_data}}{Optional linked roster dataframe}
-
-\item{\code{linked_ind_roster_data_stage_name}}{Name of linked roster data stage}
-
-\item{\code{linked_ind_roster_data_hash}}{Hash of linked roster data}
-
-\item{\code{linked_ind_roster_variable_map}}{Variable mappings for linked roster data}
-
-\item{\code{linked_ind_roster_value_map}}{Value mappings for linked roster data}
-
-\item{\code{linked_ind_roster_variable_label}}{Variable labels for linked roster data}
-
-\item{\code{linked_ind_roster_value_label}}{Value labels for linked roster data}
-
-\item{\code{linked_ind_deaths_data}}{Optional linked deaths dataframe}
-
-\item{\code{linked_ind_deaths_data_stage_name}}{Name of linked deaths data stage}
-
-\item{\code{linked_ind_deaths_data_hash}}{Hash of linked deaths data}
-
-\item{\code{linked_ind_deaths_variable_map}}{Variable mappings for linked deaths data}
-
-\item{\code{linked_ind_deaths_value_map}}{Value mappings for linked deaths data}
-
-\item{\code{linked_ind_deaths_variable_label}}{Variable labels for linked deaths data}
-
-\item{\code{linked_ind_deaths_value_label}}{Value labels for linked deaths data}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A new MortalityDataAnalytics object
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MortalityDataAnalytics-default_quality_schema"></a>}}
 \if{latex}{\out{\hypertarget{method-MortalityDataAnalytics-default_quality_schema}{}}}
-\subsection{Method \code{default_quality_schema()}}{
-Load the default Mortality quality schema from template file
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MortalityDataAnalytics$default_quality_schema()}\if{html}{\out{</div>}}
+\subsection{\code{MortalityDataAnalytics$default_quality_schema()}}{
+  Load the default Mortality quality schema from template file
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MortalityDataAnalytics$default_quality_schema()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A list of Mortality-specific quality checks
+  }
 }
 
-\subsection{Returns}{
-A list of Mortality-specific quality checks
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MortalityDataAnalytics-default_outputs_schema"></a>}}
 \if{latex}{\out{\hypertarget{method-MortalityDataAnalytics-default_outputs_schema}{}}}
-\subsection{Method \code{default_outputs_schema()}}{
-Load the default Mortality household outputs schema from template file
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MortalityDataAnalytics$default_outputs_schema()}\if{html}{\out{</div>}}
+\subsection{\code{MortalityDataAnalytics$default_outputs_schema()}}{
+  Load the default Mortality household outputs schema from template file
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MortalityDataAnalytics$default_outputs_schema()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A list of Mortality-specific outputs definitions for the household dataset
+  }
 }
 
-\subsection{Returns}{
-A list of Mortality-specific outputs definitions for the household dataset
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MortalityDataAnalytics-default_analysis_schema"></a>}}
 \if{latex}{\out{\hypertarget{method-MortalityDataAnalytics-default_analysis_schema}{}}}
-\subsection{Method \code{default_analysis_schema()}}{
-Load the default Mortality household analysis schema from template file
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MortalityDataAnalytics$default_analysis_schema()}\if{html}{\out{</div>}}
+\subsection{\code{MortalityDataAnalytics$default_analysis_schema()}}{
+  Load the default Mortality household analysis schema from template file
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MortalityDataAnalytics$default_analysis_schema()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A tibble containing the Mortality household analysis schema
+  }
 }
 
-\subsection{Returns}{
-A tibble containing the Mortality household analysis schema
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MortalityDataAnalytics-default_outputs_schema_roster"></a>}}
 \if{latex}{\out{\hypertarget{method-MortalityDataAnalytics-default_outputs_schema_roster}{}}}
-\subsection{Method \code{default_outputs_schema_roster()}}{
-Load the default Mortality roster outputs schema from template file
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MortalityDataAnalytics$default_outputs_schema_roster()}\if{html}{\out{</div>}}
+\subsection{\code{MortalityDataAnalytics$default_outputs_schema_roster()}}{
+  Load the default Mortality roster outputs schema from template file
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MortalityDataAnalytics$default_outputs_schema_roster()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A list of outputs definitions for the linked roster dataset
+  }
 }
 
-\subsection{Returns}{
-A list of outputs definitions for the linked roster dataset
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MortalityDataAnalytics-default_outputs_schema_deaths"></a>}}
 \if{latex}{\out{\hypertarget{method-MortalityDataAnalytics-default_outputs_schema_deaths}{}}}
-\subsection{Method \code{default_outputs_schema_deaths()}}{
-Load the default Mortality deaths outputs schema from template file
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MortalityDataAnalytics$default_outputs_schema_deaths()}\if{html}{\out{</div>}}
+\subsection{\code{MortalityDataAnalytics$default_outputs_schema_deaths()}}{
+  Load the default Mortality deaths outputs schema from template file
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MortalityDataAnalytics$default_outputs_schema_deaths()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A list of outputs definitions for the linked deaths dataset
+  }
 }
 
-\subsection{Returns}{
-A list of outputs definitions for the linked deaths dataset
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MortalityDataAnalytics-default_analysis_schema_roster"></a>}}
 \if{latex}{\out{\hypertarget{method-MortalityDataAnalytics-default_analysis_schema_roster}{}}}
-\subsection{Method \code{default_analysis_schema_roster()}}{
-Load the default Mortality roster analysis schema from template file
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MortalityDataAnalytics$default_analysis_schema_roster()}\if{html}{\out{</div>}}
+\subsection{\code{MortalityDataAnalytics$default_analysis_schema_roster()}}{
+  Load the default Mortality roster analysis schema from template file
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MortalityDataAnalytics$default_analysis_schema_roster()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A tibble containing the analysis schema for the linked roster dataset
+  }
 }
 
-\subsection{Returns}{
-A tibble containing the analysis schema for the linked roster dataset
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MortalityDataAnalytics-default_analysis_schema_deaths"></a>}}
 \if{latex}{\out{\hypertarget{method-MortalityDataAnalytics-default_analysis_schema_deaths}{}}}
-\subsection{Method \code{default_analysis_schema_deaths()}}{
-Load the default Mortality deaths analysis schema from template file
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MortalityDataAnalytics$default_analysis_schema_deaths()}\if{html}{\out{</div>}}
+\subsection{\code{MortalityDataAnalytics$default_analysis_schema_deaths()}}{
+  Load the default Mortality deaths analysis schema from template file
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MortalityDataAnalytics$default_analysis_schema_deaths()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A tibble containing the analysis schema for the linked deaths dataset
+  }
 }
 
-\subsection{Returns}{
-A tibble containing the analysis schema for the linked deaths dataset
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MortalityDataAnalytics-generate_dap_from_schema_roster"></a>}}
 \if{latex}{\out{\hypertarget{method-MortalityDataAnalytics-generate_dap_from_schema_roster}{}}}
-\subsection{Method \code{generate_dap_from_schema_roster()}}{
-Generate the data analysis plan for the linked roster dataset.
+\subsection{\code{MortalityDataAnalytics$generate_dap_from_schema_roster()}}{
+  Generate the data analysis plan for the linked roster dataset.
 
 Uses \code{analysis_schema_roster} and \code{linked_ind_roster_variable_map}
 (falling back to the merged \code{variable_map}) to translate canonical variable
 names to actual column names present in \code{linked_ind_roster_data}, then
 stores the resulting plan in \code{data_analysis_plan_roster}.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MortalityDataAnalytics$generate_dap_from_schema_roster()}\if{html}{\out{</div>}}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MortalityDataAnalytics$generate_dap_from_schema_roster()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly returns self.
+  }
 }
 
-\subsection{Returns}{
-Invisibly returns self.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MortalityDataAnalytics-generate_dap_from_schema_deaths"></a>}}
 \if{latex}{\out{\hypertarget{method-MortalityDataAnalytics-generate_dap_from_schema_deaths}{}}}
-\subsection{Method \code{generate_dap_from_schema_deaths()}}{
-Generate the data analysis plan for the linked deaths dataset.
+\subsection{\code{MortalityDataAnalytics$generate_dap_from_schema_deaths()}}{
+  Generate the data analysis plan for the linked deaths dataset.
 
 Uses \code{analysis_schema_deaths} and \code{linked_ind_deaths_variable_map}
 (falling back to the merged \code{variable_map}) to translate canonical variable
 names to actual column names present in \code{linked_ind_deaths_data}, then
 stores the resulting plan in \code{data_analysis_plan_deaths}.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MortalityDataAnalytics$generate_dap_from_schema_deaths()}\if{html}{\out{</div>}}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MortalityDataAnalytics$generate_dap_from_schema_deaths()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly returns self.
+  }
 }
 
-\subsection{Returns}{
-Invisibly returns self.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MortalityDataAnalytics-run_analysis"></a>}}
 \if{latex}{\out{\hypertarget{method-MortalityDataAnalytics-run_analysis}{}}}
-\subsection{Method \code{run_analysis()}}{
-Run quantitative analysis for all available mortality datasets.
+\subsection{\code{MortalityDataAnalytics$run_analysis()}}{
+  Run quantitative analysis for all available mortality datasets.
 
 Analysis is run independently for each available dataset:
 \describe{
@@ -388,19 +382,21 @@ Analysis is run independently for each available dataset:
     \code{data_analysis_plan_deaths} contains at least one indicator. Results
     stored in \code{analysis_results$deaths}.}
 }
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MortalityDataAnalytics$run_analysis()}\if{html}{\out{</div>}}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MortalityDataAnalytics$run_analysis()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly returns self.
+  }
 }
 
-\subsection{Returns}{
-Invisibly returns self.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MortalityDataAnalytics-run_outputs"></a>}}
 \if{latex}{\out{\hypertarget{method-MortalityDataAnalytics-run_outputs}{}}}
-\subsection{Method \code{run_outputs()}}{
-Run all outputs for all available mortality datasets.
+\subsection{\code{MortalityDataAnalytics$run_outputs()}}{
+  Run all outputs for all available mortality datasets.
 
 Outputs are generated independently for each available dataset and stored
 in named sub-lists:
@@ -414,38 +410,42 @@ in named sub-lists:
     \code{outputs_schema_deaths} (only when \code{linked_ind_deaths_data} is set and
     \code{outputs_schema_deaths} is non-empty).}
 }
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MortalityDataAnalytics$run_outputs(language = "english")}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{language}}{Character string specifying the language for auto-generated
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MortalityDataAnalytics$run_outputs(language = "english")}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{language}}{Character string specifying the language for auto-generated
 titles. One of \code{"english"} (default), \code{"french"}, or
 \code{"arabic"}.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly returns a list with \code{visualizations} and \code{tables}.
+  }
 }
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly returns a list with \code{visualizations} and \code{tables}.
-}
-}
+
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MortalityDataAnalytics-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-MortalityDataAnalytics-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MortalityDataAnalytics$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{MortalityDataAnalytics$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{MortalityDataAnalytics$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

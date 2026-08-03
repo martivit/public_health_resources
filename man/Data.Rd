@@ -217,1188 +217,1261 @@ Placeholder: UI modal implementation will be developed in a separate branch.
 \seealso{
 [HouseholdData], [MortalityHouseholdData], [RosterData]
 }
-\keyword{Data}
-\keyword{File}
-\keyword{Object}
-\keyword{Save}
-\keyword{internal}
-\keyword{to}
 \section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{raw_data}}{Original imported data frame (immutable)}
+  \if{html}{\out{<div class="r6-fields">}}
+  \describe{
+    \item{\code{raw_data}}{Original imported data frame (immutable)}
 
-\item{\code{standardized_data}}{Data frame after standardization of names, types, and values}
+    \item{\code{standardized_data}}{Data frame after standardization of names, types, and values}
 
-\item{\code{clean_data}}{Data frame after cleaning operations}
+    \item{\code{clean_data}}{Data frame after cleaning operations}
 
-\item{\code{dataset_name}}{Character name of the dataset}
+    \item{\code{dataset_name}}{Character name of the dataset}
 
-\item{\code{metadata}}{List of metadata attributes}
+    \item{\code{metadata}}{List of metadata attributes}
 
-\item{\code{uuid}}{Character name of the UUID column}
+    \item{\code{uuid}}{Character name of the UUID column}
 
-\item{\code{validated}}{Logical indicating if data has been validated}
+    \item{\code{validated}}{Logical indicating if data has been validated}
 
-\item{\code{standardized}}{Logical indicating if data has been standardized}
+    \item{\code{standardized}}{Logical indicating if data has been standardized}
 
-\item{\code{cleaned}}{Logical indicating if data has been cleaned}
+    \item{\code{cleaned}}{Logical indicating if data has been cleaned}
 
-\item{\code{required_columns}}{Character vector of required column names}
+    \item{\code{required_columns}}{Character vector of required column names}
 
-\item{\code{other_columns}}{List of other (non-required) column names}
+    \item{\code{other_columns}}{List of other (non-required) column names}
 
-\item{\code{variable_map}}{List mapping variable roles to column names}
+    \item{\code{variable_map}}{List mapping variable roles to column names}
 
-\item{\code{value_map}}{List mapping canonical values to dataset values}
+    \item{\code{value_map}}{List mapping canonical values to dataset values}
 
-\item{\code{variable_label}}{Named list of presentation-ready variable labels (populated by map_schema_labels)}
+    \item{\code{variable_label}}{Named list of presentation-ready variable labels (populated by map_schema_labels)}
 
-\item{\code{value_label}}{Named list of presentation-ready value labels for categorical variables (populated by map_schema_labels)}
+    \item{\code{value_label}}{Named list of presentation-ready value labels for categorical variables (populated by map_schema_labels)}
 
-\item{\code{variable_schema}}{Variable schema with types and allowed values}
+    \item{\code{variable_schema}}{Variable schema with types and allowed values}
 
-\item{\code{indicator_schema}}{Schema for indicator calculations}
+    \item{\code{indicator_schema}}{Schema for indicator calculations}
 
-\item{\code{dependency_schema}}{Schema for variable dependencies}
+    \item{\code{dependency_schema}}{Schema for variable dependencies}
 
-\item{\code{cleaning_log}}{CleaningLog R6 object for tracking data corrections}
+    \item{\code{cleaning_log}}{CleaningLog R6 object for tracking data corrections}
 
-\item{\code{deletion_log}}{DeletionLog R6 object for tracking deletions}
+    \item{\code{deletion_log}}{DeletionLog R6 object for tracking deletions}
 
-\item{\code{data_quality_flags}}{Data frame storing quality flags per row}
+    \item{\code{data_quality_flags}}{Data frame storing quality flags per row}
 
-\item{\code{data_diagnostics}}{List of diagnostic results}
+    \item{\code{data_diagnostics}}{List of diagnostic results}
 
-\item{\code{autosave}}{Logical for automatic saving (if TRUE, snapshots on key steps)}
+    \item{\code{cleaning_log_issues}}{Data frame of cleaning log rows that could not be applied (e.g. coercion failures)}
 
-\item{\code{linked_objects}}{List of linked Data objects with linkage specifications}
-}
-\if{html}{\out{</div>}}
+    \item{\code{autosave}}{Logical for automatic saving (if TRUE, snapshots on key steps)}
+
+    \item{\code{linked_objects}}{List of linked Data objects with linkage specifications}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-Data-new}{\code{Data$new()}}
-\item \href{#method-Data-validate}{\code{Data$validate()}}
-\item \href{#method-Data-pre_validate}{\code{Data$pre_validate()}}
-\item \href{#method-Data-post_validate}{\code{Data$post_validate()}}
-\item \href{#method-Data-standardize}{\code{Data$standardize()}}
-\item \href{#method-Data-pre_standardize}{\code{Data$pre_standardize()}}
-\item \href{#method-Data-post_standardize}{\code{Data$post_standardize()}}
-\item \href{#method-Data-post_standardize_domain}{\code{Data$post_standardize_domain()}}
-\item \href{#method-Data-clean}{\code{Data$clean()}}
-\item \href{#method-Data-import_cleaning_log}{\code{Data$import_cleaning_log()}}
-\item \href{#method-Data-import_deletion_log}{\code{Data$import_deletion_log()}}
-\item \href{#method-Data-import_variable_schema}{\code{Data$import_variable_schema()}}
-\item \href{#method-Data-export_variable_schema}{\code{Data$export_variable_schema()}}
-\item \href{#method-Data-set_variable_schema}{\code{Data$set_variable_schema()}}
-\item \href{#method-Data-get_variable_schema}{\code{Data$get_variable_schema()}}
-\item \href{#method-Data-import_schema}{\code{Data$import_schema()}}
-\item \href{#method-Data-import_indicator_schema}{\code{Data$import_indicator_schema()}}
-\item \href{#method-Data-export_indicator_schema}{\code{Data$export_indicator_schema()}}
-\item \href{#method-Data-set_indicator_schema}{\code{Data$set_indicator_schema()}}
-\item \href{#method-Data-get_indicator_schema}{\code{Data$get_indicator_schema()}}
-\item \href{#method-Data-import_dependency_schema}{\code{Data$import_dependency_schema()}}
-\item \href{#method-Data-export_dependency_schema}{\code{Data$export_dependency_schema()}}
-\item \href{#method-Data-set_dependency_schema}{\code{Data$set_dependency_schema()}}
-\item \href{#method-Data-get_dependency_schema}{\code{Data$get_dependency_schema()}}
-\item \href{#method-Data-get_data}{\code{Data$get_data()}}
-\item \href{#method-Data-get_column_info}{\code{Data$get_column_info()}}
-\item \href{#method-Data-set_label}{\code{Data$set_label()}}
-\item \href{#method-Data-set_value_labels}{\code{Data$set_value_labels()}}
-\item \href{#method-Data-get_label}{\code{Data$get_label()}}
-\item \href{#method-Data-get_value_labels}{\code{Data$get_value_labels()}}
-\item \href{#method-Data-set_variable}{\code{Data$set_variable()}}
-\item \href{#method-Data-get_variable}{\code{Data$get_variable()}}
-\item \href{#method-Data-resolve_column}{\code{Data$resolve_column()}}
-\item \href{#method-Data-data_diagnose}{\code{Data$data_diagnose()}}
-\item \href{#method-Data-run_quality_checks}{\code{Data$run_quality_checks()}}
-\item \href{#method-Data-get_flag_action_from_schema}{\code{Data$get_flag_action_from_schema()}}
-\item \href{#method-Data-get_flag_variables_from_schema}{\code{Data$get_flag_variables_from_schema()}}
-\item \href{#method-Data-generate_cleaning_log}{\code{Data$generate_cleaning_log()}}
-\item \href{#method-Data-.apply_cleaning_changes}{\code{Data$.apply_cleaning_changes()}}
-\item \href{#method-Data-.extract_select_multiple_tokens}{\code{Data$.extract_select_multiple_tokens()}}
-\item \href{#method-Data-.is_select_multiple}{\code{Data$.is_select_multiple()}}
-\item \href{#method-Data-.get_expression_parse_hint}{\code{Data$.get_expression_parse_hint()}}
-\item \href{#method-Data-.translate_expression}{\code{Data$.translate_expression()}}
-\item \href{#method-Data-save_object}{\code{Data$save_object()}}
-\item \href{#method-Data-load_object}{\code{Data$load_object()}}
-\item \href{#method-Data-export_data}{\code{Data$export_data()}}
-\item \href{#method-Data-update_metadata}{\code{Data$update_metadata()}}
-\item \href{#method-Data-summary}{\code{Data$summary()}}
-\item \href{#method-Data-get_hash}{\code{Data$get_hash()}}
-\item \href{#method-Data-add_linked_dataset}{\code{Data$add_linked_dataset()}}
-\item \href{#method-Data-validate_links}{\code{Data$validate_links()}}
-\item \href{#method-Data-generate_data_analytics}{\code{Data$generate_data_analytics()}}
-\item \href{#method-Data-map_schema_vars}{\code{Data$map_schema_vars()}}
-\item \href{#method-Data-map_schema_labels}{\code{Data$map_schema_labels()}}
-\item \href{#method-Data-repair_maps}{\code{Data$repair_maps()}}
-\item \href{#method-Data-get_maps_as_df}{\code{Data$get_maps_as_df()}}
-\item \href{#method-Data-clone}{\code{Data$clone()}}
-}
+  \itemize{
+    \item \href{#method-Data-initialize}{\code{Data$new()}}
+    \item \href{#method-Data-validate}{\code{Data$validate()}}
+    \item \href{#method-Data-pre_validate}{\code{Data$pre_validate()}}
+    \item \href{#method-Data-post_validate}{\code{Data$post_validate()}}
+    \item \href{#method-Data-standardize}{\code{Data$standardize()}}
+    \item \href{#method-Data-pre_standardize}{\code{Data$pre_standardize()}}
+    \item \href{#method-Data-post_standardize}{\code{Data$post_standardize()}}
+    \item \href{#method-Data-post_standardize_domain}{\code{Data$post_standardize_domain()}}
+    \item \href{#method-Data-clean}{\code{Data$clean()}}
+    \item \href{#method-Data-import_cleaning_log}{\code{Data$import_cleaning_log()}}
+    \item \href{#method-Data-import_deletion_log}{\code{Data$import_deletion_log()}}
+    \item \href{#method-Data-import_variable_schema}{\code{Data$import_variable_schema()}}
+    \item \href{#method-Data-export_variable_schema}{\code{Data$export_variable_schema()}}
+    \item \href{#method-Data-set_variable_schema}{\code{Data$set_variable_schema()}}
+    \item \href{#method-Data-get_variable_schema}{\code{Data$get_variable_schema()}}
+    \item \href{#method-Data-import_schema}{\code{Data$import_schema()}}
+    \item \href{#method-Data-import_indicator_schema}{\code{Data$import_indicator_schema()}}
+    \item \href{#method-Data-export_indicator_schema}{\code{Data$export_indicator_schema()}}
+    \item \href{#method-Data-set_indicator_schema}{\code{Data$set_indicator_schema()}}
+    \item \href{#method-Data-get_indicator_schema}{\code{Data$get_indicator_schema()}}
+    \item \href{#method-Data-import_dependency_schema}{\code{Data$import_dependency_schema()}}
+    \item \href{#method-Data-export_dependency_schema}{\code{Data$export_dependency_schema()}}
+    \item \href{#method-Data-set_dependency_schema}{\code{Data$set_dependency_schema()}}
+    \item \href{#method-Data-get_dependency_schema}{\code{Data$get_dependency_schema()}}
+    \item \href{#method-Data-get_data}{\code{Data$get_data()}}
+    \item \href{#method-Data-get_column_info}{\code{Data$get_column_info()}}
+    \item \href{#method-Data-set_label}{\code{Data$set_label()}}
+    \item \href{#method-Data-set_value_labels}{\code{Data$set_value_labels()}}
+    \item \href{#method-Data-get_label}{\code{Data$get_label()}}
+    \item \href{#method-Data-get_value_labels}{\code{Data$get_value_labels()}}
+    \item \href{#method-Data-set_variable}{\code{Data$set_variable()}}
+    \item \href{#method-Data-get_variable}{\code{Data$get_variable()}}
+    \item \href{#method-Data-resolve_column}{\code{Data$resolve_column()}}
+    \item \href{#method-Data-data_diagnose}{\code{Data$data_diagnose()}}
+    \item \href{#method-Data-run_quality_checks}{\code{Data$run_quality_checks()}}
+    \item \href{#method-Data-get_flag_action_from_schema}{\code{Data$get_flag_action_from_schema()}}
+    \item \href{#method-Data-get_flag_variables_from_schema}{\code{Data$get_flag_variables_from_schema()}}
+    \item \href{#method-Data-generate_cleaning_log}{\code{Data$generate_cleaning_log()}}
+    \item \href{#method-Data-.apply_cleaning_changes}{\code{Data$.apply_cleaning_changes()}}
+    \item \href{#method-Data-.extract_select_multiple_tokens}{\code{Data$.extract_select_multiple_tokens()}}
+    \item \href{#method-Data-.is_select_multiple}{\code{Data$.is_select_multiple()}}
+    \item \href{#method-Data-.get_expression_parse_hint}{\code{Data$.get_expression_parse_hint()}}
+    \item \href{#method-Data-.translate_expression}{\code{Data$.translate_expression()}}
+    \item \href{#method-Data-save_object}{\code{Data$save_object()}}
+    \item \href{#method-Data-load_object}{\code{Data$load_object()}}
+    \item \href{#method-Data-export_data}{\code{Data$export_data()}}
+    \item \href{#method-Data-update_metadata}{\code{Data$update_metadata()}}
+    \item \href{#method-Data-summary}{\code{Data$summary()}}
+    \item \href{#method-Data-get_hash}{\code{Data$get_hash()}}
+    \item \href{#method-Data-add_linked_dataset}{\code{Data$add_linked_dataset()}}
+    \item \href{#method-Data-validate_links}{\code{Data$validate_links()}}
+    \item \href{#method-Data-generate_data_analytics}{\code{Data$generate_data_analytics()}}
+    \item \href{#method-Data-map_schema_vars}{\code{Data$map_schema_vars()}}
+    \item \href{#method-Data-map_schema_labels}{\code{Data$map_schema_labels()}}
+    \item \href{#method-Data-repair_maps}{\code{Data$repair_maps()}}
+    \item \href{#method-Data-get_maps_as_df}{\code{Data$get_maps_as_df()}}
+    \item \href{#method-Data-clone}{\code{Data$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Data-new"></a>}}
-\if{latex}{\out{\hypertarget{method-Data-new}{}}}
-\subsection{Method \code{new()}}{
-Initialize a new Data object with survey data
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Data$new(
+\if{html}{\out{<a id="method-Data-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-Data-initialize}{}}}
+\subsection{\code{Data$new()}}{
+  Initialize a new Data object with survey data
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Data$new(
   data = NULL,
   metadata = NULL,
   dataset_name = "Data",
   uuid = NULL,
   variable_map = NULL,
   value_map = NULL
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{data}}{Data frame containing the survey data}
-
-\item{\code{metadata}}{Optional list of metadata attributes}
-
-\item{\code{dataset_name}}{Character name for the dataset (default: "Data")}
-
-\item{\code{uuid}}{Character name of the UUID column (required)}
-
-\item{\code{variable_map}}{Optional named list mapping variable roles to column names}
-
-\item{\code{value_map}}{Optional named list mapping canonical values to dataset values}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A new Data R6 object
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{data}}{Data frame containing the survey data}
+      \item{\code{metadata}}{Optional list of metadata attributes}
+      \item{\code{dataset_name}}{Character name for the dataset (default: "Data")}
+      \item{\code{uuid}}{Character name of the UUID column (required)}
+      \item{\code{variable_map}}{Optional named list mapping variable roles to column names}
+      \item{\code{value_map}}{Optional named list mapping canonical values to dataset values}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A new Data R6 object
 Validate Data
+  }
 }
-}
+
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Data-validate"></a>}}
 \if{latex}{\out{\hypertarget{method-Data-validate}{}}}
-\subsection{Method \code{validate()}}{
-Validates the data structure, required columns, and data quality flags at a specified stage
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Data$validate(stage = c("raw", "standardized", "clean"))}\if{html}{\out{</div>}}
+\subsection{\code{Data$validate()}}{
+  Validates the data structure, required columns, and data quality flags at a specified stage
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Data$validate(stage = c("raw", "standardized", "clean"))}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{stage}}{Character string specifying data stage: "raw", "standardized", or "clean".
+If missing, automatically selects stage based on data state.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Logical indicating validation success (invisibly)
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{stage}}{Character string specifying data stage: "raw", "standardized", or "clean".
-If missing, automatically selects stage based on data state.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Logical indicating validation success (invisibly)
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Data-pre_validate"></a>}}
 \if{latex}{\out{\hypertarget{method-Data-pre_validate}{}}}
-\subsection{Method \code{pre_validate()}}{
-Hook method called before validation begins. Override in subclasses for custom pre-validation logic.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Data$pre_validate()}\if{html}{\out{</div>}}
+\subsection{\code{Data$pre_validate()}}{
+  Hook method called before validation begins. Override in subclasses for custom pre-validation logic.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Data$pre_validate()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    NULL (default implementation does nothing)
+Post-validation Hook
+  }
 }
 
-\subsection{Returns}{
-NULL (default implementation does nothing)
-Post-validation Hook
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Data-post_validate"></a>}}
 \if{latex}{\out{\hypertarget{method-Data-post_validate}{}}}
-\subsection{Method \code{post_validate()}}{
-Hook method called after core validation completes. Override in subclasses for additional validation.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Data$post_validate(df)}\if{html}{\out{</div>}}
+\subsection{\code{Data$post_validate()}}{
+  Hook method called after core validation completes. Override in subclasses for additional validation.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Data$post_validate(df)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{df}}{Data frame that was validated}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Logical indicating validation success (TRUE by default)
+Standardize Data
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{df}}{Data frame that was validated}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Logical indicating validation success (TRUE by default)
-Standardize Data
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Data-standardize"></a>}}
 \if{latex}{\out{\hypertarget{method-Data-standardize}{}}}
-\subsection{Method \code{standardize()}}{
-Standardizes column names, types, and values according to variable schema and mappings
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Data$standardize(skip = c(), stage = c("clean", "standardized", "raw"))}\if{html}{\out{</div>}}
+\subsection{\code{Data$standardize()}}{
+  Standardizes column names, types, and values according to variable schema and mappings
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Data$standardize(skip = c(), stage = c("clean", "standardized", "raw"))}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{skip}}{Character vector of standardization steps to skip (currently unused placeholder)}
+      \item{\code{stage}}{Character string specifying source stage: "clean", "standardized", or "raw" (default: "clean")}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisible self for method chaining
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{skip}}{Character vector of standardization steps to skip (currently unused placeholder)}
-
-\item{\code{stage}}{Character string specifying source stage: "clean", "standardized", or "raw" (default: "clean")}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisible self for method chaining
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Data-pre_standardize"></a>}}
 \if{latex}{\out{\hypertarget{method-Data-pre_standardize}{}}}
-\subsection{Method \code{pre_standardize()}}{
-Hook method called before standardization begins. Override in subclasses for custom pre-processing.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Data$pre_standardize(stage = c("clean", "standardized", "raw"))}\if{html}{\out{</div>}}
+\subsection{\code{Data$pre_standardize()}}{
+  Hook method called before standardization begins. Override in subclasses for custom pre-processing.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Data$pre_standardize(stage = c("clean", "standardized", "raw"))}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{stage}}{Character string specifying source stage: "clean", "standardized", or "raw"}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    NULL (default implementation does nothing)
+Post-standardization Hook
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{stage}}{Character string specifying source stage: "clean", "standardized", or "raw"}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-NULL (default implementation does nothing)
-Post-standardization Hook
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Data-post_standardize"></a>}}
 \if{latex}{\out{\hypertarget{method-Data-post_standardize}{}}}
-\subsection{Method \code{post_standardize()}}{
-Hook method called after standardization completes. Override in subclasses for custom post-processing.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Data$post_standardize()}\if{html}{\out{</div>}}
+\subsection{\code{Data$post_standardize()}}{
+  Hook method called after standardization completes. Override in subclasses for custom post-processing.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Data$post_standardize()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    NULL (default implementation does nothing)
+Domain-specific Post-standardization Hook
+  }
 }
 
-\subsection{Returns}{
-NULL (default implementation does nothing)
-Domain-specific Post-standardization Hook
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Data-post_standardize_domain"></a>}}
 \if{latex}{\out{\hypertarget{method-Data-post_standardize_domain}{}}}
-\subsection{Method \code{post_standardize_domain()}}{
-Hook method for domain-specific indicator calculations after standardization.
+\subsection{\code{Data$post_standardize_domain()}}{
+  Hook method for domain-specific indicator calculations after standardization.
 Override in subclasses for specialized indicator processing.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Data$post_standardize_domain()}\if{html}{\out{</div>}}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Data$post_standardize_domain()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    NULL (default implementation does nothing)
+Clean Data
+  }
 }
 
-\subsection{Returns}{
-NULL (default implementation does nothing)
-Clean Data
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Data-clean"></a>}}
 \if{latex}{\out{\hypertarget{method-Data-clean}{}}}
-\subsection{Method \code{clean()}}{
-Applies cleaning operations from cleaning_log and deletion_log to standardized data
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Data$clean()}\if{html}{\out{</div>}}
+\subsection{\code{Data$clean()}}{
+  Applies cleaning operations from cleaning_log and deletion_log to standardized data
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Data$clean()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisible self for method chaining
+  }
 }
 
-\subsection{Returns}{
-Invisible self for method chaining
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Data-import_cleaning_log"></a>}}
 \if{latex}{\out{\hypertarget{method-Data-import_cleaning_log}{}}}
-\subsection{Method \code{import_cleaning_log()}}{
-Imports cleaning log entries from a data frame
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Data$import_cleaning_log(df, mode = c("replace", "append"))}\if{html}{\out{</div>}}
+\subsection{\code{Data$import_cleaning_log()}}{
+  Imports cleaning log entries from a data frame
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Data$import_cleaning_log(df, mode = c("replace", "append"))}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{df}}{Data frame containing cleaning log entries with required columns}
+      \item{\code{mode}}{Character string: "replace" (default) to replace existing log, "append" to add entries}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Logical TRUE (invisibly)
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{df}}{Data frame containing cleaning log entries with required columns}
-
-\item{\code{mode}}{Character string: "replace" (default) to replace existing log, "append" to add entries}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Logical TRUE (invisibly)
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Data-import_deletion_log"></a>}}
 \if{latex}{\out{\hypertarget{method-Data-import_deletion_log}{}}}
-\subsection{Method \code{import_deletion_log()}}{
-Imports deletion log entries from a data frame
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Data$import_deletion_log(df, mode = c("replace", "append"))}\if{html}{\out{</div>}}
+\subsection{\code{Data$import_deletion_log()}}{
+  Imports deletion log entries from a data frame
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Data$import_deletion_log(df, mode = c("replace", "append"))}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{df}}{Data frame containing deletion log entries with required columns}
+      \item{\code{mode}}{Character string: "replace" (default) to replace existing log, "append" to add entries}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Logical TRUE (invisibly)
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{df}}{Data frame containing deletion log entries with required columns}
-
-\item{\code{mode}}{Character string: "replace" (default) to replace existing log, "append" to add entries}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Logical TRUE (invisibly)
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Data-import_variable_schema"></a>}}
 \if{latex}{\out{\hypertarget{method-Data-import_variable_schema}{}}}
-\subsection{Method \code{import_variable_schema()}}{
-Imports variable schema from a data frame table and attaches it to the dataset
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Data$import_variable_schema(df)}\if{html}{\out{</div>}}
+\subsection{\code{Data$import_variable_schema()}}{
+  Imports variable schema from a data frame table and attaches it to the dataset
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Data$import_variable_schema(df)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{df}}{Data frame containing variable schema in table format (columns: variable, type, allowed_values, etc.)}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    The imported schema list (invisibly)
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{df}}{Data frame containing variable schema in table format (columns: variable, type, allowed_values, etc.)}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-The imported schema list (invisibly)
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Data-export_variable_schema"></a>}}
 \if{latex}{\out{\hypertarget{method-Data-export_variable_schema}{}}}
-\subsection{Method \code{export_variable_schema()}}{
-Exports the current variable schema as a data frame table
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Data$export_variable_schema()}\if{html}{\out{</div>}}
+\subsection{\code{Data$export_variable_schema()}}{
+  Exports the current variable schema as a data frame table
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Data$export_variable_schema()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Data frame containing variable schema, or NULL if no schema is defined
+  }
 }
 
-\subsection{Returns}{
-Data frame containing variable schema, or NULL if no schema is defined
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Data-set_variable_schema"></a>}}
 \if{latex}{\out{\hypertarget{method-Data-set_variable_schema}{}}}
-\subsection{Method \code{set_variable_schema()}}{
-Sets the variable schema directly from a structured list
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Data$set_variable_schema(schema_list)}\if{html}{\out{</div>}}
+\subsection{\code{Data$set_variable_schema()}}{
+  Sets the variable schema directly from a structured list
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Data$set_variable_schema(schema_list)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{schema_list}}{List with named elements for types, allowed_values, etc.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisible self for method chaining
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{schema_list}}{List with named elements for types, allowed_values, etc.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisible self for method chaining
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Data-get_variable_schema"></a>}}
 \if{latex}{\out{\hypertarget{method-Data-get_variable_schema}{}}}
-\subsection{Method \code{get_variable_schema()}}{
-Returns the current variable schema list
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Data$get_variable_schema()}\if{html}{\out{</div>}}
+\subsection{\code{Data$get_variable_schema()}}{
+  Returns the current variable schema list
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Data$get_variable_schema()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    List containing variable schema (types, allowed_values, etc.), or NULL if not set
+  }
 }
 
-\subsection{Returns}{
-List containing variable schema (types, allowed_values, etc.), or NULL if not set
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Data-import_schema"></a>}}
 \if{latex}{\out{\hypertarget{method-Data-import_schema}{}}}
-\subsection{Method \code{import_schema()}}{
-Import variable schema from data frame (deprecated - use import_variable_schema)
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Data$import_schema(df)}\if{html}{\out{</div>}}
+\subsection{\code{Data$import_schema()}}{
+  Import variable schema from data frame (deprecated - use import_variable_schema)
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Data$import_schema(df)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{df}}{Data frame containing variable schema}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisible schema list
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{df}}{Data frame containing variable schema}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisible schema list
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Data-import_indicator_schema"></a>}}
 \if{latex}{\out{\hypertarget{method-Data-import_indicator_schema}{}}}
-\subsection{Method \code{import_indicator_schema()}}{
-Import indicator schema from data frame
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Data$import_indicator_schema(df)}\if{html}{\out{</div>}}
+\subsection{\code{Data$import_indicator_schema()}}{
+  Import indicator schema from data frame
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Data$import_indicator_schema(df)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{df}}{Data frame containing indicator schema with indicator definitions}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisible indicator schema list
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{df}}{Data frame containing indicator schema with indicator definitions}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisible indicator schema list
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Data-export_indicator_schema"></a>}}
 \if{latex}{\out{\hypertarget{method-Data-export_indicator_schema}{}}}
-\subsection{Method \code{export_indicator_schema()}}{
-Export indicator schema to data frame
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Data$export_indicator_schema()}\if{html}{\out{</div>}}
+\subsection{\code{Data$export_indicator_schema()}}{
+  Export indicator schema to data frame
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Data$export_indicator_schema()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Data frame containing indicator schema, or NULL if no schema exists
+  }
 }
 
-\subsection{Returns}{
-Data frame containing indicator schema, or NULL if no schema exists
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Data-set_indicator_schema"></a>}}
 \if{latex}{\out{\hypertarget{method-Data-set_indicator_schema}{}}}
-\subsection{Method \code{set_indicator_schema()}}{
-Set indicator schema from list
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Data$set_indicator_schema(indicator_schema_list)}\if{html}{\out{</div>}}
+\subsection{\code{Data$set_indicator_schema()}}{
+  Set indicator schema from list
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Data$set_indicator_schema(indicator_schema_list)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{indicator_schema_list}}{List containing indicator definitions}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{indicator_schema_list}}{List containing indicator definitions}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Data-get_indicator_schema"></a>}}
 \if{latex}{\out{\hypertarget{method-Data-get_indicator_schema}{}}}
-\subsection{Method \code{get_indicator_schema()}}{
-Get indicator schema
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Data$get_indicator_schema()}\if{html}{\out{</div>}}
+\subsection{\code{Data$get_indicator_schema()}}{
+  Get indicator schema
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Data$get_indicator_schema()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Indicator schema list, or NULL if not set
+  }
 }
 
-\subsection{Returns}{
-Indicator schema list, or NULL if not set
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Data-import_dependency_schema"></a>}}
 \if{latex}{\out{\hypertarget{method-Data-import_dependency_schema}{}}}
-\subsection{Method \code{import_dependency_schema()}}{
-Import dependency schema from data frame
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Data$import_dependency_schema(df)}\if{html}{\out{</div>}}
+\subsection{\code{Data$import_dependency_schema()}}{
+  Import dependency schema from data frame
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Data$import_dependency_schema(df)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{df}}{Data frame containing dependency schema with dependency definitions}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisible dependency schema list
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{df}}{Data frame containing dependency schema with dependency definitions}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisible dependency schema list
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Data-export_dependency_schema"></a>}}
 \if{latex}{\out{\hypertarget{method-Data-export_dependency_schema}{}}}
-\subsection{Method \code{export_dependency_schema()}}{
-Export dependency schema to data frame
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Data$export_dependency_schema()}\if{html}{\out{</div>}}
+\subsection{\code{Data$export_dependency_schema()}}{
+  Export dependency schema to data frame
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Data$export_dependency_schema()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Data frame containing dependency schema, or NULL if no schema exists
+  }
 }
 
-\subsection{Returns}{
-Data frame containing dependency schema, or NULL if no schema exists
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Data-set_dependency_schema"></a>}}
 \if{latex}{\out{\hypertarget{method-Data-set_dependency_schema}{}}}
-\subsection{Method \code{set_dependency_schema()}}{
-Set dependency schema from list
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Data$set_dependency_schema(dependency_schema_list)}\if{html}{\out{</div>}}
+\subsection{\code{Data$set_dependency_schema()}}{
+  Set dependency schema from list
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Data$set_dependency_schema(dependency_schema_list)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{dependency_schema_list}}{List containing dependency definitions}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{dependency_schema_list}}{List containing dependency definitions}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Data-get_dependency_schema"></a>}}
 \if{latex}{\out{\hypertarget{method-Data-get_dependency_schema}{}}}
-\subsection{Method \code{get_dependency_schema()}}{
-Get dependency schema
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Data$get_dependency_schema()}\if{html}{\out{</div>}}
+\subsection{\code{Data$get_dependency_schema()}}{
+  Get dependency schema
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Data$get_dependency_schema()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Dependency schema list, or NULL if not set
+Get Data at Specified Stage
+  }
 }
 
-\subsection{Returns}{
-Dependency schema list, or NULL if not set
-Get Data at Specified Stage
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Data-get_data"></a>}}
 \if{latex}{\out{\hypertarget{method-Data-get_data}{}}}
-\subsection{Method \code{get_data()}}{
-Retrieves the data frame at the specified processing stage
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Data$get_data(stage = c("raw", "standardized", "clean"))}\if{html}{\out{</div>}}
+\subsection{\code{Data$get_data()}}{
+  Retrieves the data frame at the specified processing stage
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Data$get_data(stage = c("raw", "standardized", "clean"))}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{stage}}{Character string: "raw", "standardized", or "clean"}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Data frame at the specified stage, or NULL if stage not yet available
+Get Column Information
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{stage}}{Character string: "raw", "standardized", or "clean"}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Data frame at the specified stage, or NULL if stage not yet available
-Get Column Information
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Data-get_column_info"></a>}}
 \if{latex}{\out{\hypertarget{method-Data-get_column_info}{}}}
-\subsection{Method \code{get_column_info()}}{
-Generates summary information about all columns at the specified stage
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Data$get_column_info(stage = c("raw", "standardized", "clean"))}\if{html}{\out{</div>}}
+\subsection{\code{Data$get_column_info()}}{
+  Generates summary information about all columns at the specified stage
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Data$get_column_info(stage = c("raw", "standardized", "clean"))}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{stage}}{Character string: "raw", "standardized", or "clean"}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Data frame with columns: name, class, missing_pct, unique_n, example_values
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{stage}}{Character string: "raw", "standardized", or "clean"}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Data frame with columns: name, class, missing_pct, unique_n, example_values
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Data-set_label"></a>}}
 \if{latex}{\out{\hypertarget{method-Data-set_label}{}}}
-\subsection{Method \code{set_label()}}{
-Sets a human-readable label for a variable
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Data$set_label(var, label)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{var}}{Character string with variable name}
-
-\item{\code{label}}{Character string with label text}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisible NULL (updates variable_label internally)
+\subsection{\code{Data$set_label()}}{
+  Sets a human-readable label for a variable
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Data$set_label(var, label)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{var}}{Character string with variable name}
+      \item{\code{label}}{Character string with label text}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisible NULL (updates variable_label internally)
 Set Value Labels for Variable
+  }
 }
-}
+
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Data-set_value_labels"></a>}}
 \if{latex}{\out{\hypertarget{method-Data-set_value_labels}{}}}
-\subsection{Method \code{set_value_labels()}}{
-Sets value labels (code-to-label mappings) for a variable
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Data$set_value_labels(var, labels_named_vector)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{var}}{Character string with variable name}
-
-\item{\code{labels_named_vector}}{Named character vector where names are codes and values are labels}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisible NULL (updates value_label internally)
+\subsection{\code{Data$set_value_labels()}}{
+  Sets value labels (code-to-label mappings) for a variable
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Data$set_value_labels(var, labels_named_vector)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{var}}{Character string with variable name}
+      \item{\code{labels_named_vector}}{Named character vector where names are codes and values are labels}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisible NULL (updates value_label internally)
 Get Variable Label
+  }
 }
-}
+
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Data-get_label"></a>}}
 \if{latex}{\out{\hypertarget{method-Data-get_label}{}}}
-\subsection{Method \code{get_label()}}{
-Retrieves the label for a variable
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Data$get_label(var)}\if{html}{\out{</div>}}
+\subsection{\code{Data$get_label()}}{
+  Retrieves the label for a variable
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Data$get_label(var)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{var}}{Character string with variable name}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Character string with label, or NULL if not set
+Get Value Labels for Variable
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{var}}{Character string with variable name}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Character string with label, or NULL if not set
-Get Value Labels for Variable
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Data-get_value_labels"></a>}}
 \if{latex}{\out{\hypertarget{method-Data-get_value_labels}{}}}
-\subsection{Method \code{get_value_labels()}}{
-Retrieves the value labels for a variable
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Data$get_value_labels(var)}\if{html}{\out{</div>}}
+\subsection{\code{Data$get_value_labels()}}{
+  Retrieves the value labels for a variable
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Data$get_value_labels(var)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{var}}{Character string with variable name}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Named character vector of value labels, or NULL if not set
+Set Variable Mapping
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{var}}{Character string with variable name}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Named character vector of value labels, or NULL if not set
-Set Variable Mapping
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Data-set_variable"></a>}}
 \if{latex}{\out{\hypertarget{method-Data-set_variable}{}}}
-\subsection{Method \code{set_variable()}}{
-Maps a semantic role to a column name in the dataset
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Data$set_variable(role, column_name, stage = c("raw", "standardized", "clean"))}\if{html}{\out{</div>}}
+\subsection{\code{Data$set_variable()}}{
+  Maps a semantic role to a column name in the dataset
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Data$set_variable(role, column_name, stage = c("raw", "standardized", "clean"))}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{role}}{Character string with semantic role (e.g., "uuid", "cluster_id")}
+      \item{\code{column_name}}{Character string with actual column name in the data}
+      \item{\code{stage}}{Character string specifying stage to validate against: "raw", "standardized", or "clean"}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisible NULL (updates variable_map internally)
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{role}}{Character string with semantic role (e.g., "uuid", "cluster_id")}
-
-\item{\code{column_name}}{Character string with actual column name in the data}
-
-\item{\code{stage}}{Character string specifying stage to validate against: "raw", "standardized", or "clean"}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisible NULL (updates variable_map internally)
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Data-get_variable"></a>}}
 \if{latex}{\out{\hypertarget{method-Data-get_variable}{}}}
-\subsection{Method \code{get_variable()}}{
-Returns the column name mapped to a semantic role
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Data$get_variable(role)}\if{html}{\out{</div>}}
+\subsection{\code{Data$get_variable()}}{
+  Returns the column name mapped to a semantic role
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Data$get_variable(role)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{role}}{Character string with semantic role}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Character string with column name, or NULL if role not mapped
+Resolve Column from Role
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{role}}{Character string with semantic role}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Character string with column name, or NULL if role not mapped
-Resolve Column from Role
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Data-resolve_column"></a>}}
 \if{latex}{\out{\hypertarget{method-Data-resolve_column}{}}}
-\subsection{Method \code{resolve_column()}}{
-Resolves a semantic role to its column name and optionally retrieves mapped values and data diagnostics
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Data$resolve_column(role, stage = "raw", values = FALSE, full = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{Data$resolve_column()}}{
+  Resolves a semantic role to its column name and optionally retrieves mapped values and data diagnostics
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Data$resolve_column(role, stage = "raw", values = FALSE, full = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{role}}{Character string with semantic role or direct column name}
+      \item{\code{stage}}{Character string specifying data stage: "raw", "standardized", or "clean" (default: "raw")}
+      \item{\code{values}}{Logical; if TRUE, returns list with column and mapped values}
+      \item{\code{full}}{Logical; if TRUE, returns full diagnostic information including values in data}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Character string (column name), list (if values=TRUE or full=TRUE), or NULL if not found
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{role}}{Character string with semantic role or direct column name}
-
-\item{\code{stage}}{Character string specifying data stage: "raw", "standardized", or "clean" (default: "raw")}
-
-\item{\code{values}}{Logical; if TRUE, returns list with column and mapped values}
-
-\item{\code{full}}{Logical; if TRUE, returns full diagnostic information including values in data}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Character string (column name), list (if values=TRUE or full=TRUE), or NULL if not found
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Data-data_diagnose"></a>}}
 \if{latex}{\out{\hypertarget{method-Data-data_diagnose}{}}}
-\subsection{Method \code{data_diagnose()}}{
-Compares data columns against variable schema to identify type mismatches and invalid values
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Data$data_diagnose(stage = c("raw", "standardized", "clean"))}\if{html}{\out{</div>}}
+\subsection{\code{Data$data_diagnose()}}{
+  Compares data columns against variable schema to identify type mismatches and invalid values
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Data$data_diagnose(stage = c("raw", "standardized", "clean"))}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{stage}}{Character string: "raw", "standardized", or "clean"}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Data frame with diagnostic results (variable, expected_type, actual_type, type_ok, values_ok, issues)
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{stage}}{Character string: "raw", "standardized", or "clean"}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Data frame with diagnostic results (variable, expected_type, actual_type, type_ok, values_ok, issues)
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Data-run_quality_checks"></a>}}
 \if{latex}{\out{\hypertarget{method-Data-run_quality_checks}{}}}
-\subsection{Method \code{run_quality_checks()}}{
-Executes data quality checks defined in dependency_schema and generates quality flags
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Data$run_quality_checks(stage = "standardized")}\if{html}{\out{</div>}}
+\subsection{\code{Data$run_quality_checks()}}{
+  Executes data quality checks defined in dependency_schema and generates quality flags
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Data$run_quality_checks(stage = "standardized")}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{stage}}{Character string: "standardized" (default) or "clean"}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A list containing check results and flags, or NULL if no dependency schema
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{stage}}{Character string: "standardized" (default) or "clean"}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A list containing check results and flags, or NULL if no dependency schema
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Data-get_flag_action_from_schema"></a>}}
 \if{latex}{\out{\hypertarget{method-Data-get_flag_action_from_schema}{}}}
-\subsection{Method \code{get_flag_action_from_schema()}}{
-Helper function to look up action for a flag from schema dependencies.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Data$get_flag_action_from_schema(flag_name)}\if{html}{\out{</div>}}
+\subsection{\code{Data$get_flag_action_from_schema()}}{
+  Helper function to look up action for a flag from schema dependencies.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Data$get_flag_action_from_schema(flag_name)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{flag_name}}{Name of the flag column (e.g., "flag_other_check" or "dq_dep_1")}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Character string with action ("flag_autoclean", "flag_warning", etc.) or empty string
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{flag_name}}{Name of the flag column (e.g., "flag_other_check" or "dq_dep_1")}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Character string with action ("flag_autoclean", "flag_warning", etc.) or empty string
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Data-get_flag_variables_from_schema"></a>}}
 \if{latex}{\out{\hypertarget{method-Data-get_flag_variables_from_schema}{}}}
-\subsection{Method \code{get_flag_variables_from_schema()}}{
-Helper function to look up variables for a flag from schema dependencies.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Data$get_flag_variables_from_schema(flag_name)}\if{html}{\out{</div>}}
+\subsection{\code{Data$get_flag_variables_from_schema()}}{
+  Helper function to look up variables for a flag from schema dependencies.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Data$get_flag_variables_from_schema(flag_name)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{flag_name}}{Name of the flag column (e.g., "flag_other_check" or "dq_dep_1")}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Character vector of canonical variable names involved in the dependency, or NULL
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{flag_name}}{Name of the flag column (e.g., "flag_other_check" or "dq_dep_1")}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Character vector of canonical variable names involved in the dependency, or NULL
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Data-generate_cleaning_log"></a>}}
 \if{latex}{\out{\hypertarget{method-Data-generate_cleaning_log}{}}}
-\subsection{Method \code{generate_cleaning_log()}}{
-Generate cleaning and deletion log entries from data quality flags.
+\subsection{\code{Data$generate_cleaning_log()}}{
+  Generate cleaning and deletion log entries from data quality flags.
 
 Populates the existing CleaningLog with entries for each quality flag violation.
 Populates the DeletionLog for flags with action "flag_delete" and for duplicate
 values in variables marked as unique in the variable schema.
 Must be called after run_quality_checks() has been executed.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Data$generate_cleaning_log(stage = "standardized", overwrite = FALSE)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{stage}}{Data stage to use ("standardized" or "clean")}
-
-\item{\code{overwrite}}{If TRUE, clears existing log before adding new entries}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisible self$cleaning_log
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Data$generate_cleaning_log(stage = "standardized", overwrite = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{stage}}{Data stage to use ("standardized" or "clean")}
+      \item{\code{overwrite}}{If TRUE, clears existing log before adding new entries}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisible self$cleaning_log
 INTERNAL HELPER -- apply cleaning log changes (option A authoritative mode)
+  }
 }
-}
+
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Data-.apply_cleaning_changes"></a>}}
 \if{latex}{\out{\hypertarget{method-Data-.apply_cleaning_changes}{}}}
-\subsection{Method \code{.apply_cleaning_changes()}}{
-Internal helper to apply cleaning changes from a log data frame to a dataset
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Data$.apply_cleaning_changes(df, log_df, uuid_col)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{df}}{Data frame to modify}
-
-\item{\code{log_df}}{Data frame containing cleaning log entries}
-
-\item{\code{uuid_col}}{Character name of UUID column in df}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Modified data frame with cleaning changes applied
+\subsection{\code{Data$.apply_cleaning_changes()}}{
+  Internal helper to apply cleaning changes from a log data frame to a dataset
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Data$.apply_cleaning_changes(df, log_df, uuid_col)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{df}}{Data frame to modify}
+      \item{\code{log_df}}{Data frame containing cleaning log entries}
+      \item{\code{uuid_col}}{Character name of UUID column in df}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Modified data frame with cleaning changes applied
 INTERNAL HELPER -- extract tokens from select_multiple values
+  }
 }
-}
+
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Data-.extract_select_multiple_tokens"></a>}}
 \if{latex}{\out{\hypertarget{method-Data-.extract_select_multiple_tokens}{}}}
-\subsection{Method \code{.extract_select_multiple_tokens()}}{
-Internal helper to extract individual tokens from space-separated values
+\subsection{\code{Data$.extract_select_multiple_tokens()}}{
+  Internal helper to extract individual tokens from space-separated values
 in select_multiple columns.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Data$.extract_select_multiple_tokens(values)}\if{html}{\out{</div>}}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Data$.extract_select_multiple_tokens(values)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{values}}{Character vector containing space-separated values}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Character vector of unique tokens
+INTERNAL HELPER -- check if variable is select_multiple type
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{values}}{Character vector containing space-separated values}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Character vector of unique tokens
-INTERNAL HELPER -- check if variable is select_multiple type
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Data-.is_select_multiple"></a>}}
 \if{latex}{\out{\hypertarget{method-Data-.is_select_multiple}{}}}
-\subsection{Method \code{.is_select_multiple()}}{
-Internal helper to check if a variable role is marked as select_multiple
+\subsection{\code{Data$.is_select_multiple()}}{
+  Internal helper to check if a variable role is marked as select_multiple
 in the schema.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Data$.is_select_multiple(var_role)}\if{html}{\out{</div>}}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Data$.is_select_multiple(var_role)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{var_role}}{Variable role name}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Logical indicating if variable is select_multiple
+INTERNAL HELPER -- provide hints for expression parse errors
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{var_role}}{Variable role name}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Logical indicating if variable is select_multiple
-INTERNAL HELPER -- provide hints for expression parse errors
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Data-.get_expression_parse_hint"></a>}}
 \if{latex}{\out{\hypertarget{method-Data-.get_expression_parse_hint}{}}}
-\subsection{Method \code{.get_expression_parse_hint()}}{
-Internal helper to provide helpful hints for common syntax errors in dependency expressions.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Data$.get_expression_parse_hint(expr, error_msg)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{expr}}{Character string containing the R expression that failed to parse}
-
-\item{\code{error_msg}}{Character string containing the error message from parse attempt}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Character string with a helpful error message including hints
+\subsection{\code{Data$.get_expression_parse_hint()}}{
+  Internal helper to provide helpful hints for common syntax errors in dependency expressions.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Data$.get_expression_parse_hint(expr, error_msg)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{expr}}{Character string containing the R expression that failed to parse}
+      \item{\code{error_msg}}{Character string containing the error message from parse attempt}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Character string with a helpful error message including hints
 INTERNAL HELPER -- translate expression to use mapped column names and values
+  }
 }
-}
+
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Data-.translate_expression"></a>}}
 \if{latex}{\out{\hypertarget{method-Data-.translate_expression}{}}}
-\subsection{Method \code{.translate_expression()}}{
-Internal helper to translate quality check expressions from canonical names/values
+\subsection{\code{Data$.translate_expression()}}{
+  Internal helper to translate quality check expressions from canonical names/values
 to dataset-specific names/values using variable_map and value_map.
 
 Translation occurs in two steps:
 1. Replace canonical variable names (roles) with dataset column names from variable_map
 2. Replace canonical values with dataset values from value_map
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Data$.translate_expression(expr, stage = "standardized")}\if{html}{\out{</div>}}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Data$.translate_expression(expr, stage = "standardized")}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{expr}}{Character string containing the R expression to translate}
+      \item{\code{stage}}{Data stage to use for validation ("raw", "standardized", "clean")}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Translated expression as a character string
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{expr}}{Character string containing the R expression to translate}
-
-\item{\code{stage}}{Data stage to use for validation ("raw", "standardized", "clean")}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Translated expression as a character string
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Data-save_object"></a>}}
 \if{latex}{\out{\hypertarget{method-Data-save_object}{}}}
-\subsection{Method \code{save_object()}}{
-Serializes the entire Data object to an RDS file
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Data$save_object(file_path)}\if{html}{\out{</div>}}
+\subsection{\code{Data$save_object()}}{
+  Serializes the entire Data object to an RDS file
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Data$save_object(file_path)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{file_path}}{Character string with file path (.rds extension added if missing)}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Logical TRUE (invisibly)
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{file_path}}{Character string with file path (.rds extension added if missing)}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Logical TRUE (invisibly)
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Data-load_object"></a>}}
 \if{latex}{\out{\hypertarget{method-Data-load_object}{}}}
-\subsection{Method \code{load_object()}}{
-Deserializes a Data object from an RDS file
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Data$load_object(file_path)}\if{html}{\out{</div>}}
+\subsection{\code{Data$load_object()}}{
+  Deserializes a Data object from an RDS file
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Data$load_object(file_path)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{file_path}}{Character string with file path to RDS file}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Loaded Data object
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{file_path}}{Character string with file path to RDS file}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Loaded Data object
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Data-export_data"></a>}}
 \if{latex}{\out{\hypertarget{method-Data-export_data}{}}}
-\subsection{Method \code{export_data()}}{
-Exports data from a specified stage to CSV, RDS, or XLSX format
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Data$export_data(
+\subsection{\code{Data$export_data()}}{
+  Exports data from a specified stage to CSV, RDS, or XLSX format
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Data$export_data(
   stage = c("clean", "standardized", "raw"),
   format = c("csv", "rds", "xlsx"),
   file_path = NULL
-)}\if{html}{\out{</div>}}
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{stage}}{Character string: "clean", "standardized", or "raw"}
+      \item{\code{format}}{Character string: "csv", "rds", or "xlsx"}
+      \item{\code{file_path}}{Character string with output path (auto-generated if NULL)}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    File path (invisibly)
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{stage}}{Character string: "clean", "standardized", or "raw"}
-
-\item{\code{format}}{Character string: "csv", "rds", or "xlsx"}
-
-\item{\code{file_path}}{Character string with output path (auto-generated if NULL)}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-File path (invisibly)
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Data-update_metadata"></a>}}
 \if{latex}{\out{\hypertarget{method-Data-update_metadata}{}}}
-\subsection{Method \code{update_metadata()}}{
-Synchronizes metadata with current object state
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Data$update_metadata()}\if{html}{\out{</div>}}
+\subsection{\code{Data$update_metadata()}}{
+  Synchronizes metadata with current object state
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Data$update_metadata()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Logical TRUE (invisibly)
+  }
 }
 
-\subsection{Returns}{
-Logical TRUE (invisibly)
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Data-summary"></a>}}
 \if{latex}{\out{\hypertarget{method-Data-summary}{}}}
-\subsection{Method \code{summary()}}{
-Generates a summary of the dataset and its current state
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Data$summary()}\if{html}{\out{</div>}}
-}
-
-\subsection{Returns}{
-List with summary information including dataset name, record/column counts,
+\subsection{\code{Data$summary()}}{
+  Generates a summary of the dataset and its current state
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Data$summary()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    List with summary information including dataset name, record/column counts,
   validation status, schemas, and labels
 Get Data Hash
+  }
 }
-}
+
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Data-get_hash"></a>}}
 \if{latex}{\out{\hypertarget{method-Data-get_hash}{}}}
-\subsection{Method \code{get_hash()}}{
-Computes a hash fingerprint of the data at the specified stage
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Data$get_hash(stage = c("clean", "standardized", "raw"))}\if{html}{\out{</div>}}
+\subsection{\code{Data$get_hash()}}{
+  Computes a hash fingerprint of the data at the specified stage
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Data$get_hash(stage = c("clean", "standardized", "raw"))}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{stage}}{Character string: "clean", "standardized", or "raw"}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Character string with MD5 hash, or NA if data not available
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{stage}}{Character string: "clean", "standardized", or "raw"}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Character string with MD5 hash, or NA if data not available
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Data-add_linked_dataset"></a>}}
 \if{latex}{\out{\hypertarget{method-Data-add_linked_dataset}{}}}
-\subsection{Method \code{add_linked_dataset()}}{
-Establishes a named link to another Data object for cross-validation
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Data$add_linked_dataset(name, other_object, by_self_role, by_other_role)}\if{html}{\out{</div>}}
+\subsection{\code{Data$add_linked_dataset()}}{
+  Establishes a named link to another Data object for cross-validation
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Data$add_linked_dataset(name, other_object, by_self_role, by_other_role)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{name}}{Character string with unique link name}
+      \item{\code{other_object}}{Another Data R6 object to link to}
+      \item{\code{by_self_role}}{Character string with role name in this object (e.g., "household_id")}
+      \item{\code{by_other_role}}{Character string with role name in other object}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Logical TRUE (invisibly)
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{name}}{Character string with unique link name}
-
-\item{\code{other_object}}{Another Data R6 object to link to}
-
-\item{\code{by_self_role}}{Character string with role name in this object (e.g., "household_id")}
-
-\item{\code{by_other_role}}{Character string with role name in other object}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Logical TRUE (invisibly)
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Data-validate_links"></a>}}
 \if{latex}{\out{\hypertarget{method-Data-validate_links}{}}}
-\subsection{Method \code{validate_links()}}{
-Validates foreign key relationships with all linked objects
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Data$validate_links(stage_self = "clean", stage_other = "clean")}\if{html}{\out{</div>}}
+\subsection{\code{Data$validate_links()}}{
+  Validates foreign key relationships with all linked objects
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Data$validate_links(stage_self = "clean", stage_other = "clean")}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{stage_self}}{Character string specifying data stage for this object (default: "clean")}
+      \item{\code{stage_other}}{Character string specifying data stage for linked objects (default: "clean")}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Logical TRUE (invisibly) if all links valid, or list of missing foreign keys if problems found
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{stage_self}}{Character string specifying data stage for this object (default: "clean")}
-
-\item{\code{stage_other}}{Character string specifying data stage for linked objects (default: "clean")}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Logical TRUE (invisibly) if all links valid, or list of missing foreign keys if problems found
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Data-generate_data_analytics"></a>}}
 \if{latex}{\out{\hypertarget{method-Data-generate_data_analytics}{}}}
-\subsection{Method \code{generate_data_analytics()}}{
-Generate a DataAnalytics object for this dataset.
+\subsection{\code{Data$generate_data_analytics()}}{
+  Generate a DataAnalytics object for this dataset.
 
 Creates a unified `DataAnalytics` object that integrates both data quality
 checks and quantitative analysis. This is a generic hook that should be
 overridden by subclasses to return sector-specific DataAnalytics subclasses.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Data$generate_data_analytics(
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Data$generate_data_analytics(
   stage = c("standardized", "clean"),
   analysis_config = NULL
-)}\if{html}{\out{</div>}}
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{stage}}{The data stage to use ("standardized" or "clean")}
+      \item{\code{analysis_config}}{Optional analysis configuration (data analysis plan tibble)}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A DataAnalytics object or NULL
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{stage}}{The data stage to use ("standardized" or "clean")}
-
-\item{\code{analysis_config}}{Optional analysis configuration (data analysis plan tibble)}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A DataAnalytics object or NULL
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Data-map_schema_vars"></a>}}
 \if{latex}{\out{\hypertarget{method-Data-map_schema_vars}{}}}
-\subsection{Method \code{map_schema_vars()}}{
-Automatically map schema variables to dataset columns and values.
+\subsection{\code{Data$map_schema_vars()}}{
+  Automatically map schema variables to dataset columns and values.
 
 This method searches for default column names in the dataset as referenced
 in the schema's `col_names` field. If a matching column is found, it is
@@ -1408,118 +1481,124 @@ and builds the corresponding nested value_map structure.
 
 This is a "soft" search - found matches are added to maps, but no error
 is thrown if a variable or value is not found.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Data$map_schema_vars(stage = "raw")}\if{html}{\out{</div>}}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Data$map_schema_vars(stage = "raw")}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{stage}}{The data stage to search in ("raw", "standardized", or "clean")}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisible self for method chaining
+Map Schema Labels to variable_label and value_label
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{stage}}{The data stage to search in ("raw", "standardized", or "clean")}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisible self for method chaining
-Map Schema Labels to variable_label and value_label
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Data-map_schema_labels"></a>}}
 \if{latex}{\out{\hypertarget{method-Data-map_schema_labels}{}}}
-\subsection{Method \code{map_schema_labels()}}{
-Reads the current `variable_map` and `value_map`, then populates the
+\subsection{\code{Data$map_schema_labels()}}{
+  Reads the current `variable_map` and `value_map`, then populates the
 `variable_label` and `value_label` fields from the labels stored in
 the variable schema for the requested language. Only variables and
 values that are currently in `variable_map` / `value_map` are labelled.
 
 This method is called automatically after every `map_schema_vars()` call.
 It can also be called manually to switch languages.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Data$map_schema_labels(language = "english")}\if{html}{\out{</div>}}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Data$map_schema_labels(language = "english")}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{language}}{Character string: one of `"english"` (default), `"french"`, or `"arabic"`.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisible self (for method chaining)
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{language}}{Character string: one of `"english"` (default), `"french"`, or `"arabic"`.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisible self (for method chaining)
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Data-repair_maps"></a>}}
 \if{latex}{\out{\hypertarget{method-Data-repair_maps}{}}}
-\subsection{Method \code{repair_maps()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Data$repair_maps(
+\subsection{\code{Data$repair_maps()}}{
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Data$repair_maps(
   variable_map_df = NULL,
   value_map_df = NULL,
   mode = c("merge", "replace"),
   validate_columns = TRUE,
   stage = "raw"
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{variable_map_df}}{A dataframe with columns 'role' and 'column_name'
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{variable_map_df}}{A dataframe with columns 'role' and 'column_name'
 to update the variable_map. Set column_name to NA to remove a mapping.}
-
-\item{\code{value_map_df}}{A dataframe with columns 'role' and 'values'
+      \item{\code{value_map_df}}{A dataframe with columns 'role' and 'values'
 to update the value_map. The 'values' column should contain
 comma-separated strings of allowed values. Set to NA to remove.}
-
-\item{\code{mode}}{Either "merge" (default) to merge with existing maps,
+      \item{\code{mode}}{Either "merge" (default) to merge with existing maps,
 or "replace" to completely replace existing maps.}
-
-\item{\code{validate_columns}}{Whether to validate that mapped columns exist
+      \item{\code{validate_columns}}{Whether to validate that mapped columns exist
 in the dataset (default TRUE).}
-
-\item{\code{stage}}{The data stage to validate against ("raw", "standardized", "clean")}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A list with 'success' (logical), 'variables_updated' (count),
+      \item{\code{stage}}{The data stage to validate against ("raw", "standardized", "clean")}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A list with 'success' (logical), 'variables_updated' (count),
         'values_updated' (count), and 'warnings' (character vector)
+  }
 }
-}
+
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Data-get_maps_as_df"></a>}}
 \if{latex}{\out{\hypertarget{method-Data-get_maps_as_df}{}}}
-\subsection{Method \code{get_maps_as_df()}}{
-Get the current variable and value maps as dataframes.
+\subsection{\code{Data$get_maps_as_df()}}{
+  Get the current variable and value maps as dataframes.
 
 Helper function to export maps in a format suitable for
 repair_maps() or UI display.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Data$get_maps_as_df()}\if{html}{\out{</div>}}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Data$get_maps_as_df()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A list with 'variable_map_df' and 'value_map_df' dataframes
+  }
 }
 
-\subsection{Returns}{
-A list with 'variable_map_df' and 'value_map_df' dataframes
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Data-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-Data-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Data$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{Data$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Data$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

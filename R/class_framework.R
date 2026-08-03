@@ -305,6 +305,7 @@ Framework <- R6::R6Class(
     },
 
     #' @description Add a source to the secondary data sources table.
+    #' @param objective Character. The objective code that this data source relates to.
     #' @param source Character. The name of the secondary data source.
     #' @param purpose Character. The purpose of the secondary data source.
     #' @return Invisibly returns \code{self} for method chaining.
@@ -333,6 +334,7 @@ Framework <- R6::R6Class(
     },
 
     #' @description Remove a source from the secondary data sources table.
+    #' @param objective Character. The objective code that this data source relates to.
     #' @param source Character. The name of the secondary data source to remove.
     #' @return Invisibly returns \code{self} for method chaining.
     #' @details

@@ -220,6 +220,8 @@ Document <- R6::R6Class(
       )
       invisible(self)
     },
+    #' @description Get Quarto parameters for rendering.
+    #' @return A named list of parameters to pass to Quarto rendering.
     get_quarto_params = function() {
       list(
         r_version = self$.r_version
@@ -227,9 +229,7 @@ Document <- R6::R6Class(
     }
   ),
   active = list(
-    #' @description
     #' Active binding that returns the R version string.
-    #' @return Character string of the R version.
     .r_version = function(value) {
       version$version.string
     }
@@ -243,6 +243,7 @@ Document <- R6::R6Class(
     #'   Quarto template.
     #'
     #' @keywords internal
+    #' @noRd
     ..default_word_template_path = function() {
       template_file <- "quarto_doc_revised_template.qmd"
 
@@ -264,12 +265,16 @@ Document <- R6::R6Class(
     },
     #' @description Return default template filename candidates.
     #' @return Character vector of template filenames.
+    #' @keywords internal
+    #' @noRd
     ..default_template_filenames = function() {
       c("reach_tor_template.docx", "protocol_report_template.docx")
     },
 
     #' @description Return default PowerPoint template filename candidates.
     #' @return Character vector of template filenames.
+    #' @keywords internal
+    #' @noRd
     ..default_ppt_template_filenames = function() {
       c("protocol_report_template.pptx")
     },

@@ -15,10 +15,10 @@ test_that("HealthIndividualData initializes with minimal valid data", {
     age_years = 25
   )
 
-  health <- suppressMessages(suppressWarnings(
+  health <- suppressMessages(
     HealthIndividualData$new(data = df,
                                        )
-  ))
+  )
 
   expect_s3_class(health, "HealthIndividualData")
   expect_s3_class(health, "IndividualData")
@@ -30,9 +30,9 @@ test_that("HealthIndividualData supports multiple schemas and validations", {
 
   # Generate a dataset for testing
   df <- generate_health_ind_dataset(roster_data_or_n = 5)
-  health <- suppressMessages(suppressWarnings(
+  health <- suppressMessages(
     HealthIndividualData$new(data = df)
-  ))
+  )
 
   # Export schemas
   var_schema <- health$export_variable_schema()
@@ -68,9 +68,9 @@ test_that("HealthIndividualData completes full pipeline", {
 
   df <- generate_health_ind_dataset(roster_data_or_n = 50)
 
-  health <- suppressMessages(suppressWarnings(
+  health <- suppressMessages(
     HealthIndividualData$new(data = df)
-  ))
+  )
 
   # Validation
   expect_no_error(health$validate())
@@ -91,12 +91,12 @@ test_that("HealthIndividualData can link to HouseholdData", {
   hh_df <- generate_household_dataset(n = 10)
   ind_df <- generate_health_ind_dataset(roster_data_or_n = 30, hh_uuids = hh_df$uuid)
 
-  hh <- suppressMessages(suppressWarnings(
+  hh <- suppressMessages(
     HouseholdData$new(data = hh_df)
-  ))
-  health_ind <- suppressMessages(suppressWarnings(
+  )
+  health_ind <- suppressMessages(
     HealthIndividualData$new(data = ind_df)
-  ))
+  )
 
   # Link individuals to households
   health_ind$add_linked_dataset("household", hh, by_self_role = "hh_uuid", by_other_role = "uuid")

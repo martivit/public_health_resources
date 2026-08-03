@@ -590,6 +590,7 @@ Protocol <- R6::R6Class(
     #'
     #' @param tool_name Character. Name of the tool to use for survey questions
     #'   and responses. Must match a key in \code{self$tools}.
+    #' @param lang Character. Language code for labels (default: "en").
     #' @return Data frame with columns: Research Question, Indicator Code,
     #'   Indicator / Variable, Disaggregation, Questionnaire Question,
     #'   Questionnaire Responses, Data Collection Level. Returns \code{NULL} when
@@ -614,6 +615,8 @@ Protocol <- R6::R6Class(
         origin = "Protocol$get_dap_table"
       )
     },
+    #' @description Get Quarto parameters for rendering.
+    #' @return A named list of parameters to pass to Quarto rendering.
     get_quarto_params = function() {
       params <- super$get_quarto_params()
 
@@ -881,6 +884,8 @@ Protocol <- R6::R6Class(
     #' @param role Character. Role identifier to check for tool availability.
     #' @return Logical. \code{TRUE} if a tool with the specified role exists
     #'   and has a valid name, \code{FALSE} otherwise.
+    #' @keywords internal
+    #' @noRd
     ..has_tool_role = function(role) {
       out <- tryCatch(
         self$access_nested(
@@ -897,6 +902,8 @@ Protocol <- R6::R6Class(
     #' @description Collect unique indicator codes from included revised tools.
     #' @param tool_names Optional character vector of tool names to query.
     #' @return Character vector of unique indicator codes.
+    #' @keywords internal
+    #' @noRd
     ..get_tool_indicator_codes = function(
       tool_names = NULL
     ) {
@@ -969,6 +976,8 @@ Protocol <- R6::R6Class(
     #'   objectives and specified tool survey data.
     #' @param tool_name Character. Tool name for survey/choices lookup.
     #' @return Data frame with DAP columns or NULL when missing dependencies.
+    #' @keywords internal
+    #' @noRd
     ..build_dap_table = function(tool_name, lang = "en") {
       # 1. Check framework availability
       if (is.null(self$framework) || !inherits(self$framework, "Framework")) {
@@ -1130,6 +1139,8 @@ Protocol <- R6::R6Class(
     #' @param lang Language code for label columns (e.g. \code{"en"}, \code{"fr"}).
     #' @return Data frame with DAP structure, without an indicator_code column,
     #'   or \code{NULL} when no rows can be constructed.
+    #' @keywords internal
+    #' @noRd
     ..construct_dap_rows = function(
       survey_df,
       choices_df,
@@ -1267,6 +1278,8 @@ Protocol <- R6::R6Class(
     #' @param choices_df Choices data frame (may be NULL)
     #' @param lang Language code (default: "en")
     #' @return Character string with responses (newline-separated for select types)
+    #' @keywords internal
+    #' @noRd
     ..extract_question_responses = function(
       question_row,
       choices_df,

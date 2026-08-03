@@ -8,6 +8,9 @@ xlsform_extract_variables(cell, pattern = "\\\\$\\\\{([^}]+)\\\\}")
 }
 \arguments{
 \item{cell}{A single character string (one XLSForm cell value).}
+
+\item{pattern}{A PCRE-compatible regular expression. The default
+pattern captures XLSForm variable names from `${}` references.}
 }
 \value{
 A character vector of extracted values (one per match).

@@ -363,6 +363,11 @@ generate_protocol_report <- function(
   invisible(protocol)
 }
 
+#' Print Protocol Summary
+#'
+#' @description
+#' Print a summary of a Protocol object to the console.
+#'
 #' @param protocol Protocol object to summarize
 #' @export
 print_protocol_summary <- function(protocol) {

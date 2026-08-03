@@ -17,294 +17,312 @@ master SVG diagrams.  Use \code{\link{ANAFramework}} for the ANA
 (Area-based Needs Assessment) conceptual framework.
 }
 \section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{master_objectives_schema}}{Data frame containing the full reference
+  \if{html}{\out{<div class="r6-fields">}}
+  \describe{
+    \item{\code{master_objectives_schema}}{Data frame containing the full reference
 schema with all available objectives.}
 
-\item{\code{master_indicator_bank}}{Data frame containing the full indicator
+    \item{\code{master_indicator_bank}}{Data frame containing the full indicator
 bank with all available indicators and their associated metadata,
 including threshold columns.  Loaded separately from
 \code{master_objectives_schema}.}
 
-\item{\code{modified_objectives_schema}}{Data frame derived from
+    \item{\code{modified_objectives_schema}}{Data frame derived from
 \code{master_objectives_schema} and filtered to the currently selected
 objectives.}
 
-\item{\code{modified_indicator_bank}}{Data frame derived from
+    \item{\code{modified_indicator_bank}}{Data frame derived from
 \code{master_indicator_bank} and filtered to the currently selected
 objective codes.  Initialised to the same value as
 \code{master_indicator_bank} on construction and updated by
 \code{modify_indicator_bank()}.}
 
-\item{\code{master_svg}}{Character string with the full SVG diagram for the
+    \item{\code{master_svg}}{Character string with the full SVG diagram for the
 conceptual framework.  Can be set with \code{set_master_svg()}.}
 
-\item{\code{adjusted_svg}}{Character string with an SVG diagram derived from
+    \item{\code{adjusted_svg}}{Character string with an SVG diagram derived from
 \code{master_svg} and modified to reflect the selected objectives.}
 
-\item{\code{primary_objectives}}{Numeric vector of objective codes selected as
+    \item{\code{primary_objectives}}{Numeric vector of objective codes selected as
 primary data collection objectives.  Used by
 \code{modify_adjusted_svg()} to colour the corresponding sub-pillar
 blocks light green in the adjusted SVG.}
 
-\item{\code{secondary_objectives}}{Numeric vector of objective codes selected as
+    \item{\code{secondary_objectives}}{Numeric vector of objective codes selected as
 secondary data objectives.  Used by \code{modify_adjusted_svg()} to
 colour the corresponding sub-pillar blocks light blue in the adjusted
 SVG.}
 
-\item{\code{primary_indicator_codes}}{Character vector of primary indicator codes
+    \item{\code{primary_indicator_codes}}{Character vector of primary indicator codes
 selected by the user.}
 
-\item{\code{secondary_indicator_codes}}{Character vector of secondary indicator
+    \item{\code{secondary_indicator_codes}}{Character vector of secondary indicator
 codes selected by the user.}
 
-\item{\code{modified_primary_indicator_codes}}{Data frame of primary indicator
+    \item{\code{modified_primary_indicator_codes}}{Data frame of primary indicator
 codes derived from \code{modified_objectives_schema}.}
 
-\item{\code{modified_secondary_indicator_codes}}{Data frame of secondary
+    \item{\code{modified_secondary_indicator_codes}}{Data frame of secondary
 indicator codes derived from \code{modified_objectives_schema}.}
 
-\item{\code{secondary_data_sources}}{Data frame of secondary
+    \item{\code{secondary_data_sources}}{Data frame of secondary
 objectives, data sources, and purposes.}
 
-\item{\code{metadata}}{List containing framework metadata including
+    \item{\code{metadata}}{List containing framework metadata including
 \code{created_datetime} and \code{modified_datetime}, both initialised
 to \code{Sys.time()} on construction.}
-}
-\if{html}{\out{</div>}}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-Framework-new}{\code{Framework$new()}}
-\item \href{#method-Framework-set_primary_objectives}{\code{Framework$set_primary_objectives()}}
-\item \href{#method-Framework-set_secondary_objectives}{\code{Framework$set_secondary_objectives()}}
-\item \href{#method-Framework-set_primary_indicators}{\code{Framework$set_primary_indicators()}}
-\item \href{#method-Framework-set_secondary_indicators}{\code{Framework$set_secondary_indicators()}}
-\item \href{#method-Framework-add_secondary_data_source}{\code{Framework$add_secondary_data_source()}}
-\item \href{#method-Framework-remove_secondary_data_source}{\code{Framework$remove_secondary_data_source()}}
-\item \href{#method-Framework-set_master_schema}{\code{Framework$set_master_schema()}}
-\item \href{#method-Framework-set_master_svg}{\code{Framework$set_master_svg()}}
-\item \href{#method-Framework-modify_adjusted_svg}{\code{Framework$modify_adjusted_svg()}}
-\item \href{#method-Framework-render_framework_svg}{\code{Framework$render_framework_svg()}}
-\item \href{#method-Framework-modify_adjusted_schema}{\code{Framework$modify_adjusted_schema()}}
-\item \href{#method-Framework-modify_indicator_bank}{\code{Framework$modify_indicator_bank()}}
-\item \href{#method-Framework-clone}{\code{Framework$clone()}}
-}
+  \itemize{
+    \item \href{#method-Framework-initialize}{\code{Framework$new()}}
+    \item \href{#method-Framework-set_primary_objectives}{\code{Framework$set_primary_objectives()}}
+    \item \href{#method-Framework-set_secondary_objectives}{\code{Framework$set_secondary_objectives()}}
+    \item \href{#method-Framework-set_primary_indicators}{\code{Framework$set_primary_indicators()}}
+    \item \href{#method-Framework-set_secondary_indicators}{\code{Framework$set_secondary_indicators()}}
+    \item \href{#method-Framework-add_secondary_data_source}{\code{Framework$add_secondary_data_source()}}
+    \item \href{#method-Framework-remove_secondary_data_source}{\code{Framework$remove_secondary_data_source()}}
+    \item \href{#method-Framework-set_master_schema}{\code{Framework$set_master_schema()}}
+    \item \href{#method-Framework-set_master_svg}{\code{Framework$set_master_svg()}}
+    \item \href{#method-Framework-modify_adjusted_svg}{\code{Framework$modify_adjusted_svg()}}
+    \item \href{#method-Framework-render_framework_svg}{\code{Framework$render_framework_svg()}}
+    \item \href{#method-Framework-modify_adjusted_schema}{\code{Framework$modify_adjusted_schema()}}
+    \item \href{#method-Framework-modify_indicator_bank}{\code{Framework$modify_indicator_bank()}}
+    \item \href{#method-Framework-clone}{\code{Framework$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Framework-new"></a>}}
-\if{latex}{\out{\hypertarget{method-Framework-new}{}}}
-\subsection{Method \code{new()}}{
-Creates a new Framework object.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Framework$new()}\if{html}{\out{</div>}}
+\if{html}{\out{<a id="method-Framework-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-Framework-initialize}{}}}
+\subsection{\code{Framework$new()}}{
+  Creates a new Framework object.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Framework$new()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A new Framework object.
+  }
 }
 
-\subsection{Returns}{
-A new Framework object.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Framework-set_primary_objectives"></a>}}
 \if{latex}{\out{\hypertarget{method-Framework-set_primary_objectives}{}}}
-\subsection{Method \code{set_primary_objectives()}}{
-Set the primary objectives for this framework.
+\subsection{\code{Framework$set_primary_objectives()}}{
+  Set the primary objectives for this framework.
 
 Stores a numeric vector of objective codes as
 \code{primary_objectives} and calls \code{touch()} to update the
 \code{modified_datetime}.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Framework$set_primary_objectives(objective_codes)}\if{html}{\out{</div>}}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Framework$set_primary_objectives(objective_codes)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{objective_codes}}{Numeric vector of primary objective codes.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly returns \code{self} for method chaining.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{objective_codes}}{Numeric vector of primary objective codes.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly returns \code{self} for method chaining.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Framework-set_secondary_objectives"></a>}}
 \if{latex}{\out{\hypertarget{method-Framework-set_secondary_objectives}{}}}
-\subsection{Method \code{set_secondary_objectives()}}{
-Set the secondary objectives for this framework.
+\subsection{\code{Framework$set_secondary_objectives()}}{
+  Set the secondary objectives for this framework.
 
 Stores a numeric vector of objective codes as
 \code{secondary_objectives} and calls \code{touch()} to update the
 \code{modified_datetime}.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Framework$set_secondary_objectives(objective_codes)}\if{html}{\out{</div>}}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Framework$set_secondary_objectives(objective_codes)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{objective_codes}}{Numeric vector of secondary objective codes.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly returns \code{self} for method chaining.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{objective_codes}}{Numeric vector of secondary objective codes.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly returns \code{self} for method chaining.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Framework-set_primary_indicators"></a>}}
 \if{latex}{\out{\hypertarget{method-Framework-set_primary_indicators}{}}}
-\subsection{Method \code{set_primary_indicators()}}{
-Set primary indicator codes for this framework.
+\subsection{\code{Framework$set_primary_indicators()}}{
+  Set primary indicator codes for this framework.
 
 Stores a character vector of indicator codes as
 \code{primary_indicator_codes} and updates modified primary indicator
 caches from the current adjusted schema.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Framework$set_primary_indicators(indicator_codes)}\if{html}{\out{</div>}}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Framework$set_primary_indicators(indicator_codes)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{indicator_codes}}{Character/numeric vector (or list) of indicator
+codes.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly returns \code{self} for method chaining.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{indicator_codes}}{Character/numeric vector (or list) of indicator
-codes.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly returns \code{self} for method chaining.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Framework-set_secondary_indicators"></a>}}
 \if{latex}{\out{\hypertarget{method-Framework-set_secondary_indicators}{}}}
-\subsection{Method \code{set_secondary_indicators()}}{
-Set secondary indicator codes for this framework.
+\subsection{\code{Framework$set_secondary_indicators()}}{
+  Set secondary indicator codes for this framework.
 
 Stores a character vector of indicator codes as
 \code{secondary_indicator_codes} and updates modified secondary indicator
 caches from the current adjusted schema.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Framework$set_secondary_indicators(indicator_codes)}\if{html}{\out{</div>}}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Framework$set_secondary_indicators(indicator_codes)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{indicator_codes}}{Character/numeric vector (or list) of indicator
+codes.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly returns \code{self} for method chaining.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{indicator_codes}}{Character/numeric vector (or list) of indicator
-codes.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly returns \code{self} for method chaining.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Framework-add_secondary_data_source"></a>}}
 \if{latex}{\out{\hypertarget{method-Framework-add_secondary_data_source}{}}}
-\subsection{Method \code{add_secondary_data_source()}}{
-Add a source to the secondary data sources table.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Framework$add_secondary_data_source(objective, source, purpose)}\if{html}{\out{</div>}}
+\subsection{\code{Framework$add_secondary_data_source()}}{
+  Add a source to the secondary data sources table.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Framework$add_secondary_data_source(objective, source, purpose)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{objective}}{Character. The objective code that this data source relates to.}
+      \item{\code{source}}{Character. The name of the secondary data source.}
+      \item{\code{purpose}}{Character. The purpose of the secondary data source.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly returns \code{self} for method chaining.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{source}}{Character. The name of the secondary data source.}
-
-\item{\code{purpose}}{Character. The purpose of the secondary data source.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly returns \code{self} for method chaining.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Framework-remove_secondary_data_source"></a>}}
 \if{latex}{\out{\hypertarget{method-Framework-remove_secondary_data_source}{}}}
-\subsection{Method \code{remove_secondary_data_source()}}{
-Remove a source from the secondary data sources table.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Framework$remove_secondary_data_source(objective, source)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{source}}{Character. The name of the secondary data source to remove.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Details}{
-Removes a secondary data source from the \code{secondary_data_sources} data frame
+\subsection{\code{Framework$remove_secondary_data_source()}}{
+  Remove a source from the secondary data sources table.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Framework$remove_secondary_data_source(objective, source)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{objective}}{Character. The objective code that this data source relates to.}
+      \item{\code{source}}{Character. The name of the secondary data source to remove.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Details}{
+    Removes a secondary data source from the \code{secondary_data_sources} data frame
 by matching both the objective code and source name. If the specified source is not found, a warning is issued.
+  }
+  \subsection{Returns}{
+    Invisibly returns \code{self} for method chaining.
+  }
 }
 
-\subsection{Returns}{
-Invisibly returns \code{self} for method chaining.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Framework-set_master_schema"></a>}}
 \if{latex}{\out{\hypertarget{method-Framework-set_master_schema}{}}}
-\subsection{Method \code{set_master_schema()}}{
-Set the master reference schema (objectives).
+\subsection{\code{Framework$set_master_schema()}}{
+  Set the master reference schema (objectives).
 
 Validates and stores a data frame as the master objectives schema.  The
 data frame must contain at minimum the columns required by
 \code{\link{validate_objective_schema}}: \code{sector},
 \code{pillar}, \code{sub_pillar}, \code{short_objective}, and
 \code{text_objective}.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Framework$set_master_schema(schema)}\if{html}{\out{</div>}}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Framework$set_master_schema(schema)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{schema}}{Data frame. The master reference schema.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly returns \code{self} for method chaining.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{schema}}{Data frame. The master reference schema.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly returns \code{self} for method chaining.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Framework-set_master_svg"></a>}}
 \if{latex}{\out{\hypertarget{method-Framework-set_master_svg}{}}}
-\subsection{Method \code{set_master_svg()}}{
-Set the master SVG diagram.
+\subsection{\code{Framework$set_master_svg()}}{
+  Set the master SVG diagram.
 
 Stores a character string as the master SVG diagram for the conceptual
 framework.  The string should be valid SVG markup.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Framework$set_master_svg(svg_content)}\if{html}{\out{</div>}}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Framework$set_master_svg(svg_content)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{svg_content}}{Character. SVG content as a single string.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly returns \code{self} for method chaining.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{svg_content}}{Character. SVG content as a single string.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly returns \code{self} for method chaining.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Framework-modify_adjusted_svg"></a>}}
 \if{latex}{\out{\hypertarget{method-Framework-modify_adjusted_svg}{}}}
-\subsection{Method \code{modify_adjusted_svg()}}{
-Colour sub-pillar blocks in the adjusted SVG according to
+\subsection{\code{Framework$modify_adjusted_svg()}}{
+  Colour sub-pillar blocks in the adjusted SVG according to
   the \code{primary_objectives} and \code{secondary_objectives} fields.
 
 Derives \code{adjusted_svg} from \code{master_svg} by applying fill
@@ -329,35 +347,36 @@ belong to that sub-pillar):
 
 \code{master_svg} and \code{master_objectives_schema} is \code{NULL} the
 method issues a warning and returns without modifying \code{adjusted_svg}.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Framework$modify_adjusted_svg(
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Framework$modify_adjusted_svg(
   primary_objective_codes = NULL,
   secondary_objective_codes = NULL
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{primary_objective_codes}}{Numeric vector of primary objective codes
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{primary_objective_codes}}{Numeric vector of primary objective codes
 to highlight in light green.  When \code{NULL} (the default) the
 \code{primary_objectives} field is used as a fallback.}
-
-\item{\code{secondary_objective_codes}}{Numeric vector of secondary objective
+      \item{\code{secondary_objective_codes}}{Numeric vector of secondary objective
 codes to highlight in light blue.  When \code{NULL} (the default) the
 \code{secondary_objectives} field is used as a fallback.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly returns \code{self} for method chaining.
+  }
 }
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly returns \code{self} for method chaining.
-}
-}
+
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Framework-render_framework_svg"></a>}}
 \if{latex}{\out{\hypertarget{method-Framework-render_framework_svg}{}}}
-\subsection{Method \code{render_framework_svg()}}{
-Render the framework SVG and display it in the active
+\subsection{\code{Framework$render_framework_svg()}}{
+  Render the framework SVG and display it in the active
   graphics device (e.g. the RStudio Plots pane).
 
 The \code{version} argument controls which SVG is rendered.  Pass
@@ -369,29 +388,31 @@ whether an adjusted version exists.
 Requires the \pkg{rsvg} and \pkg{grid} packages.
 When neither is installed the SVG is written to a temporary file and
 the file path is returned visibly so the caller can open it manually.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Framework$render_framework_svg(version = "adjusted")}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{version}}{Character. Which SVG to render: \code{"adjusted"}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Framework$render_framework_svg(version = "adjusted")}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{version}}{Character. Which SVG to render: \code{"adjusted"}
 (default) or \code{"master"}.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly returns \code{self} for method chaining.  When
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly returns \code{self} for method chaining.  When
   \pkg{rsvg}/\pkg{grid} are unavailable the path to the written SVG
   file is returned visibly instead.
+  }
 }
-}
+
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Framework-modify_adjusted_schema"></a>}}
 \if{latex}{\out{\hypertarget{method-Framework-modify_adjusted_schema}{}}}
-\subsection{Method \code{modify_adjusted_schema()}}{
-Filter the master objectives schema to the specified
+\subsection{\code{Framework$modify_adjusted_schema()}}{
+  Filter the master objectives schema to the specified
   objective codes and store the result in \code{modified_objectives_schema}.
 
 Filters \code{master_objectives_schema} to retain matching rows and
@@ -408,30 +429,32 @@ retaining all rows from \code{master_objectives_schema}.  Also updates
 \code{modified_primary_indicator_codes} and
 \code{modified_secondary_indicator_codes} from the resulting
 \code{modified_objectives_schema}.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Framework$modify_adjusted_schema(objective_codes = NULL)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{objective_codes}}{Character or numeric vector (or list) of objective
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Framework$modify_adjusted_schema(objective_codes = NULL)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{objective_codes}}{Character or numeric vector (or list) of objective
 code values to retain.  The type should match the filter column:
 numeric for \code{objective_code}, character for \code{short_objective}.
 Pass \code{NULL} (the default) to use \code{primary_objectives} and
 \code{secondary_objectives}, or all rows as a final fallback.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly returns \code{self} for method chaining.
+  }
 }
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly returns \code{self} for method chaining.
-}
-}
+
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Framework-modify_indicator_bank"></a>}}
 \if{latex}{\out{\hypertarget{method-Framework-modify_indicator_bank}{}}}
-\subsection{Method \code{modify_indicator_bank()}}{
-Filter the master indicator bank to the specified objective
+\subsection{\code{Framework$modify_indicator_bank()}}{
+  Filter the master indicator bank to the specified objective
   codes and store the result in \code{modified_indicator_bank}.
 
 Filters \code{master_indicator_bank} to retain only rows whose
@@ -442,38 +465,42 @@ stores the result as \code{modified_indicator_bank}.  When
 (i.e. no filtering).  The method silently returns without modifying
 \code{modified_indicator_bank} when \code{master_indicator_bank} is
 \code{NULL} or does not contain an \code{objective_code} column.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Framework$modify_indicator_bank(objective_codes = NULL)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{objective_codes}}{Numeric or character vector (or list) of objective
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Framework$modify_indicator_bank(objective_codes = NULL)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{objective_codes}}{Numeric or character vector (or list) of objective
 codes to filter by.  Pass \code{NULL} (the default) to reset
 \code{modified_indicator_bank} to the full master.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly returns \code{self} for method chaining.
+  }
 }
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly returns \code{self} for method chaining.
-}
-}
+
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Framework-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-Framework-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Framework$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{Framework$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Framework$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

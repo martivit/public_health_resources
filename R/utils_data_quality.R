@@ -129,16 +129,23 @@ quality_table_to_schema <- function(df) {
     test_params <- if (!is.na(first_row$test_params) &&
                        nzchar(first_row$test_params)) {
 
-      pairs <- strsplit(first_row$test_params, ",")[[1]]
+      pairs <- .parse_indicator_arguments(first_row$test_params)
       params <- list()
 
       for (pair in pairs) {
-        kv <- strsplit(trimws(pair), "=")[[1]]
-        if (length(kv) == 2) {
-          key <- trimws(kv[1])
-          value_str <- trimws(kv[2])
+        pair <- trimws(pair)
+        eq_pos <- regexpr("=", pair)[[1]]
+        if (eq_pos > 1) {
+          key <- trimws(substr(pair, 1, eq_pos - 1))
+          value_str <- trimws(substr(pair, eq_pos + 1, nchar(pair)))
           value <- suppressWarnings(as.numeric(value_str))
-          if (is.na(value)) value <- value_str
+          if (is.na(value)) {
+            if (toupper(value_str) %in% c("TRUE", "FALSE")) {
+              value <- as.logical(value_str)
+            } else {
+              value <- value_str
+            }
+          }
           params[[key]] <- value
         }
       }
@@ -430,7 +437,7 @@ quality_validate_schema_to_table <- function(qc_schema, origin = "quality_valida
           )
         }
 
-        if (!.is_logical_expression(thr$threshold_expression)) {
+        if (!is_logical_expression(thr$threshold_expression)) {
           phr_error(
             origin  = origin,
             message = phr_txt(

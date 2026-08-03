@@ -1130,7 +1130,9 @@ test_that("phr_calc_survey_ratio_single computes non-NA deff with cluster design
   expect_s3_class(out, "tbl_df")
   expect_true("deff" %in% names(out))
 
-  # Taylor should produce a point estimate and (usually) an SE/CI; DEFF may legitimately be NA for ratios.
+  # With a clustered design, deff should be computed via svymean fallback
+  expect_true(!is.na(out$deff), info = "deff should be non-NA with a cluster design")
+  expect_true(is.finite(out$deff), info = "deff should be a finite number with a cluster design")
   expect_true(is.finite(out$point.estimate))
 })
 

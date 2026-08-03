@@ -12,131 +12,133 @@ KII tools are typically used for:
 - Sector-specific expert interviews
 }
 \section{Super class}{
-\code{\link[phr:Tool]{phr::Tool}} -> \code{KeyInformantTool}
+\code{\link[phr:Tool]{Tool}} -> \code{KeyInformantTool}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-KeyInformantTool-new}{\code{KeyInformantTool$new()}}
-\item \href{#method-KeyInformantTool-get_kii_type}{\code{KeyInformantTool$get_kii_type()}}
-\item \href{#method-KeyInformantTool-set_kii_type}{\code{KeyInformantTool$set_kii_type()}}
-\item \href{#method-KeyInformantTool-clone}{\code{KeyInformantTool$clone()}}
+  \itemize{
+    \item \href{#method-KeyInformantTool-initialize}{\code{KeyInformantTool$new()}}
+    \item \href{#method-KeyInformantTool-get_kii_type}{\code{KeyInformantTool$get_kii_type()}}
+    \item \href{#method-KeyInformantTool-set_kii_type}{\code{KeyInformantTool$set_kii_type()}}
+    \item \href{#method-KeyInformantTool-clone}{\code{KeyInformantTool$clone()}}
+  }
 }
-}
-\if{html}{\out{
-<details><summary>Inherited methods</summary>
+\if{html}{\out{<details><summary>Inherited methods</summary>
 <ul>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="add_enumerators_to_choices"><a href='../../phr/html/Tool.html#method-Tool-add_enumerators_to_choices'><code>phr::Tool$add_enumerators_to_choices()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="add_numbered_list"><a href='../../phr/html/Tool.html#method-Tool-add_numbered_list'><code>phr::Tool$add_numbered_list()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="add_teams_to_choices"><a href='../../phr/html/Tool.html#method-Tool-add_teams_to_choices'><code>phr::Tool$add_teams_to_choices()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="change_default_language"><a href='../../phr/html/Tool.html#method-Tool-change_default_language'><code>phr::Tool$change_default_language()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="filter_survey_by_indicator"><a href='../../phr/html/Tool.html#method-Tool-filter_survey_by_indicator'><code>phr::Tool$filter_survey_by_indicator()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="get_choice_list_names"><a href='../../phr/html/Tool.html#method-Tool-get_choice_list_names'><code>phr::Tool$get_choice_list_names()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="get_choices_for_list"><a href='../../phr/html/Tool.html#method-Tool-get_choices_for_list'><code>phr::Tool$get_choices_for_list()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="get_filtered_choices"><a href='../../phr/html/Tool.html#method-Tool-get_filtered_choices'><code>phr::Tool$get_filtered_choices()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="get_filtered_survey"><a href='../../phr/html/Tool.html#method-Tool-get_filtered_survey'><code>phr::Tool$get_filtered_survey()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="get_indicator_codes"><a href='../../phr/html/Tool.html#method-Tool-get_indicator_codes'><code>phr::Tool$get_indicator_codes()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="get_name"><a href='../../phr/html/Tool.html#method-Tool-get_name'><code>phr::Tool$get_name()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="get_selected_indicators"><a href='../../phr/html/Tool.html#method-Tool-get_selected_indicators'><code>phr::Tool$get_selected_indicators()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="get_tool_type"><a href='../../phr/html/Tool.html#method-Tool-get_tool_type'><code>phr::Tool$get_tool_type()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="get_validation_errors"><a href='../../phr/html/Tool.html#method-Tool-get_validation_errors'><code>phr::Tool$get_validation_errors()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="is_valid"><a href='../../phr/html/Tool.html#method-Tool-is_valid'><code>phr::Tool$is_valid()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="set_name"><a href='../../phr/html/Tool.html#method-Tool-set_name'><code>phr::Tool$set_name()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="set_selected_indicators"><a href='../../phr/html/Tool.html#method-Tool-set_selected_indicators'><code>phr::Tool$set_selected_indicators()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="touch"><a href='../../phr/html/Tool.html#method-Tool-touch'><code>phr::Tool$touch()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="update_choice_list"><a href='../../phr/html/Tool.html#method-Tool-update_choice_list'><code>phr::Tool$update_choice_list()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="update_settings"><a href='../../phr/html/Tool.html#method-Tool-update_settings'><code>phr::Tool$update_settings()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="validate"><a href='../../phr/html/Tool.html#method-Tool-validate'><code>phr::Tool$validate()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="add_enumerators_to_choices"><a href='../../phr/html/Tool.html#method-Tool-add_enumerators_to_choices'><code>Tool$add_enumerators_to_choices()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="add_numbered_list"><a href='../../phr/html/Tool.html#method-Tool-add_numbered_list'><code>Tool$add_numbered_list()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="add_teams_to_choices"><a href='../../phr/html/Tool.html#method-Tool-add_teams_to_choices'><code>Tool$add_teams_to_choices()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="change_default_language"><a href='../../phr/html/Tool.html#method-Tool-change_default_language'><code>Tool$change_default_language()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="filter_survey_by_indicator"><a href='../../phr/html/Tool.html#method-Tool-filter_survey_by_indicator'><code>Tool$filter_survey_by_indicator()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="get_choice_list_names"><a href='../../phr/html/Tool.html#method-Tool-get_choice_list_names'><code>Tool$get_choice_list_names()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="get_choices_for_list"><a href='../../phr/html/Tool.html#method-Tool-get_choices_for_list'><code>Tool$get_choices_for_list()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="get_filtered_choices"><a href='../../phr/html/Tool.html#method-Tool-get_filtered_choices'><code>Tool$get_filtered_choices()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="get_filtered_survey"><a href='../../phr/html/Tool.html#method-Tool-get_filtered_survey'><code>Tool$get_filtered_survey()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="get_indicator_codes"><a href='../../phr/html/Tool.html#method-Tool-get_indicator_codes'><code>Tool$get_indicator_codes()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="get_name"><a href='../../phr/html/Tool.html#method-Tool-get_name'><code>Tool$get_name()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="get_selected_indicators"><a href='../../phr/html/Tool.html#method-Tool-get_selected_indicators'><code>Tool$get_selected_indicators()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="get_tool_type"><a href='../../phr/html/Tool.html#method-Tool-get_tool_type'><code>Tool$get_tool_type()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="get_validation_errors"><a href='../../phr/html/Tool.html#method-Tool-get_validation_errors'><code>Tool$get_validation_errors()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="is_valid"><a href='../../phr/html/Tool.html#method-Tool-is_valid'><code>Tool$is_valid()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="set_name"><a href='../../phr/html/Tool.html#method-Tool-set_name'><code>Tool$set_name()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="set_selected_indicators"><a href='../../phr/html/Tool.html#method-Tool-set_selected_indicators'><code>Tool$set_selected_indicators()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="touch"><a href='../../phr/html/Tool.html#method-Tool-touch'><code>Tool$touch()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="update_choice_list"><a href='../../phr/html/Tool.html#method-Tool-update_choice_list'><code>Tool$update_choice_list()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="update_settings"><a href='../../phr/html/Tool.html#method-Tool-update_settings'><code>Tool$update_settings()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Tool" data-id="validate"><a href='../../phr/html/Tool.html#method-Tool-validate'><code>Tool$validate()</code></a></span></li>
 </ul>
-</details>
-}}
+</details>}}
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-KeyInformantTool-new"></a>}}
-\if{latex}{\out{\hypertarget{method-KeyInformantTool-new}{}}}
-\subsection{Method \code{new()}}{
-Initialize a new KeyInformantTool object.
+\if{html}{\out{<a id="method-KeyInformantTool-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-KeyInformantTool-initialize}{}}}
+\subsection{\code{KeyInformantTool$new()}}{
+  Initialize a new KeyInformantTool object.
 
 On initialization, the master survey and choices are loaded from the
 bundled \code{iphra_kii_tool_dummy.xlsx} template stored in the package
 \code{inst/resources} folder.  Any explicitly supplied \code{survey},
 \code{choices}, or \code{settings} arguments override the defaults.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{KeyInformantTool$new(
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{KeyInformantTool$new(
   name = NULL,
   survey = NULL,
   choices = NULL,
   settings = NULL,
   kii_type = "general"
-)}\if{html}{\out{</div>}}
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{name}}{Optional name for the tool.}
+      \item{\code{survey}}{Optional data.frame to use as the master survey (overrides default).}
+      \item{\code{choices}}{Optional data.frame to use as the master choices (overrides default).}
+      \item{\code{settings}}{Optional data.frame to use as settings (overrides default).}
+      \item{\code{kii_type}}{Type of KII (e.g., "community", "health", "fsl", "wash").}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A new KeyInformantTool object.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{name}}{Optional name for the tool.}
-
-\item{\code{survey}}{Optional data.frame to use as the master survey (overrides default).}
-
-\item{\code{choices}}{Optional data.frame to use as the master choices (overrides default).}
-
-\item{\code{settings}}{Optional data.frame to use as settings (overrides default).}
-
-\item{\code{kii_type}}{Type of KII (e.g., "community", "health", "fsl", "wash").}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A new KeyInformantTool object.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-KeyInformantTool-get_kii_type"></a>}}
 \if{latex}{\out{\hypertarget{method-KeyInformantTool-get_kii_type}{}}}
-\subsection{Method \code{get_kii_type()}}{
-Get the KII type.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{KeyInformantTool$get_kii_type()}\if{html}{\out{</div>}}
+\subsection{\code{KeyInformantTool$get_kii_type()}}{
+  Get the KII type.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{KeyInformantTool$get_kii_type()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Character string with KII type.
+  }
 }
 
-\subsection{Returns}{
-Character string with KII type.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-KeyInformantTool-set_kii_type"></a>}}
 \if{latex}{\out{\hypertarget{method-KeyInformantTool-set_kii_type}{}}}
-\subsection{Method \code{set_kii_type()}}{
-Set the KII type.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{KeyInformantTool$set_kii_type(kii_type)}\if{html}{\out{</div>}}
+\subsection{\code{KeyInformantTool$set_kii_type()}}{
+  Set the KII type.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{KeyInformantTool$set_kii_type(kii_type)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{kii_type}}{Character string for KII type.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly returns self for method chaining.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{kii_type}}{Character string for KII type.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly returns self for method chaining.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-KeyInformantTool-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-KeyInformantTool-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{KeyInformantTool$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{KeyInformantTool$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{KeyInformantTool$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

@@ -7,9 +7,9 @@ library(tibble)
 
 test_that("map_schema_vars returns invisible self when no schema is defined", {
   df <- tibble::tibble(id = 1:3)
-  d <- suppressMessages(suppressWarnings(
+  d <- suppressMessages(
     Data$new(data = df, dataset_name = "TestData", uuid = "id")
-  ))
+  )
 
   # Should not error and return self
 
@@ -26,9 +26,9 @@ test_that("map_schema_vars maps columns based on col_names in schema", {
     individual_age = c(25, 30, 45, 22, 60)
   )
 
-  d <- suppressMessages(suppressWarnings(
+  d <- suppressMessages(
     Data$new(data = df, dataset_name = "TestData", uuid = "id")
-  ))
+  )
 
   # Set a schema with col_names
   schema <- list(
@@ -66,9 +66,9 @@ test_that("map_schema_vars does not map values for numeric types", {
     my_score = c(1, 2, 3, 2, 1)
   )
 
-  d <- suppressMessages(suppressWarnings(
+  d <- suppressMessages(
     Data$new(data = df, dataset_name = "TestData", uuid = "id")
-  ))
+  )
 
   # Schema with numeric type and allowed_values (which shouldn't be value-mapped)
   schema <- list(
@@ -97,9 +97,9 @@ test_that("map_schema_vars does not overwrite existing mappings", {
     person_sex = c("male", "female", "male", "female", "male")
   )
 
-  d <- suppressMessages(suppressWarnings(
+  d <- suppressMessages(
     Data$new(data = df, dataset_name = "TestData", uuid = "id")
-  ))
+  )
 
   # Pre-set a mapping
   d$variable_map$sex <- "custom_sex"
@@ -122,9 +122,9 @@ test_that("map_schema_vars handles missing columns gracefully", {
     other_col = c("a", "b", "c", "d", "e")
   )
 
-  d <- suppressMessages(suppressWarnings(
+  d <- suppressMessages(
     Data$new(data = df, dataset_name = "TestData", uuid = "id")
-  ))
+  )
 
   schema <- list(
     types = list(
@@ -150,9 +150,9 @@ test_that("map_schema_vars only maps found allowed values", {
     my_category = c("cat_a", "cat_b", "cat_a", "cat_c", "cat_a")
   )
 
-  d <- suppressMessages(suppressWarnings(
+  d <- suppressMessages(
     Data$new(data = df, dataset_name = "TestData", uuid = "id")
-  ))
+  )
 
   schema <- list(
     types = list(
@@ -187,9 +187,9 @@ test_that("repair_maps updates variable_map from dataframe", {
     col_b = c(1, 2, 3, 4, 5)
   )
 
-  d <- suppressMessages(suppressWarnings(
+  d <- suppressMessages(
     Data$new(data = df, dataset_name = "TestData", uuid = "id")
-  ))
+  )
 
   var_map_df <- data.frame(
     role = c("category", "score"),
@@ -208,9 +208,9 @@ test_that("repair_maps updates variable_map from dataframe", {
 test_that("repair_maps updates value_map from dataframe", {
   df <- tibble::tibble(id = 1:3)
 
-  d <- suppressMessages(suppressWarnings(
+  d <- suppressMessages(
     Data$new(data = df, dataset_name = "TestData", uuid = "id")
-  ))
+  )
 
   val_map_df <- data.frame(
     role = c("status", "category"),
@@ -233,9 +233,9 @@ test_that("repair_maps with mode='replace' clears existing mappings", {
     new_col = c("a", "b", "c")
   )
 
-  d <- suppressMessages(suppressWarnings(
+  d <- suppressMessages(
     Data$new(data = df, dataset_name = "TestData", uuid = "id")
-  ))
+  )
 
   # Set initial mappings
   d$variable_map$old_role <- "some_col"
@@ -278,9 +278,9 @@ test_that("repair_maps with mode='merge' keeps existing mappings", {
     col_b = c(1, 2, 3)
   )
 
-  d <- suppressMessages(suppressWarnings(
+  d <- suppressMessages(
     Data$new(data = df, dataset_name = "TestData", uuid = "id")
-  ))
+  )
 
   # Set initial mappings
   d$variable_map$old_role <- "col_a"
@@ -311,9 +311,9 @@ test_that("repair_maps removes mapping when column_name is NA", {
     col_a = c("a", "b", "c")
   )
 
-  d <- suppressMessages(suppressWarnings(
+  d <- suppressMessages(
     Data$new(data = df, dataset_name = "TestData", uuid = "id")
-  ))
+  )
   d$variable_map$to_remove <- "col_a"
 
   var_map_df <- data.frame(
@@ -330,9 +330,9 @@ test_that("repair_maps removes mapping when column_name is NA", {
 test_that("repair_maps never removes uuid mapping", {
   df <- tibble::tibble(id = 1:3)
 
-  d <- suppressMessages(suppressWarnings(
+  d <- suppressMessages(
     Data$new(data = df, dataset_name = "TestData", uuid = "id")
-  ))
+  )
 
   var_map_df <- data.frame(
     role = c("uuid"),
@@ -352,9 +352,9 @@ test_that("repair_maps validates column existence and returns warnings", {
     existing_col = c("a", "b", "c")
   )
 
-  d <- suppressMessages(suppressWarnings(
+  d <- suppressMessages(
     Data$new(data = df, dataset_name = "TestData", uuid = "id")
-  ))
+  )
 
   var_map_df <- data.frame(
     role = c("good_mapping", "bad_mapping"),
@@ -378,9 +378,9 @@ test_that("repair_maps validates column existence and returns warnings", {
 test_that("repair_maps skips validation when validate_columns=FALSE", {
   df <- tibble::tibble(id = 1:3)
 
-  d <- suppressMessages(suppressWarnings(
+  d <- suppressMessages(
     Data$new(data = df, dataset_name = "TestData", uuid = "id")
-  ))
+  )
 
   var_map_df <- data.frame(
     role = c("some_role"),
@@ -400,9 +400,9 @@ test_that("repair_maps skips validation when validate_columns=FALSE", {
 
 test_that("repair_maps errors on invalid input structure", {
   df <- tibble::tibble(id = 1:3)
-  d <- suppressMessages(suppressWarnings(
+  d <- suppressMessages(
     Data$new(data = df, dataset_name = "TestData", uuid = "id")
-  ))
+  )
 
   # Missing required columns
   bad_df <- data.frame(
@@ -424,9 +424,9 @@ test_that("repair_maps errors on invalid input structure", {
 test_that("get_maps_as_df returns correct dataframes", {
   df <- tibble::tibble(id = 1:3)
 
-  d <- suppressMessages(suppressWarnings(
+  d <- suppressMessages(
     Data$new(data = df, dataset_name = "TestData", uuid = "id")
-  ))
+  )
   d$variable_map$category <- "some_col"
   d$variable_map$score <- "other_col"
   d$value_map$category <- c("a", "b", "c")
@@ -451,9 +451,9 @@ test_that("get_maps_as_df returns correct dataframes", {
 test_that("get_maps_as_df returns empty dataframes when maps are empty", {
   df <- tibble::tibble(id = 1:3)
 
-  d <- suppressMessages(suppressWarnings(
+  d <- suppressMessages(
     Data$new(data = df, dataset_name = "TestData", uuid = "id")
-  ))
+  )
   d$value_map <- list()  # Empty value map
 
   maps <- d$get_maps_as_df()
@@ -477,12 +477,12 @@ test_that("HouseholdData calls map_schema_vars on initialize", {
   )
 
   # This should trigger map_schema_vars during initialization
-  hh <- suppressMessages(suppressWarnings(
+  hh <- suppressMessages(
     HouseholdData$new(
       data = mock_data,
       dataset_name = "TestHH"
     )
-  ))
+  )
 
   # The HouseholdData should have schema set
   expect_true(!is.null(hh$variable_schema))
@@ -510,9 +510,9 @@ test_that("map_schema_vars handles select_multiple with value_map", {
     )
   )
 
-  d <- suppressMessages(suppressWarnings(
+  d <- suppressMessages(
     Data$new(data = df, dataset_name = "TestData", uuid = "id")
-  ))
+  )
 
   # Schema with select_multiple question type and nested value_map
   schema <- list(
@@ -583,9 +583,9 @@ test_that("map_schema_vars select_multiple handles unordered values", {
     )
   )
 
-  d <- suppressMessages(suppressWarnings(
+  d <- suppressMessages(
     Data$new(data = df, dataset_name = "TestData", uuid = "id")
-  ))
+  )
 
   schema <- list(
     types = list(skills = "character"),
@@ -623,9 +623,9 @@ test_that("map_schema_vars select_multiple with allowed_values (backward compat)
     transport = c("car bus", "bike", "car bike")
   )
 
-  d <- suppressMessages(suppressWarnings(
+  d <- suppressMessages(
     Data$new(data = df, dataset_name = "TestData", uuid = "id")
-  ))
+  )
 
   schema <- list(
     types = list(transport = "character"),
@@ -654,9 +654,9 @@ test_that("map_schema_vars select_multiple handles empty and NA values", {
     food = c("rice beans", NA, "", "rice", "beans rice maize")
   )
 
-  d <- suppressMessages(suppressWarnings(
+  d <- suppressMessages(
     Data$new(data = df, dataset_name = "TestData", uuid = "id")
-  ))
+  )
 
   schema <- list(
     types = list(food = "character"),
@@ -692,9 +692,9 @@ test_that("map_schema_vars select_multiple only maps canonical values with found
     food = c("rice", "rice beans", "rice")
   )
 
-  d <- suppressMessages(suppressWarnings(
+  d <- suppressMessages(
     Data$new(data = df, dataset_name = "TestData", uuid = "id")
-  ))
+  )
 
   schema <- list(
     types = list(food = "character"),
@@ -727,9 +727,9 @@ test_that("map_schema_vars select_multiple uses word boundaries for matching", {
     activity = c("farm fishing", "farmer", "farm")
   )
 
-  d <- suppressMessages(suppressWarnings(
+  d <- suppressMessages(
     Data$new(data = df, dataset_name = "TestData", uuid = "id")
-  ))
+  )
 
   schema <- list(
     types = list(activity = "character"),
@@ -768,9 +768,9 @@ test_that("map_schema_vars select_multiple handles special regex characters", {
     code = c("A+ B-", "C* A+", "B-")
   )
 
-  d <- suppressMessages(suppressWarnings(
+  d <- suppressMessages(
     Data$new(data = df, dataset_name = "TestData", uuid = "id")
-  ))
+  )
 
   schema <- list(
     types = list(code = "character"),
@@ -812,9 +812,9 @@ test_that("map_schema_vars maps first matching column when multiple exist", {
     num_deaths = c(1, 0, 2, 1, 0)
   )
 
-  d <- suppressMessages(suppressWarnings(
+  d <- suppressMessages(
     Data$new(data = df, dataset_name = "TestData", uuid = "id")
-  ))
+  )
 
   # Schema where linked_num_deaths is listed FIRST
   schema <- list(
@@ -840,9 +840,9 @@ test_that("map_schema_vars maps second column if first not present", {
     num_deaths = c(1, 0, 2, 1, 0)
   )
 
-  d <- suppressMessages(suppressWarnings(
+  d <- suppressMessages(
     Data$new(data = df, dataset_name = "TestData", uuid = "id")
-  ))
+  )
 
   # Schema where linked_num_deaths is listed FIRST but not in data
   schema <- list(
@@ -870,9 +870,9 @@ test_that("map_schema_vars respects column order priority with three options", {
     death_count = c(2, 1, 0, 3, 2)
   )
 
-  d <- suppressMessages(suppressWarnings(
+  d <- suppressMessages(
     Data$new(data = df, dataset_name = "TestData", uuid = "id")
-  ))
+  )
 
   # Schema with priority: linked_num_deaths (missing), num_deaths, death_count
   schema <- list(
@@ -899,9 +899,9 @@ test_that("map_schema_vars with reversed order maps correctly", {
     num_deaths = c(1, 0, 2, 1, 0)
   )
 
-  d <- suppressMessages(suppressWarnings(
+  d <- suppressMessages(
     Data$new(data = df, dataset_name = "TestData", uuid = "id")
-  ))
+  )
 
   # Schema where num_deaths is listed FIRST (reversed priority)
   schema <- list(
@@ -927,9 +927,9 @@ test_that("map_schema_vars remaps if existing mapping points to non-existent col
     linked_num_deaths = c(2, 0, 1, 3, 0)
   )
 
-  d <- suppressMessages(suppressWarnings(
+  d <- suppressMessages(
     Data$new(data = df, dataset_name = "TestData", uuid = "id")
-  ))
+  )
 
   # Pre-map to a column that doesn't exist in data
   d$variable_map$deaths <- "nonexistent_column"
@@ -980,9 +980,9 @@ test_that("map_schema_vars adds ALL allowable values found in data to value_map"
       )
     )
 
-    d <- suppressMessages(suppressWarnings(
+    d <- suppressMessages(
       Data$new(data = df, dataset_name = "TestData", uuid = "id")
-    ))
+    )
 
     # Define schema with nested value_map structure
     # Some allowed values ARE in data, some are NOT
@@ -1129,9 +1129,9 @@ test_that("map_schema_vars handles select_multiple with ALL allowable values", {
     )
   )
 
-  d <- suppressMessages(suppressWarnings(
+  d <- suppressMessages(
     Data$new(data = df, dataset_name = "TestData", uuid = "id")
-  ))
+  )
 
   schema <- list(
     types = list(income = "character"),
@@ -1199,9 +1199,9 @@ test_that("map_schema_vars with allowed_values (backward compat) includes ALL fo
                "suspended", "active", "pending", "inactive")
   )
 
-  d <- suppressMessages(suppressWarnings(
+  d <- suppressMessages(
     Data$new(data = df, dataset_name = "TestData", uuid = "id")
-  ))
+  )
 
   schema <- list(
     types = list(account_status = "character"),
@@ -1289,9 +1289,9 @@ test_that("map_schema_vars is called after each add_* function in standardize", 
   )
 
   # Create data object
-  d <- suppressMessages(suppressWarnings(
+  d <- suppressMessages(
     Data$new(data = df, dataset_name = "TestData", uuid = "id")
-  ))
+  )
   d$set_variable_schema(variable_schema)
   d$set_indicator_schema(indicator_schema)
 
@@ -1353,9 +1353,9 @@ test_that("map_schema_vars updates to more preferred column when available", {
   )
 
   # Create data object
-  d <- suppressMessages(suppressWarnings(
+  d <- suppressMessages(
     Data$new(data = df, dataset_name = "TestData", uuid = "id")
-  ))
+  )
   d$set_variable_schema(variable_schema)
   d$set_indicator_schema(indicator_schema)
 
@@ -1396,9 +1396,9 @@ test_that("map_schema_vars does not downgrade to less preferred column", {
   )
 
   # Create data object
-  d <- suppressMessages(suppressWarnings(
+  d <- suppressMessages(
     Data$new(data = df, dataset_name = "TestData", uuid = "id")
-  ))
+  )
   d$set_variable_schema(variable_schema)
 
   # Should map to preferred_name initially
@@ -1450,9 +1450,9 @@ test_that("map_schema_vars updates value_map when variable_map is updated", {
   )
 
   # Create data object
-  d <- suppressMessages(suppressWarnings(
+  d <- suppressMessages(
     Data$new(data = df, dataset_name = "TestData", uuid = "id")
-  ))
+  )
   d$set_variable_schema(variable_schema)
   d$set_indicator_schema(indicator_schema)
 
@@ -1475,9 +1475,9 @@ test_that("map_schema_vars updates value_map when variable_map is updated", {
 
 test_that("map_schema_labels returns invisible self when no schema is defined", {
   df <- tibble::tibble(id = 1:3)
-  d <- suppressMessages(suppressWarnings(
+  d <- suppressMessages(
     Data$new(data = df, dataset_name = "TestData", uuid = "id")
-  ))
+  )
 
   result <- d$map_schema_labels()
   expect_s3_class(result, "Data")
@@ -1491,9 +1491,9 @@ test_that("map_schema_labels populates variable_label and value_label from schem
     gender = c("male", "female", "male", "female"),
     age    = c(25L, 30L, 45L, 22L)
   )
-  d <- suppressMessages(suppressWarnings(
+  d <- suppressMessages(
     Data$new(data = df, dataset_name = "LabelTest", uuid = "id")
-  ))
+  )
 
   schema <- list(
     types      = list(sex = "character", age = "integer"),
@@ -1522,9 +1522,9 @@ test_that("map_schema_labels populates variable_label and value_label from schem
 
 test_that("map_schema_labels respects language argument", {
   df <- tibble::tibble(id = 1:2, gender = c("male", "female"))
-  d <- suppressMessages(suppressWarnings(
+  d <- suppressMessages(
     Data$new(data = df, dataset_name = "LangTest", uuid = "id")
-  ))
+  )
 
   schema <- list(
     types     = list(sex = "character"),
@@ -1555,9 +1555,9 @@ test_that("map_schema_labels respects language argument", {
 
 test_that("map_schema_labels defaults to english for unknown language", {
   df <- tibble::tibble(id = 1:2, gender = c("male", "female"))
-  d <- suppressMessages(suppressWarnings(
+  d <- suppressMessages(
     Data$new(data = df, dataset_name = "LangFallback", uuid = "id")
-  ))
+  )
 
   schema <- list(
     types     = list(sex = "character"),
@@ -1573,9 +1573,9 @@ test_that("map_schema_labels defaults to english for unknown language", {
 
 test_that("map_schema_labels only labels variables present in variable_map", {
   df <- tibble::tibble(id = 1:2, gender = c("male", "female"))
-  d <- suppressMessages(suppressWarnings(
+  d <- suppressMessages(
     Data$new(data = df, dataset_name = "PartialLabel", uuid = "id")
-  ))
+  )
 
   schema <- list(
     types     = list(sex = "character", age = "integer"),
@@ -1595,9 +1595,9 @@ test_that("map_schema_labels only labels variables present in variable_map", {
 
 test_that("map_schema_labels is called automatically after map_schema_vars in standardize", {
   df <- tibble::tibble(id = 1:3, gender = c("male", "female", "male"))
-  d <- suppressMessages(suppressWarnings(
+  d <- suppressMessages(
     Data$new(data = df, dataset_name = "AutoLabel", uuid = "id")
-  ))
+  )
 
   schema <- list(
     types     = list(sex = "character"),

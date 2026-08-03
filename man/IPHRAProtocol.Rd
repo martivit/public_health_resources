@@ -66,160 +66,182 @@ protocol$.tools_table_df
 
 }
 \section{Super classes}{
-\code{\link[phr:Orchestrator]{phr::Orchestrator}} -> \code{\link[phr:Document]{phr::Document}} -> \code{phr::Protocol} -> \code{phr::SurveyProtocol} -> \code{IPHRAProtocol}
+\code{Orchestrator} -> \code{Document} -> \code{Protocol} -> \code{SurveyProtocol} -> \code{IPHRAProtocol}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-IPHRAProtocol-new}{\code{IPHRAProtocol$new()}}
-\item \href{#method-IPHRAProtocol-add_tools}{\code{IPHRAProtocol$add_tools()}}
-\item \href{#method-IPHRAProtocol-get_allowable_tools}{\code{IPHRAProtocol$get_allowable_tools()}}
-\item \href{#method-IPHRAProtocol-update_recall_date}{\code{IPHRAProtocol$update_recall_date()}}
-\item \href{#method-IPHRAProtocol-get_quarto_params}{\code{IPHRAProtocol$get_quarto_params()}}
-\item \href{#method-IPHRAProtocol-clone}{\code{IPHRAProtocol$clone()}}
+  \itemize{
+    \item \href{#method-IPHRAProtocol-initialize}{\code{IPHRAProtocol$new()}}
+    \item \href{#method-IPHRAProtocol-add_tools}{\code{IPHRAProtocol$add_tools()}}
+    \item \href{#method-IPHRAProtocol-get_allowable_tools}{\code{IPHRAProtocol$get_allowable_tools()}}
+    \item \href{#method-IPHRAProtocol-update_recall_date}{\code{IPHRAProtocol$update_recall_date()}}
+    \item \href{#method-IPHRAProtocol-get_quarto_params}{\code{IPHRAProtocol$get_quarto_params()}}
+    \item \href{#method-IPHRAProtocol-clone}{\code{IPHRAProtocol$clone()}}
+  }
 }
-}
-\if{html}{\out{
-<details><summary>Inherited methods</summary>
+\if{html}{\out{<details><summary>Inherited methods</summary>
 <ul>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Orchestrator" data-id="access_nested"><a href='../../phr/html/Orchestrator.html#method-Orchestrator-access_nested'><code>phr::Orchestrator$access_nested()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Orchestrator" data-id="pre_sync_state"><a href='../../phr/html/Orchestrator.html#method-Orchestrator-pre_sync_state'><code>phr::Orchestrator$pre_sync_state()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Orchestrator" data-id="set_nested"><a href='../../phr/html/Orchestrator.html#method-Orchestrator-set_nested'><code>phr::Orchestrator$set_nested()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Orchestrator" data-id="sync_state"><a href='../../phr/html/Orchestrator.html#method-Orchestrator-sync_state'><code>phr::Orchestrator$sync_state()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Document" data-id="generate_quarto_doc"><a href='../../phr/html/Document.html#method-Document-generate_quarto_doc'><code>phr::Document$generate_quarto_doc()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Document" data-id="generate_quarto_ppt"><a href='../../phr/html/Document.html#method-Document-generate_quarto_ppt'><code>phr::Document$generate_quarto_ppt()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Protocol" data-id="get_dap_table"><a href='../../phr/html/Protocol.html#method-Protocol-get_dap_table'><code>phr::Protocol$get_dap_table()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Protocol" data-id="get_issues"><a href='../../phr/html/Protocol.html#method-Protocol-get_issues'><code>phr::Protocol$get_issues()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Protocol" data-id="get_tool_names"><a href='../../phr/html/Protocol.html#method-Protocol-get_tool_names'><code>phr::Protocol$get_tool_names()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Protocol" data-id="is_tool_included"><a href='../../phr/html/Protocol.html#method-Protocol-is_tool_included'><code>phr::Protocol$is_tool_included()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="Protocol" data-id="validate_objective_schema"><a href='../../phr/html/Protocol.html#method-Protocol-validate_objective_schema'><code>phr::Protocol$validate_objective_schema()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="SurveyProtocol" data-id="diagnose_coherence"><a href='../../phr/html/SurveyProtocol.html#method-SurveyProtocol-diagnose_coherence'><code>phr::SurveyProtocol$diagnose_coherence()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="SurveyProtocol" data-id="get_frame_column"><a href='../../phr/html/SurveyProtocol.html#method-SurveyProtocol-get_frame_column'><code>phr::SurveyProtocol$get_frame_column()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="SurveyProtocol" data-id="get_sample_table"><a href='../../phr/html/SurveyProtocol.html#method-SurveyProtocol-get_sample_table'><code>phr::SurveyProtocol$get_sample_table()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="SurveyProtocol" data-id="get_sampling_methods"><a href='../../phr/html/SurveyProtocol.html#method-SurveyProtocol-get_sampling_methods'><code>phr::SurveyProtocol$get_sampling_methods()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="SurveyProtocol" data-id="get_strata_names"><a href='../../phr/html/SurveyProtocol.html#method-SurveyProtocol-get_strata_names'><code>phr::SurveyProtocol$get_strata_names()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="SurveyProtocol" data-id="post_sync_state"><a href='../../phr/html/SurveyProtocol.html#method-SurveyProtocol-post_sync_state'><code>phr::SurveyProtocol$post_sync_state()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="SurveyProtocol" data-id="set_sampling_frame"><a href='../../phr/html/SurveyProtocol.html#method-SurveyProtocol-set_sampling_frame'><code>phr::SurveyProtocol$set_sampling_frame()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="phr" data-topic="SurveyProtocol" data-id="validate_strata_table"><a href='../../phr/html/SurveyProtocol.html#method-SurveyProtocol-validate_strata_table'><code>phr::SurveyProtocol$validate_strata_table()</code></a></span></li>
+  <li><code>Orchestrator$access_nested()</code></li>
+  <li><code>Orchestrator$pre_sync_state()</code></li>
+  <li><code>Orchestrator$set_nested()</code></li>
+  <li><code>Orchestrator$sync_state()</code></li>
+  <li><code>Document$generate_quarto_doc()</code></li>
+  <li><code>Document$generate_quarto_ppt()</code></li>
+  <li><code>Protocol$get_dap_table()</code></li>
+  <li><code>Protocol$get_issues()</code></li>
+  <li><code>Protocol$get_tool_names()</code></li>
+  <li><code>Protocol$is_tool_included()</code></li>
+  <li><code>Protocol$validate_objective_schema()</code></li>
+  <li><code>SurveyProtocol$diagnose_coherence()</code></li>
+  <li><code>SurveyProtocol$get_frame_column()</code></li>
+  <li><code>SurveyProtocol$get_sample_table()</code></li>
+  <li><code>SurveyProtocol$get_sampling_methods()</code></li>
+  <li><code>SurveyProtocol$get_strata_names()</code></li>
+  <li><code>SurveyProtocol$post_sync_state()</code></li>
+  <li><code>SurveyProtocol$set_sampling_frame()</code></li>
+  <li><code>SurveyProtocol$validate_strata_table()</code></li>
 </ul>
-</details>
-}}
+</details>}}
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-IPHRAProtocol-new"></a>}}
-\if{latex}{\out{\hypertarget{method-IPHRAProtocol-new}{}}}
-\subsection{Method \code{new()}}{
-Creates a new IPHRAProtocol object.
+\if{html}{\out{<a id="method-IPHRAProtocol-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-IPHRAProtocol-initialize}{}}}
+\subsection{\code{IPHRAProtocol$new()}}{
+  Creates a new IPHRAProtocol object.
 
 An \code{\link{ANAFramework}} is automatically created and stored in
 \code{self$framework}.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{IPHRAProtocol$new(
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{IPHRAProtocol$new(
   assessment_title = NULL,
   country_name = NULL,
   month_year = NULL
-)}\if{html}{\out{</div>}}
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{assessment_title}}{Character. The title of the assessment.}
+      \item{\code{country_name}}{Character. The name of the country.}
+      \item{\code{month_year}}{Character. The month and year of the assessment.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A new IPHRAProtocol object.
+  }
 }
 
-\subsection{Returns}{
-A new IPHRAProtocol object.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-IPHRAProtocol-add_tools"></a>}}
 \if{latex}{\out{\hypertarget{method-IPHRAProtocol-add_tools}{}}}
-\subsection{Method \code{add_tools()}}{
-Add an IPHRA data collection tool by name.
+\subsection{\code{IPHRAProtocol$add_tools()}}{
+  Add an IPHRA data collection tool by name.
 
 The \code{tool_name} must be one of the recognised IPHRA tool names
 (see class description).  The appropriate \code{\link{Tool}} subclass
 is instantiated, its bundled XLSForm template is loaded from the
 package resources folder (when available), and the object is stored
 in \code{self$tools[[tool_name]]}.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{IPHRAProtocol$add_tools(tool_name)}\if{html}{\out{</div>}}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{IPHRAProtocol$add_tools(tool_name)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{tool_name}}{Character. One of the recognised IPHRA tool names.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly returns \code{self} for method chaining.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{tool_name}}{Character. One of the recognised IPHRA tool names.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly returns \code{self} for method chaining.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-IPHRAProtocol-get_allowable_tools"></a>}}
 \if{latex}{\out{\hypertarget{method-IPHRAProtocol-get_allowable_tools}{}}}
-\subsection{Method \code{get_allowable_tools()}}{
-Return the names of all allowable IPHRA tools.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{IPHRAProtocol$get_allowable_tools()}\if{html}{\out{</div>}}
+\subsection{\code{IPHRAProtocol$get_allowable_tools()}}{
+  Return the names of all allowable IPHRA tools.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{IPHRAProtocol$get_allowable_tools()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Character vector of tool names.
+  }
 }
 
-\subsection{Returns}{
-Character vector of tool names.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-IPHRAProtocol-update_recall_date"></a>}}
 \if{latex}{\out{\hypertarget{method-IPHRAProtocol-update_recall_date}{}}}
-\subsection{Method \code{update_recall_date()}}{
-Update the recall date in the household tool's calculate rows.
+\subsection{\code{IPHRAProtocol$update_recall_date()}}{
+  Update the recall date in the household tool's calculate rows.
 
 Updates the \code{calculation} column of the \code{recall_event},
 \code{recall_date}, and \code{recall_month} rows in the
 \code{tool_household_iphra_v2} tool (both \code{survey} and
 \code{revised_survey}).  The recall date controls the mortality recall
 period used in the form.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{IPHRAProtocol$update_recall_date(
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{IPHRAProtocol$update_recall_date(
   recall_date,
   tool_name = "tool_household_iphra_v2"
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{recall_date}}{Character or Date. The recall start date.  Accepts a
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{recall_date}}{Character or Date. The recall start date.  Accepts a
 \code{Date} object or a character string in \code{"YYYY-MM-DD"} format.}
-
-\item{\code{tool_name}}{Character. Name of the household tool to update.
+      \item{\code{tool_name}}{Character. Name of the household tool to update.
 Defaults to \code{"tool_household_iphra_v2"}.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly returns \code{self} for method chaining.
+  }
 }
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly returns \code{self} for method chaining.
-}
-}
+
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-IPHRAProtocol-get_quarto_params"></a>}}
 \if{latex}{\out{\hypertarget{method-IPHRAProtocol-get_quarto_params}{}}}
-\subsection{Method \code{get_quarto_params()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{IPHRAProtocol$get_quarto_params()}\if{html}{\out{</div>}}
+\subsection{\code{IPHRAProtocol$get_quarto_params()}}{
+  Get Quarto parameters for rendering.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{IPHRAProtocol$get_quarto_params()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A named list of parameters to pass to Quarto rendering.
+  }
 }
 
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-IPHRAProtocol-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-IPHRAProtocol-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{IPHRAProtocol$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{IPHRAProtocol$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{IPHRAProtocol$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

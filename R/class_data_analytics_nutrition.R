@@ -421,14 +421,44 @@ NutritionDataAnalytics <- R6::R6Class(
       return(list())
     },
 
+    #' @description
+    #' Pre-hook providing the input sets used by the inherited
+    #' \code{run_quality_checks()}.
+    #'
+    #' Returns one input set per nutrition quality schema (both operating on
+    #' the same data): \code{anthro} (using \code{quality_schema_anthro}) and
+    #' \code{iycf} (using \code{quality_schema_iycf}). Penalty tables are
+    #' stored under \code{tables$anthro$plausibility} and
+    #' \code{tables$iycf$plausibility}.
+    #'
+    #' @return A named list of field sets.
+    pre_run_quality_checks = function() {
+      list(
+        anthro = list(
+          data = "data",
+          quality_schema = "quality_schema_anthro",
+          base_survey_design = "base_survey_design",
+          survey_design = "survey_design",
+          variable_map = "variable_map"
+        ),
+        iycf = list(
+          data = "data",
+          quality_schema = "quality_schema_iycf",
+          base_survey_design = "base_survey_design",
+          survey_design = "survey_design",
+          variable_map = "variable_map"
+        )
+      )
+    },
+
     #' @description Run quality checks for both anthropometric and IYCF schemas
     #'
-    #' Executes all checks defined in `quality_schema_anthro` and
-    #' `quality_schema_iycf` separately, storing results in
-    #' `plausibility_results_anthro` and `plausibility_results_iycf`
-    #' respectively. Combined results are also written to `plausibility_results`
-    #' so that inherited helpers (e.g. `calculate_overall_score`,
-    #' `results_to_table`) continue to work as expected.
+    #' Uses the inherited \code{run_quality_checks()} with the input sets from
+    #' \code{pre_run_quality_checks()}, then mirrors the per-schema results
+    #' into `plausibility_results_anthro` and `plausibility_results_iycf`.
+    #' Combined results are also written to `plausibility_results` so that
+    #' inherited helpers (e.g. `calculate_overall_score`, `results_to_table`)
+    #' continue to work as expected.
     #'
     #' @return A named list with elements `anthro` and `iycf`, each containing
     #'   the check results for that schema (invisibly)
@@ -436,17 +466,10 @@ NutritionDataAnalytics <- R6::R6Class(
 
       phr_try({
 
-        anthro_results <- private$.run_checks_for_schema(
-          schema          = self$quality_schema_anthro,
-          table_namespace = "plausibility_anthro",
-          schema_label    = "Anthropometric"
-        )
+        nested_results <- super$run_quality_checks()
 
-        iycf_results <- private$.run_checks_for_schema(
-          schema          = self$quality_schema_iycf,
-          table_namespace = "plausibility_iycf",
-          schema_label    = "IYCF"
-        )
+        anthro_results <- nested_results[["anthro"]] %||% list()
+        iycf_results   <- nested_results[["iycf"]]   %||% list()
 
         self$plausibility_results_anthro <- anthro_results
         self$plausibility_results_iycf   <- iycf_results
@@ -529,99 +552,6 @@ NutritionDataAnalytics <- R6::R6Class(
   ),
 
   private = list(
-
-    # Run all checks in `schema` and generate penalty tables under
-    # `self$tables[[table_namespace]]`.  Returns the named results list.
-    .run_checks_for_schema = function(schema, table_namespace, schema_label) {
-
-      if (is.null(schema) || length(schema) == 0) {
-        phr_warning(
-          message = glue::glue("No quality checks defined in {schema_label} schema."),
-          origin  = self$dataset_name
-        )
-        return(list())
-      }
-
-      results <- list()
-
-      for (check_name in names(schema)) {
-        check            <- schema[[check_name]]
-        result           <- self$execute_check(check)
-        results[[check_name]] <- result
-      }
-
-      # --- Penalty tables --------------------------------------------------
-      if (is.null(self$tables[[table_namespace]])) {
-        self$tables[[table_namespace]] <- list()
-      }
-
-      # Temporarily swap quality_schema so that inherited helpers
-      # (results_to_table, .compute_results_by_group) operate on this schema
-      original_schema  <- self$quality_schema
-      original_results <- self$plausibility_results
-      self$quality_schema      <- schema
-      self$plausibility_results <- results
-      on.exit({
-        self$quality_schema       <- original_schema
-        self$plausibility_results <- original_results
-      }, add = TRUE)
-
-      results_df  <- self$results_to_table()
-      penalty_tbl <- table_quality_penalty_summary(
-        results_df,
-        title_name = glue::glue("{schema_label} Data Quality Penalty Summary")
-      )
-      if (!is.null(penalty_tbl)) {
-        self$tables[[table_namespace]][["penalty_summary"]] <- penalty_tbl
-      }
-
-      for (role in c("enum_id", "stratum")) {
-        col_name <- self$get_variable(role)
-        if (!is.null(col_name) && nzchar(col_name) &&
-            col_name %in% names(self$data)) {
-          per_group_df <- self$.compute_results_by_group(col_name)
-          if (!is.null(per_group_df) && nrow(per_group_df) > 0) {
-            tbl_key     <- paste0("penalty_summary_by_", role)
-            group_label <- if (role == "enum_id") "Enumerator ID" else "Stratum"
-            tbl_title   <- if (role == "enum_id") {
-              glue::glue("{schema_label} Data Quality Penalty Summary by Enumerator")
-            } else {
-              glue::glue("{schema_label} Data Quality Penalty Summary by Stratum")
-            }
-            per_group_tbl <- table_quality_penalty_summary_by_group(
-              per_group_df,
-              group_col   = "group_value",
-              group_label = group_label,
-              title_name  = tbl_title
-            )
-            if (!is.null(per_group_tbl)) {
-              self$tables[[table_namespace]][[tbl_key]] <- per_group_tbl
-            }
-
-            group_values <- sort(unique(per_group_df$group_value))
-            for (gv in group_values) {
-              gv_label   <- as.character(gv)
-              gv_safe    <- gsub("[^A-Za-z0-9]", "_", gv_label)
-              gv_results <- per_group_df |>
-              dplyr::filter(.data$group_value == gv) |>
-                dplyr::select(-"group_value")
-              gv_title <- if (role == "enum_id") {
-                glue::glue("{schema_label} Data Quality Penalty Summary - Enumerator: {gv_label}")
-              } else {
-                glue::glue("{schema_label} Data Quality Penalty Summary - Stratum: {gv_label}")
-              }
-              gv_tbl_key <- paste0("penalty_summary_", role, "_", gv_safe)
-              gv_tbl <- table_quality_penalty_summary(gv_results, title_name = gv_title)
-              if (!is.null(gv_tbl)) {
-                self$tables[[table_namespace]][[gv_tbl_key]] <- gv_tbl
-              }
-            }
-          }
-        }
-      }
-
-      results
-    },
 
     # Compute MUAC age-adjustment weights as a numeric vector (not stored).
     #

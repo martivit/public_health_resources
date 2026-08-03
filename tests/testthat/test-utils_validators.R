@@ -3,10 +3,10 @@ library(testthat)
 library(tibble)
 
 
-# 1. .is_greater_than_one_selection and .is_greater_than_three_selection ####
+# 1. is_greater_than_one_selection and .is_greater_than_three_selection ####
 
 
-test_that(".is_greater_than_one_selection identifies multiple selections", {
+test_that("is_greater_than_one_selection identifies multiple selections", {
   df <- tibble::tibble(
     sm_col = c(
       "option_a option_b",
@@ -16,25 +16,25 @@ test_that(".is_greater_than_one_selection identifies multiple selections", {
     )
   )
 
-  result <- .is_greater_than_one_selection(df, "sm_col")
+  result <- is_greater_than_one_selection(df, "sm_col")
 
   expect_equal(unname(result), c(TRUE, FALSE, TRUE, FALSE))
 })
 
-test_that(".is_greater_than_one_selection handles single selections", {
+test_that("is_greater_than_one_selection handles single selections", {
   df <- tibble::tibble(
     sm_col = c("option_a", "option_b", "option_c")
   )
 
-  result <- .is_greater_than_one_selection(df, "sm_col")
+  result <- is_greater_than_one_selection(df, "sm_col")
 
   expect_equal(unname(result), c(FALSE, FALSE, FALSE))
 })
 
-test_that(".is_greater_than_one_selection handles empty dataset", {
+test_that("is_greater_than_one_selection handles empty dataset", {
   df <- tibble::tibble(sm_col = character())
 
-  result <- .is_greater_than_one_selection(df, "sm_col")
+  result <- is_greater_than_one_selection(df, "sm_col")
 
   # Expect an empty result (could be logical(0), character(0), or tibble with 0 rows)
   expect_equal(length(result), 0)
@@ -42,20 +42,20 @@ test_that(".is_greater_than_one_selection handles empty dataset", {
   # expect_equal(nrow(result), 0)
 })
 
-test_that(".is_greater_than_one_selection errors on missing column", {
+test_that("is_greater_than_one_selection errors on missing column", {
   df <- tibble::tibble(other_col = "value")
 
   expect_error(
-    .is_greater_than_one_selection(df, "sm_col")
+    is_greater_than_one_selection(df, "sm_col")
   )
 })
 
-test_that(".is_greater_than_one_selection handles factor columns", {
+test_that("is_greater_than_one_selection handles factor columns", {
   df <- tibble::tibble(
     sm_col = factor(c("a b", "c", "d e"))
   )
 
-  result <- .is_greater_than_one_selection(df, "sm_col")
+  result <- is_greater_than_one_selection(df, "sm_col")
 
   expect_equal(unname(result), c(TRUE, FALSE, TRUE))
 })
@@ -459,9 +459,9 @@ test_that("validators with soft=FALSE error on invalid input", {
   )
 })
 
-# .is_logical_expression ####
+# is_logical_expression ####
 
-test_that(".is_logical_expression accepts valid logical expressions", {
+test_that("is_logical_expression accepts valid logical expressions", {
 
   valid_exprs <- list(
     "x > 5",
@@ -476,9 +476,9 @@ test_that(".is_logical_expression accepts valid logical expressions", {
     "x %in% c('a', 'b', 'c')",
     "status %in% c('active', 'pending')",
     "age %in% 1:100",
-    # New: .is_safely_coercible function
-    ".is_safely_coercible(x, 'numeric')",
-    ".is_safely_coercible(age, 'date')",
+    # New: is_safely_coercible function
+    "is_safely_coercible(x, 'numeric')",
+    "is_safely_coercible(age, 'date')",
     # New: Base R type check functions
     "is.numeric(age)",
     "is.character(name)",
@@ -490,18 +490,18 @@ test_that(".is_logical_expression accepts valid logical expressions", {
     # Combined expressions with new constructs
     "x %in% c(1, 2, 3) & is.numeric(x)",
     "is.character(name) | is.na(name)",
-    ".is_safely_coercible(x, 'numeric') & !is.na(x)"
+    "is_safely_coercible(x, 'numeric') & !is.na(x)"
   )
 
   for (txt in valid_exprs) {
     expect_true(
-      .is_logical_expression(txt),
+      is_logical_expression(txt),
       info = paste("Expected valid logical expression:", txt)
     )
   }
 })
 
-test_that(".is_logical_expression rejects non-logical but syntactically valid expressions", {
+test_that("is_logical_expression rejects non-logical but syntactically valid expressions", {
 
   invalid_exprs <- list(
     "'my name is Jack'",
@@ -515,13 +515,13 @@ test_that(".is_logical_expression rejects non-logical but syntactically valid ex
 
   for (txt in invalid_exprs) {
     expect_false(
-      .is_logical_expression(txt),
+      is_logical_expression(txt),
       info = paste("Expected invalid logical expression:", txt)
     )
   }
 })
 
-test_that(".is_logical_expression rejects malformed or unsupported calls", {
+test_that("is_logical_expression rejects malformed or unsupported calls", {
 
   invalid_calls <- list(
     quote(`{`(x > 1)),
@@ -532,18 +532,18 @@ test_that(".is_logical_expression rejects malformed or unsupported calls", {
 
   for (expr in invalid_calls) {
     expect_false(
-      .is_logical_expression(expr),
+      is_logical_expression(expr),
       info = paste("Expected invalid logical expression:", deparse(expr))
     )
   }
 })
 
 
-test_that(".is_logical_expression rejects atomic literals", {
+test_that("is_logical_expression rejects atomic literals", {
 
-  expect_false(.is_logical_expression(quote("abc")))
-  expect_false(.is_logical_expression(quote(1)))
-  expect_false(.is_logical_expression(quote(NA)))
+  expect_false(is_logical_expression(quote("abc")))
+  expect_false(is_logical_expression(quote(1)))
+  expect_false(is_logical_expression(quote(NA)))
 })
 
 # IPHRA CONVERT DATE ####

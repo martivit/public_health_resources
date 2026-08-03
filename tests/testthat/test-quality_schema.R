@@ -627,6 +627,29 @@ test_that("quality_table_to_schema handles multiple test_params with various whi
   expect_equal(check$test_params$max_value, 10)
 })
 
+test_that("quality_table_to_schema parses vectored c(...) test_params correctly", {
+  # Regression test: expected_ratio = c(0.4118, 0.5882) was previously broken
+  # by a naive comma-split that treated the comma inside c() as a separator.
+
+  df <- tibble::tibble(
+    check_name = "plaus_ageratio_01_25",
+    check_label = "Age Ratio 0-1 vs 2-5",
+    variables = "age_0_1,age_2_5",
+    statistical_test = "ageratio_count",
+    threshold_expression = "p_value >= 0.1",
+    penalty_score = 0,
+    test_params = "expected_ratio = c(0.4118, 0.5882)"
+  )
+
+  schema <- quality_table_to_schema(df)
+  check <- schema$checks$plaus_ageratio_01_25
+
+  expect_true(is.list(check$test_params))
+  expect_true("expected_ratio" %in% names(check$test_params))
+  # The value should be preserved as the c(...) string for later resolution
+  expect_equal(check$test_params$expected_ratio, "c(0.4118, 0.5882)")
+})
+
 
 # ============================================================================
 # OUTPUTS_SCHEMA_TO_TABLE ####

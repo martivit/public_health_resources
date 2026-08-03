@@ -29,121 +29,122 @@ Key design principles:
 [FSLDataAnalytics]
 }
 \section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{data}}{Data frame containing the dataset (standardized or clean data, not raw)}
+  \if{html}{\out{<div class="r6-fields">}}
+  \describe{
+    \item{\code{data}}{Data frame containing the dataset (standardized or clean data, not raw)}
 
-\item{\code{parent_data_object}}{Reference to the parent Data object}
+    \item{\code{parent_data_object}}{Reference to the parent Data object}
 
-\item{\code{dataset_name}}{Character name for identifying this analytics object}
+    \item{\code{dataset_name}}{Character name for identifying this analytics object}
 
-\item{\code{data_stage_name}}{Name of the data stage (e.g., "standardized", "clean")}
+    \item{\code{data_stage_name}}{Name of the data stage (e.g., "standardized", "clean")}
 
-\item{\code{data_hash}}{Hash of the data from parent Data object}
+    \item{\code{data_hash}}{Hash of the data from parent Data object}
 
-\item{\code{variable_map}}{Variable mappings from Data object}
+    \item{\code{variable_map}}{Variable mappings from Data object}
 
-\item{\code{value_map}}{Value mappings from Data object}
+    \item{\code{value_map}}{Value mappings from Data object}
 
-\item{\code{variable_label}}{Named list of variable labels}
+    \item{\code{variable_label}}{Named list of variable labels}
 
-\item{\code{value_label}}{Named list of value labels}
+    \item{\code{value_label}}{Named list of value labels}
 
-\item{\code{quality_schema}}{Quality check schema with test definitions, thresholds, and penalty scores}
+    \item{\code{quality_schema}}{Quality check schema with test definitions, thresholds, and penalty scores}
 
-\item{\code{analysis_schema}}{Analysis schema (catalog of possible indicators)}
+    \item{\code{analysis_schema}}{Analysis schema (catalog of possible indicators)}
 
-\item{\code{outputs_schema}}{Unified outputs schema for all visualizations and tables}
+    \item{\code{outputs_schema}}{Unified outputs schema for all visualizations and tables}
 
-\item{\code{visualizations}}{List of ggplot2 graphics/visualizations (shared)}
+    \item{\code{visualizations}}{List of ggplot2 graphics/visualizations (shared)}
 
-\item{\code{tables}}{List of dataframes or formatted table objects (shared)}
+    \item{\code{tables}}{List of dataframes or formatted table objects (shared)}
 
-\item{\code{plausibility_results}}{Results of quality checks execution}
+    \item{\code{plausibility_results}}{Results of quality checks execution}
 
-\item{\code{analysis_results}}{Results of quantitative analysis (named list: survey_design, base)}
+    \item{\code{analysis_results}}{Results of quantitative analysis (named list: survey_design, base)}
 
-\item{\code{data_analysis_plan}}{QuantDataAnalysisPlanLog object holding the analysis plan}
+    \item{\code{data_analysis_plan}}{QuantDataAnalysisPlanLog object holding the analysis plan}
 
-\item{\code{survey_design}}{srvyr survey design object}
+    \item{\code{survey_design}}{srvyr survey design object}
 
-\item{\code{base_survey_design}}{Unfiltered base srvyr survey design object (used internally for analysis)}
+    \item{\code{base_survey_design}}{Unfiltered base srvyr survey design object (used internally for analysis)}
 
-\item{\code{analysis_plan_issue_log}}{Tibble of plan validation issues (internal)}
+    \item{\code{analysis_plan_issue_log}}{Tibble of plan validation issues (internal)}
 
-\item{\code{quality_issues_log}}{Tibble of quality schema diagnostic results from quality_diagnose()}
+    \item{\code{quality_issues_log}}{Tibble of quality schema diagnostic results from quality_diagnose()}
 
-\item{\code{analysis_plan_issues_log}}{Tibble of analysis plan diagnostic results from analysis_diagnose()}
+    \item{\code{analysis_plan_issues_log}}{Tibble of analysis plan diagnostic results from analysis_diagnose()}
 
-\item{\code{outputs_issues_log}}{Tibble of outputs schema diagnostic results from outputs_diagnose()}
+    \item{\code{outputs_issues_log}}{Tibble of outputs schema diagnostic results from outputs_diagnose()}
 
-\item{\code{overall_score}}{Overall data quality score}
+    \item{\code{overall_score}}{Overall data quality score}
 
-\item{\code{metadata}}{Free-form metadata list}
-}
-\if{html}{\out{</div>}}
+    \item{\code{metadata}}{Free-form metadata list}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-DataAnalytics-new}{\code{DataAnalytics$new()}}
-\item \href{#method-DataAnalytics-default_quality_schema}{\code{DataAnalytics$default_quality_schema()}}
-\item \href{#method-DataAnalytics-default_outputs_schema}{\code{DataAnalytics$default_outputs_schema()}}
-\item \href{#method-DataAnalytics-default_analysis_schema}{\code{DataAnalytics$default_analysis_schema()}}
-\item \href{#method-DataAnalytics-set_quality_schema}{\code{DataAnalytics$set_quality_schema()}}
-\item \href{#method-DataAnalytics-get_quality_schema}{\code{DataAnalytics$get_quality_schema()}}
-\item \href{#method-DataAnalytics-validate_quality_schema}{\code{DataAnalytics$validate_quality_schema()}}
-\item \href{#method-DataAnalytics-set_outputs_schema}{\code{DataAnalytics$set_outputs_schema()}}
-\item \href{#method-DataAnalytics-get_outputs_schema}{\code{DataAnalytics$get_outputs_schema()}}
-\item \href{#method-DataAnalytics-export_outputs_schema}{\code{DataAnalytics$export_outputs_schema()}}
-\item \href{#method-DataAnalytics-import_outputs_schema}{\code{DataAnalytics$import_outputs_schema()}}
-\item \href{#method-DataAnalytics-export_quality_schema}{\code{DataAnalytics$export_quality_schema()}}
-\item \href{#method-DataAnalytics-import_quality_schema}{\code{DataAnalytics$import_quality_schema()}}
-\item \href{#method-DataAnalytics-set_analysis_schema}{\code{DataAnalytics$set_analysis_schema()}}
-\item \href{#method-DataAnalytics-get_analysis_schema}{\code{DataAnalytics$get_analysis_schema()}}
-\item \href{#method-DataAnalytics-run_quality_checks}{\code{DataAnalytics$run_quality_checks()}}
-\item \href{#method-DataAnalytics-execute_check}{\code{DataAnalytics$execute_check()}}
-\item \href{#method-DataAnalytics-evaluate_threshold_expressions}{\code{DataAnalytics$evaluate_threshold_expressions()}}
-\item \href{#method-DataAnalytics-calculate_overall_score}{\code{DataAnalytics$calculate_overall_score()}}
-\item \href{#method-DataAnalytics-summary}{\code{DataAnalytics$summary()}}
-\item \href{#method-DataAnalytics-results_to_table}{\code{DataAnalytics$results_to_table()}}
-\item \href{#method-DataAnalytics-schema_to_table}{\code{DataAnalytics$schema_to_table()}}
-\item \href{#method-DataAnalytics-import_schema_from_table}{\code{DataAnalytics$import_schema_from_table()}}
-\item \href{#method-DataAnalytics-visualize}{\code{DataAnalytics$visualize()}}
-\item \href{#method-DataAnalytics-get_variable}{\code{DataAnalytics$get_variable()}}
-\item \href{#method-DataAnalytics-.translate_canonical_to_actual_vars}{\code{DataAnalytics$.translate_canonical_to_actual_vars()}}
-\item \href{#method-DataAnalytics-.compute_results_by_group}{\code{DataAnalytics$.compute_results_by_group()}}
-\item \href{#method-DataAnalytics-generate_report}{\code{DataAnalytics$generate_report()}}
-\item \href{#method-DataAnalytics-generate_plausibility_report}{\code{DataAnalytics$generate_plausibility_report()}}
-\item \href{#method-DataAnalytics-quality_diagnose}{\code{DataAnalytics$quality_diagnose()}}
-\item \href{#method-DataAnalytics-analysis_diagnose}{\code{DataAnalytics$analysis_diagnose()}}
-\item \href{#method-DataAnalytics-outputs_diagnose}{\code{DataAnalytics$outputs_diagnose()}}
-\item \href{#method-DataAnalytics-run_outputs}{\code{DataAnalytics$run_outputs()}}
-\item \href{#method-DataAnalytics-create_survey_design}{\code{DataAnalytics$create_survey_design()}}
-\item \href{#method-DataAnalytics-add_indicator_dap}{\code{DataAnalytics$add_indicator_dap()}}
-\item \href{#method-DataAnalytics-remove_indicator_dap}{\code{DataAnalytics$remove_indicator_dap()}}
-\item \href{#method-DataAnalytics-to_list_schema}{\code{DataAnalytics$to_list_schema()}}
-\item \href{#method-DataAnalytics-generate_dap_from_schema}{\code{DataAnalytics$generate_dap_from_schema()}}
-\item \href{#method-DataAnalytics-validate_schema}{\code{DataAnalytics$validate_schema()}}
-\item \href{#method-DataAnalytics-validate_plan}{\code{DataAnalytics$validate_plan()}}
-\item \href{#method-DataAnalytics-run_analysis}{\code{DataAnalytics$run_analysis()}}
-\item \href{#method-DataAnalytics-post_run_analysis}{\code{DataAnalytics$post_run_analysis()}}
-\item \href{#method-DataAnalytics-get_results}{\code{DataAnalytics$get_results()}}
-\item \href{#method-DataAnalytics-export_results}{\code{DataAnalytics$export_results()}}
-\item \href{#method-DataAnalytics-export_state_object}{\code{DataAnalytics$export_state_object()}}
-\item \href{#method-DataAnalytics-load_state_object}{\code{DataAnalytics$load_state_object()}}
-\item \href{#method-DataAnalytics-export_analysis_schema}{\code{DataAnalytics$export_analysis_schema()}}
-\item \href{#method-DataAnalytics-import_analysis_schema}{\code{DataAnalytics$import_analysis_schema()}}
-\item \href{#method-DataAnalytics-clone}{\code{DataAnalytics$clone()}}
-}
+  \itemize{
+    \item \href{#method-DataAnalytics-initialize}{\code{DataAnalytics$new()}}
+    \item \href{#method-DataAnalytics-default_quality_schema}{\code{DataAnalytics$default_quality_schema()}}
+    \item \href{#method-DataAnalytics-default_outputs_schema}{\code{DataAnalytics$default_outputs_schema()}}
+    \item \href{#method-DataAnalytics-default_analysis_schema}{\code{DataAnalytics$default_analysis_schema()}}
+    \item \href{#method-DataAnalytics-set_quality_schema}{\code{DataAnalytics$set_quality_schema()}}
+    \item \href{#method-DataAnalytics-get_quality_schema}{\code{DataAnalytics$get_quality_schema()}}
+    \item \href{#method-DataAnalytics-validate_quality_schema}{\code{DataAnalytics$validate_quality_schema()}}
+    \item \href{#method-DataAnalytics-set_outputs_schema}{\code{DataAnalytics$set_outputs_schema()}}
+    \item \href{#method-DataAnalytics-get_outputs_schema}{\code{DataAnalytics$get_outputs_schema()}}
+    \item \href{#method-DataAnalytics-export_outputs_schema}{\code{DataAnalytics$export_outputs_schema()}}
+    \item \href{#method-DataAnalytics-import_outputs_schema}{\code{DataAnalytics$import_outputs_schema()}}
+    \item \href{#method-DataAnalytics-export_quality_schema}{\code{DataAnalytics$export_quality_schema()}}
+    \item \href{#method-DataAnalytics-import_quality_schema}{\code{DataAnalytics$import_quality_schema()}}
+    \item \href{#method-DataAnalytics-set_analysis_schema}{\code{DataAnalytics$set_analysis_schema()}}
+    \item \href{#method-DataAnalytics-get_analysis_schema}{\code{DataAnalytics$get_analysis_schema()}}
+    \item \href{#method-DataAnalytics-run_quality_checks}{\code{DataAnalytics$run_quality_checks()}}
+    \item \href{#method-DataAnalytics-execute_check}{\code{DataAnalytics$execute_check()}}
+    \item \href{#method-DataAnalytics-evaluate_threshold_expressions}{\code{DataAnalytics$evaluate_threshold_expressions()}}
+    \item \href{#method-DataAnalytics-calculate_overall_score}{\code{DataAnalytics$calculate_overall_score()}}
+    \item \href{#method-DataAnalytics-summary}{\code{DataAnalytics$summary()}}
+    \item \href{#method-DataAnalytics-results_to_table}{\code{DataAnalytics$results_to_table()}}
+    \item \href{#method-DataAnalytics-schema_to_table}{\code{DataAnalytics$schema_to_table()}}
+    \item \href{#method-DataAnalytics-import_schema_from_table}{\code{DataAnalytics$import_schema_from_table()}}
+    \item \href{#method-DataAnalytics-visualize}{\code{DataAnalytics$visualize()}}
+    \item \href{#method-DataAnalytics-get_variable}{\code{DataAnalytics$get_variable()}}
+    \item \href{#method-DataAnalytics-.translate_canonical_to_actual_vars}{\code{DataAnalytics$.translate_canonical_to_actual_vars()}}
+    \item \href{#method-DataAnalytics-.compute_results_by_group}{\code{DataAnalytics$.compute_results_by_group()}}
+    \item \href{#method-DataAnalytics-generate_report}{\code{DataAnalytics$generate_report()}}
+    \item \href{#method-DataAnalytics-generate_plausibility_report}{\code{DataAnalytics$generate_plausibility_report()}}
+    \item \href{#method-DataAnalytics-quality_diagnose}{\code{DataAnalytics$quality_diagnose()}}
+    \item \href{#method-DataAnalytics-analysis_diagnose}{\code{DataAnalytics$analysis_diagnose()}}
+    \item \href{#method-DataAnalytics-outputs_diagnose}{\code{DataAnalytics$outputs_diagnose()}}
+    \item \href{#method-DataAnalytics-run_outputs}{\code{DataAnalytics$run_outputs()}}
+    \item \href{#method-DataAnalytics-create_survey_design}{\code{DataAnalytics$create_survey_design()}}
+    \item \href{#method-DataAnalytics-add_indicator_dap}{\code{DataAnalytics$add_indicator_dap()}}
+    \item \href{#method-DataAnalytics-remove_indicator_dap}{\code{DataAnalytics$remove_indicator_dap()}}
+    \item \href{#method-DataAnalytics-to_list_schema}{\code{DataAnalytics$to_list_schema()}}
+    \item \href{#method-DataAnalytics-generate_dap_from_schema}{\code{DataAnalytics$generate_dap_from_schema()}}
+    \item \href{#method-DataAnalytics-validate_schema}{\code{DataAnalytics$validate_schema()}}
+    \item \href{#method-DataAnalytics-validate_plan}{\code{DataAnalytics$validate_plan()}}
+    \item \href{#method-DataAnalytics-run_analysis}{\code{DataAnalytics$run_analysis()}}
+    \item \href{#method-DataAnalytics-post_run_analysis}{\code{DataAnalytics$post_run_analysis()}}
+    \item \href{#method-DataAnalytics-get_results}{\code{DataAnalytics$get_results()}}
+    \item \href{#method-DataAnalytics-export_results}{\code{DataAnalytics$export_results()}}
+    \item \href{#method-DataAnalytics-export_state_object}{\code{DataAnalytics$export_state_object()}}
+    \item \href{#method-DataAnalytics-load_state_object}{\code{DataAnalytics$load_state_object()}}
+    \item \href{#method-DataAnalytics-export_analysis_schema}{\code{DataAnalytics$export_analysis_schema()}}
+    \item \href{#method-DataAnalytics-import_analysis_schema}{\code{DataAnalytics$import_analysis_schema()}}
+    \item \href{#method-DataAnalytics-clone}{\code{DataAnalytics$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-DataAnalytics-new"></a>}}
-\if{latex}{\out{\hypertarget{method-DataAnalytics-new}{}}}
-\subsection{Method \code{new()}}{
-Initialize a new DataAnalytics object
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DataAnalytics$new(
+\if{html}{\out{<a id="method-DataAnalytics-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-DataAnalytics-initialize}{}}}
+\subsection{\code{DataAnalytics$new()}}{
+  Initialize a new DataAnalytics object
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DataAnalytics$new(
   data = NULL,
   dap = NULL,
   parent_data_object = NULL,
@@ -155,516 +156,559 @@ Initialize a new DataAnalytics object
   variable_label = NULL,
   value_label = NULL,
   quality_schema = NULL
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{data}}{A data frame (standardized or clean data, not raw)}
-
-\item{\code{dap}}{Optional data analysis plan (tibble); auto-generated from
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{data}}{A data frame (standardized or clean data, not raw)}
+      \item{\code{dap}}{Optional data analysis plan (tibble); auto-generated from
 analysis_schema if not supplied}
-
-\item{\code{parent_data_object}}{The Data object that generated this analytics object}
-
-\item{\code{dataset_name}}{A name for this analytics assessment}
-
-\item{\code{data_stage_name}}{Name of the data stage (e.g., "standardized", "clean")}
-
-\item{\code{data_hash}}{Hash of the data from parent Data object}
-
-\item{\code{variable_map}}{Variable mappings from Data object}
-
-\item{\code{value_map}}{Value mappings from Data object}
-
-\item{\code{variable_label}}{Variable labels from Data object}
-
-\item{\code{value_label}}{Value labels from Data object}
-
-\item{\code{quality_schema}}{Optional quality check schema}
+      \item{\code{parent_data_object}}{The Data object that generated this analytics object}
+      \item{\code{dataset_name}}{A name for this analytics assessment}
+      \item{\code{data_stage_name}}{Name of the data stage (e.g., "standardized", "clean")}
+      \item{\code{data_hash}}{Hash of the data from parent Data object}
+      \item{\code{variable_map}}{Variable mappings from Data object}
+      \item{\code{value_map}}{Value mappings from Data object}
+      \item{\code{variable_label}}{Variable labels from Data object}
+      \item{\code{value_label}}{Value labels from Data object}
+      \item{\code{quality_schema}}{Optional quality check schema}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A new DataAnalytics object
+  }
 }
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A new DataAnalytics object
-}
-}
+
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DataAnalytics-default_quality_schema"></a>}}
 \if{latex}{\out{\hypertarget{method-DataAnalytics-default_quality_schema}{}}}
-\subsection{Method \code{default_quality_schema()}}{
-Load the default quality schema from template file
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DataAnalytics$default_quality_schema()}\if{html}{\out{</div>}}
+\subsection{\code{DataAnalytics$default_quality_schema()}}{
+  Load the default quality schema from template file
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DataAnalytics$default_quality_schema()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A list of quality checks
+  }
 }
 
-\subsection{Returns}{
-A list of quality checks
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DataAnalytics-default_outputs_schema"></a>}}
 \if{latex}{\out{\hypertarget{method-DataAnalytics-default_outputs_schema}{}}}
-\subsection{Method \code{default_outputs_schema()}}{
-Load the default unified outputs schema from template file
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DataAnalytics$default_outputs_schema()}\if{html}{\out{</div>}}
+\subsection{\code{DataAnalytics$default_outputs_schema()}}{
+  Load the default unified outputs schema from template file
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DataAnalytics$default_outputs_schema()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A list of outputs definitions (quality and analysis combined)
+  }
 }
 
-\subsection{Returns}{
-A list of outputs definitions (quality and analysis combined)
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DataAnalytics-default_analysis_schema"></a>}}
 \if{latex}{\out{\hypertarget{method-DataAnalytics-default_analysis_schema}{}}}
-\subsection{Method \code{default_analysis_schema()}}{
-Load the default analysis schema from template file
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DataAnalytics$default_analysis_schema()}\if{html}{\out{</div>}}
+\subsection{\code{DataAnalytics$default_analysis_schema()}}{
+  Load the default analysis schema from template file
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DataAnalytics$default_analysis_schema()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A tibble containing the analysis schema
+  }
 }
 
-\subsection{Returns}{
-A tibble containing the analysis schema
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DataAnalytics-set_quality_schema"></a>}}
 \if{latex}{\out{\hypertarget{method-DataAnalytics-set_quality_schema}{}}}
-\subsection{Method \code{set_quality_schema()}}{
-Set the quality check schema
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DataAnalytics$set_quality_schema(schema)}\if{html}{\out{</div>}}
+\subsection{\code{DataAnalytics$set_quality_schema()}}{
+  Set the quality check schema
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DataAnalytics$set_quality_schema(schema)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{schema}}{A list defining quality checks, thresholds, and penalties}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{schema}}{A list defining quality checks, thresholds, and penalties}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DataAnalytics-get_quality_schema"></a>}}
 \if{latex}{\out{\hypertarget{method-DataAnalytics-get_quality_schema}{}}}
-\subsection{Method \code{get_quality_schema()}}{
-Get the quality check schema
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DataAnalytics$get_quality_schema()}\if{html}{\out{</div>}}
+\subsection{\code{DataAnalytics$get_quality_schema()}}{
+  Get the quality check schema
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DataAnalytics$get_quality_schema()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    The current quality schema
+  }
 }
 
-\subsection{Returns}{
-The current quality schema
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DataAnalytics-validate_quality_schema"></a>}}
 \if{latex}{\out{\hypertarget{method-DataAnalytics-validate_quality_schema}{}}}
-\subsection{Method \code{validate_quality_schema()}}{
-Validate the quality schema structure
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DataAnalytics$validate_quality_schema(schema)}\if{html}{\out{</div>}}
+\subsection{\code{DataAnalytics$validate_quality_schema()}}{
+  Validate the quality schema structure
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DataAnalytics$validate_quality_schema(schema)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{schema}}{The schema to validate (a list of quality checks)}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    TRUE if valid, throws error otherwise
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{schema}}{The schema to validate (a list of quality checks)}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-TRUE if valid, throws error otherwise
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DataAnalytics-set_outputs_schema"></a>}}
 \if{latex}{\out{\hypertarget{method-DataAnalytics-set_outputs_schema}{}}}
-\subsection{Method \code{set_outputs_schema()}}{
-Set the unified outputs schema
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DataAnalytics$set_outputs_schema(schema)}\if{html}{\out{</div>}}
+\subsection{\code{DataAnalytics$set_outputs_schema()}}{
+  Set the unified outputs schema
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DataAnalytics$set_outputs_schema(schema)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{schema}}{A named list defining output specifications (quality and analysis combined)}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly returns self.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{schema}}{A named list defining output specifications (quality and analysis combined)}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly returns self.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DataAnalytics-get_outputs_schema"></a>}}
 \if{latex}{\out{\hypertarget{method-DataAnalytics-get_outputs_schema}{}}}
-\subsection{Method \code{get_outputs_schema()}}{
-Get the unified outputs schema
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DataAnalytics$get_outputs_schema()}\if{html}{\out{</div>}}
+\subsection{\code{DataAnalytics$get_outputs_schema()}}{
+  Get the unified outputs schema
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DataAnalytics$get_outputs_schema()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    The current outputs schema (named list), or NULL.
+  }
 }
 
-\subsection{Returns}{
-The current outputs schema (named list), or NULL.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DataAnalytics-export_outputs_schema"></a>}}
 \if{latex}{\out{\hypertarget{method-DataAnalytics-export_outputs_schema}{}}}
-\subsection{Method \code{export_outputs_schema()}}{
-Export outputs schema to a data frame
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DataAnalytics$export_outputs_schema()}\if{html}{\out{</div>}}
+\subsection{\code{DataAnalytics$export_outputs_schema()}}{
+  Export outputs schema to a data frame
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DataAnalytics$export_outputs_schema()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A tibble representing the outputs schema, or NULL
+  }
 }
 
-\subsection{Returns}{
-A tibble representing the outputs schema, or NULL
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DataAnalytics-import_outputs_schema"></a>}}
 \if{latex}{\out{\hypertarget{method-DataAnalytics-import_outputs_schema}{}}}
-\subsection{Method \code{import_outputs_schema()}}{
-Import outputs schema from a data frame
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DataAnalytics$import_outputs_schema(df)}\if{html}{\out{</div>}}
+\subsection{\code{DataAnalytics$import_outputs_schema()}}{
+  Import outputs schema from a data frame
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DataAnalytics$import_outputs_schema(df)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{df}}{A data frame representing the outputs schema}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    The imported schema (invisibly)
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{df}}{A data frame representing the outputs schema}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-The imported schema (invisibly)
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DataAnalytics-export_quality_schema"></a>}}
 \if{latex}{\out{\hypertarget{method-DataAnalytics-export_quality_schema}{}}}
-\subsection{Method \code{export_quality_schema()}}{
-Export quality schema to a file
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DataAnalytics$export_quality_schema(path, format = "xlsx")}\if{html}{\out{</div>}}
+\subsection{\code{DataAnalytics$export_quality_schema()}}{
+  Export quality schema to a file
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DataAnalytics$export_quality_schema(path, format = "xlsx")}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{path}}{Character; destination file path (including extension).}
+      \item{\code{format}}{Character; "xlsx" (default) or "csv".}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly returns self.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{path}}{Character; destination file path (including extension).}
-
-\item{\code{format}}{Character; "xlsx" (default) or "csv".}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly returns self.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DataAnalytics-import_quality_schema"></a>}}
 \if{latex}{\out{\hypertarget{method-DataAnalytics-import_quality_schema}{}}}
-\subsection{Method \code{import_quality_schema()}}{
-Import quality schema from a file
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DataAnalytics$import_quality_schema(path)}\if{html}{\out{</div>}}
+\subsection{\code{DataAnalytics$import_quality_schema()}}{
+  Import quality schema from a file
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DataAnalytics$import_quality_schema(path)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{path}}{Character; path to the schema file (.xlsx, .csv, or .rds).}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly returns self.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{path}}{Character; path to the schema file (.xlsx, .csv, or .rds).}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly returns self.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DataAnalytics-set_analysis_schema"></a>}}
 \if{latex}{\out{\hypertarget{method-DataAnalytics-set_analysis_schema}{}}}
-\subsection{Method \code{set_analysis_schema()}}{
-Set the analysis schema
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DataAnalytics$set_analysis_schema(schema)}\if{html}{\out{</div>}}
+\subsection{\code{DataAnalytics$set_analysis_schema()}}{
+  Set the analysis schema
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DataAnalytics$set_analysis_schema(schema)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{schema}}{A tibble with analysis schema columns (indicator_name, calculation, var_name, etc.)}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly returns self.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{schema}}{A tibble with analysis schema columns (indicator_name, calculation, var_name, etc.)}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly returns self.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DataAnalytics-get_analysis_schema"></a>}}
 \if{latex}{\out{\hypertarget{method-DataAnalytics-get_analysis_schema}{}}}
-\subsection{Method \code{get_analysis_schema()}}{
-Get the analysis schema
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DataAnalytics$get_analysis_schema()}\if{html}{\out{</div>}}
+\subsection{\code{DataAnalytics$get_analysis_schema()}}{
+  Get the analysis schema
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DataAnalytics$get_analysis_schema()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    The current analysis schema tibble, or NULL.
+  }
 }
 
-\subsection{Returns}{
-The current analysis schema tibble, or NULL.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DataAnalytics-run_quality_checks"></a>}}
 \if{latex}{\out{\hypertarget{method-DataAnalytics-run_quality_checks}{}}}
-\subsection{Method \code{run_quality_checks()}}{
-Run all quality checks defined in the quality schema
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DataAnalytics$run_quality_checks()}\if{html}{\out{</div>}}
+\subsection{\code{DataAnalytics$run_quality_checks()}}{
+  Run all quality checks defined in the quality schema
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DataAnalytics$run_quality_checks()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A list of check results (invisibly)
+  }
 }
 
-\subsection{Returns}{
-A list of check results (invisibly)
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DataAnalytics-execute_check"></a>}}
 \if{latex}{\out{\hypertarget{method-DataAnalytics-execute_check}{}}}
-\subsection{Method \code{execute_check()}}{
-Execute a single quality check using statistical tests
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DataAnalytics$execute_check(check, survey_design = NULL)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{check}}{A single check definition from the schema}
-
-\item{\code{survey_design}}{Optional srvyr survey design to use. Defaults to
+\subsection{\code{DataAnalytics$execute_check()}}{
+  Execute a single quality check using statistical tests
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DataAnalytics$execute_check(check, survey_design = NULL)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{check}}{A single check definition from the schema}
+      \item{\code{survey_design}}{Optional srvyr survey design to use. Defaults to
 \code{self$base_survey_design} (or \code{self$survey_design} as fallback)
 when \code{NULL}.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A list containing the check result
+  }
 }
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A list containing the check result
-}
-}
+
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DataAnalytics-evaluate_threshold_expressions"></a>}}
 \if{latex}{\out{\hypertarget{method-DataAnalytics-evaluate_threshold_expressions}{}}}
-\subsection{Method \code{evaluate_threshold_expressions()}}{
-Evaluate threshold expressions to determine penalty
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DataAnalytics$evaluate_threshold_expressions(
+\subsection{\code{DataAnalytics$evaluate_threshold_expressions()}}{
+  Evaluate threshold expressions to determine penalty
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DataAnalytics$evaluate_threshold_expressions(
   test_statistic,
   p_value,
   thresholds
-)}\if{html}{\out{</div>}}
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{test_statistic}}{The test statistic value}
+      \item{\code{p_value}}{The p-value (if applicable)}
+      \item{\code{thresholds}}{List of threshold definitions with expression and penalty}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    List with penalty, max_penalty, threshold_expression, and message
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{test_statistic}}{The test statistic value}
-
-\item{\code{p_value}}{The p-value (if applicable)}
-
-\item{\code{thresholds}}{List of threshold definitions with expression and penalty}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-List with penalty, max_penalty, threshold_expression, and message
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DataAnalytics-calculate_overall_score"></a>}}
 \if{latex}{\out{\hypertarget{method-DataAnalytics-calculate_overall_score}{}}}
-\subsection{Method \code{calculate_overall_score()}}{
-Calculate the overall quality score based on penalties
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DataAnalytics$calculate_overall_score()}\if{html}{\out{</div>}}
+\subsection{\code{DataAnalytics$calculate_overall_score()}}{
+  Calculate the overall quality score based on penalties
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DataAnalytics$calculate_overall_score()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    The overall quality score (0-100)
+  }
 }
 
-\subsection{Returns}{
-The overall quality score (0-100)
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DataAnalytics-summary"></a>}}
 \if{latex}{\out{\hypertarget{method-DataAnalytics-summary}{}}}
-\subsection{Method \code{summary()}}{
-Get a summary of the analytics assessment
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DataAnalytics$summary()}\if{html}{\out{</div>}}
+\subsection{\code{DataAnalytics$summary()}}{
+  Get a summary of the analytics assessment
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DataAnalytics$summary()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A list with summary information
+  }
 }
 
-\subsection{Returns}{
-A list with summary information
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DataAnalytics-results_to_table"></a>}}
 \if{latex}{\out{\hypertarget{method-DataAnalytics-results_to_table}{}}}
-\subsection{Method \code{results_to_table()}}{
-Convert quality results to a tabular format
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DataAnalytics$results_to_table()}\if{html}{\out{</div>}}
+\subsection{\code{DataAnalytics$results_to_table()}}{
+  Convert quality results to a tabular format
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DataAnalytics$results_to_table()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A tibble with quality check results
+  }
 }
 
-\subsection{Returns}{
-A tibble with quality check results
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DataAnalytics-schema_to_table"></a>}}
 \if{latex}{\out{\hypertarget{method-DataAnalytics-schema_to_table}{}}}
-\subsection{Method \code{schema_to_table()}}{
-Convert quality schema to a tabular format
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DataAnalytics$schema_to_table()}\if{html}{\out{</div>}}
+\subsection{\code{DataAnalytics$schema_to_table()}}{
+  Convert quality schema to a tabular format
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DataAnalytics$schema_to_table()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A tibble representing the quality schema
+  }
 }
 
-\subsection{Returns}{
-A tibble representing the quality schema
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DataAnalytics-import_schema_from_table"></a>}}
 \if{latex}{\out{\hypertarget{method-DataAnalytics-import_schema_from_table}{}}}
-\subsection{Method \code{import_schema_from_table()}}{
-Import quality schema from a table
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DataAnalytics$import_schema_from_table(df)}\if{html}{\out{</div>}}
+\subsection{\code{DataAnalytics$import_schema_from_table()}}{
+  Import quality schema from a table
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DataAnalytics$import_schema_from_table(df)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{df}}{A data frame representing the quality schema}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{df}}{A data frame representing the quality schema}
-}
-\if{html}{\out{</div>}}
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DataAnalytics-visualize"></a>}}
 \if{latex}{\out{\hypertarget{method-DataAnalytics-visualize}{}}}
-\subsection{Method \code{visualize()}}{
-Placeholder visualization method (to be overridden by subclasses)
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DataAnalytics$visualize(type = "summary")}\if{html}{\out{</div>}}
+\subsection{\code{DataAnalytics$visualize()}}{
+  Placeholder visualization method (to be overridden by subclasses)
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DataAnalytics$visualize(type = "summary")}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{type}}{The type of visualization}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A plot object or NULL
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{type}}{The type of visualization}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A plot object or NULL
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DataAnalytics-get_variable"></a>}}
 \if{latex}{\out{\hypertarget{method-DataAnalytics-get_variable}{}}}
-\subsection{Method \code{get_variable()}}{
-Get the actual column name for a canonical variable role
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DataAnalytics$get_variable(role)}\if{html}{\out{</div>}}
+\subsection{\code{DataAnalytics$get_variable()}}{
+  Get the actual column name for a canonical variable role
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DataAnalytics$get_variable(role)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{role}}{Character string with canonical variable name (semantic role)}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Character string with actual column name, or NULL if role not mapped
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{role}}{Character string with canonical variable name (semantic role)}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Character string with actual column name, or NULL if role not mapped
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DataAnalytics-.translate_canonical_to_actual_vars"></a>}}
 \if{latex}{\out{\hypertarget{method-DataAnalytics-.translate_canonical_to_actual_vars}{}}}
-\subsection{Method \code{.translate_canonical_to_actual_vars()}}{
-Translate canonical variable names to actual column names using variable_map
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DataAnalytics$.translate_canonical_to_actual_vars(canonical_vars)}\if{html}{\out{</div>}}
+\subsection{\code{DataAnalytics$.translate_canonical_to_actual_vars()}}{
+  Translate canonical variable names to actual column names using variable_map
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DataAnalytics$.translate_canonical_to_actual_vars(canonical_vars)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{canonical_vars}}{Character vector of canonical variable names}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Character vector of actual column names
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{canonical_vars}}{Character vector of canonical variable names}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Character vector of actual column names
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DataAnalytics-.compute_results_by_group"></a>}}
 \if{latex}{\out{\hypertarget{method-DataAnalytics-.compute_results_by_group}{}}}
-\subsection{Method \code{.compute_results_by_group()}}{
-Run quality checks on data subsets for each unique value of a grouping column
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DataAnalytics$.compute_results_by_group(group_col)}\if{html}{\out{</div>}}
+\subsection{\code{DataAnalytics$.compute_results_by_group()}}{
+  Run quality checks on data subsets for each unique value of a grouping column
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DataAnalytics$.compute_results_by_group(group_col)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{group_col}}{Character string. The actual column name in self$data to group by.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A tibble with per-group check results, or NULL
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{group_col}}{Character string. The actual column name in self$data to group by.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A tibble with per-group check results, or NULL
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DataAnalytics-generate_report"></a>}}
 \if{latex}{\out{\hypertarget{method-DataAnalytics-generate_report}{}}}
-\subsection{Method \code{generate_report()}}{
-Generate a quality report
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DataAnalytics$generate_report()}\if{html}{\out{</div>}}
+\subsection{\code{DataAnalytics$generate_report()}}{
+  Generate a quality report
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DataAnalytics$generate_report()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A list containing the full quality report
+  }
 }
 
-\subsection{Returns}{
-A list containing the full quality report
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DataAnalytics-generate_plausibility_report"></a>}}
 \if{latex}{\out{\hypertarget{method-DataAnalytics-generate_plausibility_report}{}}}
-\subsection{Method \code{generate_plausibility_report()}}{
-Generate a plausibility report with statistical test results
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DataAnalytics$generate_plausibility_report()}\if{html}{\out{</div>}}
+\subsection{\code{DataAnalytics$generate_plausibility_report()}}{
+  Generate a plausibility report with statistical test results
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DataAnalytics$generate_plausibility_report()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A list containing detailed plausibility assessment
+  }
 }
 
-\subsection{Returns}{
-A list containing detailed plausibility assessment
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DataAnalytics-quality_diagnose"></a>}}
 \if{latex}{\out{\hypertarget{method-DataAnalytics-quality_diagnose}{}}}
-\subsection{Method \code{quality_diagnose()}}{
-Diagnose issues in the quality schema against the current dataset.
+\subsection{\code{DataAnalytics$quality_diagnose()}}{
+  Diagnose issues in the quality schema against the current dataset.
 
 For every check defined in \code{self$quality_schema}, this method
 verifies that (a) the required variables exist in \code{self$data},
@@ -673,19 +717,21 @@ threshold expression is syntactically valid. The results mirror the
 flat quality schema table and add a \code{status} column ("ok" or a
 description of the issue).  Results are stored in
 \code{self$quality_issues_log}.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DataAnalytics$quality_diagnose()}\if{html}{\out{</div>}}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DataAnalytics$quality_diagnose()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A tibble (invisibly) with one row per quality check.
+  }
 }
 
-\subsection{Returns}{
-A tibble (invisibly) with one row per quality check.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DataAnalytics-analysis_diagnose"></a>}}
 \if{latex}{\out{\hypertarget{method-DataAnalytics-analysis_diagnose}{}}}
-\subsection{Method \code{analysis_diagnose()}}{
-Diagnose issues in the data analysis plan against the current dataset.
+\subsection{\code{DataAnalytics$analysis_diagnose()}}{
+  Diagnose issues in the data analysis plan against the current dataset.
 
 For every indicator row in \code{self$data_analysis_plan$log_df}, this
 method verifies that the primary variable (\code{var_name}), the
@@ -694,19 +740,21 @@ exist in the dataset (or survey design), and that the \code{calculation}
 type is valid. The results mirror the analysis plan tibble and add
 diagnostic columns. Results are stored in
 \code{self$analysis_plan_issues_log}.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DataAnalytics$analysis_diagnose()}\if{html}{\out{</div>}}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DataAnalytics$analysis_diagnose()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A tibble (invisibly) with one row per analysis plan indicator.
+  }
 }
 
-\subsection{Returns}{
-A tibble (invisibly) with one row per analysis plan indicator.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DataAnalytics-outputs_diagnose"></a>}}
 \if{latex}{\out{\hypertarget{method-DataAnalytics-outputs_diagnose}{}}}
-\subsection{Method \code{outputs_diagnose()}}{
-Diagnose issues in the unified outputs schema against the current dataset.
+\subsection{\code{DataAnalytics$outputs_diagnose()}}{
+  Diagnose issues in the unified outputs schema against the current dataset.
 
 For every output defined in \code{self$outputs_schema}, this method checks
 that (a) the output function exists, (b) any \code{variables} listed exist
@@ -714,19 +762,21 @@ in the data or survey design, and (c) required schema fields
 (\code{output_title}, \code{output_func_name}, \code{output_type}) are
 non-empty. The results mirror the outputs schema table and add a
 \code{status} column. Results are stored in \code{self$outputs_issues_log}.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DataAnalytics$outputs_diagnose()}\if{html}{\out{</div>}}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DataAnalytics$outputs_diagnose()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A tibble (invisibly) with one row per output definition.
+  }
 }
 
-\subsection{Returns}{
-A tibble (invisibly) with one row per output definition.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DataAnalytics-run_outputs"></a>}}
 \if{latex}{\out{\hypertarget{method-DataAnalytics-run_outputs}{}}}
-\subsection{Method \code{run_outputs()}}{
-Run all outputs defined in the outputs_schema.
+\subsection{\code{DataAnalytics$run_outputs()}}{
+  Run all outputs defined in the outputs_schema.
 
 Iterates through the unified outputs schema, resolves \code{@variable_map},
 \code{@value_map}, \code{@variable_label}, \code{@value_label}, and
@@ -752,44 +802,49 @@ Supported \code{dataset_type} values:
   \item{"analysis_results_surveydesign"}{uses \code{self$analysis_results$survey_design}}
   \item{"analysis_results_base"}{uses \code{self$analysis_results$base}}
 }
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DataAnalytics$run_outputs(language = "english")}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{language}}{Character string specifying the language for auto-generated
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DataAnalytics$run_outputs(language = "english")}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{language}}{Character string specifying the language for auto-generated
 titles. One of \code{"english"} (default), \code{"french"}, or
 \code{"arabic"}. Falls back to the generic \code{output_title} when the
 language-specific field is absent.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly returns a list with \code{visualizations} and \code{tables}
+  }
 }
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly returns a list with \code{visualizations} and \code{tables}
-}
-}
+
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DataAnalytics-create_survey_design"></a>}}
 \if{latex}{\out{\hypertarget{method-DataAnalytics-create_survey_design}{}}}
-\subsection{Method \code{create_survey_design()}}{
-Create a survey design object from the stored data and variable_map.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DataAnalytics$create_survey_design()}\if{html}{\out{</div>}}
+\subsection{\code{DataAnalytics$create_survey_design()}}{
+  Create a survey design object from the stored data and variable_map.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DataAnalytics$create_survey_design()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A srvyr survey design object, or NULL
+  }
 }
 
-\subsection{Returns}{
-A srvyr survey design object, or NULL
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DataAnalytics-add_indicator_dap"></a>}}
 \if{latex}{\out{\hypertarget{method-DataAnalytics-add_indicator_dap}{}}}
-\subsection{Method \code{add_indicator_dap()}}{
-Add an indicator to the data analysis plan
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DataAnalytics$add_indicator_dap(
+\subsection{\code{DataAnalytics$add_indicator_dap()}}{
+  Add an indicator to the data analysis plan
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DataAnalytics$add_indicator_dap(
   indicator_name,
   calculation,
   var_name,
@@ -799,113 +854,116 @@ Add an indicator to the data analysis plan
   indicator_unit = "\%",
   high_design_complexity = FALSE,
   note = NULL
-)}\if{html}{\out{</div>}}
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{indicator_name}}{Character; human-readable label for the indicator.}
+      \item{\code{calculation}}{Character; one of "prop", "mean", "median", "ratio", or "categorical".}
+      \item{\code{var_name}}{Character; dataset column name for the primary variable.}
+      \item{\code{denom_var}}{Character or NULL; denominator column name.}
+      \item{\code{disaggregation}}{Character or NULL; column name to use for stratified analysis.}
+      \item{\code{multiplier}}{Numeric; scale factor for the point estimate.}
+      \item{\code{indicator_unit}}{Character; unit label.}
+      \item{\code{high_design_complexity}}{Logical; reserved for future use.}
+      \item{\code{note}}{Character or NULL; optional free-text note.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly returns self.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{indicator_name}}{Character; human-readable label for the indicator.}
-
-\item{\code{calculation}}{Character; one of "prop", "mean", "median", "ratio", or "categorical".}
-
-\item{\code{var_name}}{Character; dataset column name for the primary variable.}
-
-\item{\code{denom_var}}{Character or NULL; denominator column name.}
-
-\item{\code{disaggregation}}{Character or NULL; column name to use for stratified analysis.}
-
-\item{\code{multiplier}}{Numeric; scale factor for the point estimate.}
-
-\item{\code{indicator_unit}}{Character; unit label.}
-
-\item{\code{high_design_complexity}}{Logical; reserved for future use.}
-
-\item{\code{note}}{Character or NULL; optional free-text note.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly returns self.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DataAnalytics-remove_indicator_dap"></a>}}
 \if{latex}{\out{\hypertarget{method-DataAnalytics-remove_indicator_dap}{}}}
-\subsection{Method \code{remove_indicator_dap()}}{
-Remove an indicator from the data analysis plan
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DataAnalytics$remove_indicator_dap(indicator_name)}\if{html}{\out{</div>}}
+\subsection{\code{DataAnalytics$remove_indicator_dap()}}{
+  Remove an indicator from the data analysis plan
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DataAnalytics$remove_indicator_dap(indicator_name)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{indicator_name}}{Character; label of the indicator to remove.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly returns self.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{indicator_name}}{Character; label of the indicator to remove.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly returns self.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DataAnalytics-to_list_schema"></a>}}
 \if{latex}{\out{\hypertarget{method-DataAnalytics-to_list_schema}{}}}
-\subsection{Method \code{to_list_schema()}}{
-Convert the analysis schema tibble to a named list
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DataAnalytics$to_list_schema()}\if{html}{\out{</div>}}
+\subsection{\code{DataAnalytics$to_list_schema()}}{
+  Convert the analysis schema tibble to a named list
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DataAnalytics$to_list_schema()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A named list of indicator specification lists
+  }
 }
 
-\subsection{Returns}{
-A named list of indicator specification lists
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DataAnalytics-generate_dap_from_schema"></a>}}
 \if{latex}{\out{\hypertarget{method-DataAnalytics-generate_dap_from_schema}{}}}
-\subsection{Method \code{generate_dap_from_schema()}}{
-Generate the data analysis plan from the analysis schema
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DataAnalytics$generate_dap_from_schema()}\if{html}{\out{</div>}}
+\subsection{\code{DataAnalytics$generate_dap_from_schema()}}{
+  Generate the data analysis plan from the analysis schema
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DataAnalytics$generate_dap_from_schema()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly returns self.
+  }
 }
 
-\subsection{Returns}{
-Invisibly returns self.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DataAnalytics-validate_schema"></a>}}
 \if{latex}{\out{\hypertarget{method-DataAnalytics-validate_schema}{}}}
-\subsection{Method \code{validate_schema()}}{
-Validate the analysis schema
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DataAnalytics$validate_schema()}\if{html}{\out{</div>}}
+\subsection{\code{DataAnalytics$validate_schema()}}{
+  Validate the analysis schema
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DataAnalytics$validate_schema()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    TRUE if validation passes, FALSE otherwise.
+  }
 }
 
-\subsection{Returns}{
-TRUE if validation passes, FALSE otherwise.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DataAnalytics-validate_plan"></a>}}
 \if{latex}{\out{\hypertarget{method-DataAnalytics-validate_plan}{}}}
-\subsection{Method \code{validate_plan()}}{
-Validate the data analysis plan
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DataAnalytics$validate_plan()}\if{html}{\out{</div>}}
+\subsection{\code{DataAnalytics$validate_plan()}}{
+  Validate the data analysis plan
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DataAnalytics$validate_plan()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly returns self.
+  }
 }
 
-\subsection{Returns}{
-Invisibly returns self.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DataAnalytics-run_analysis"></a>}}
 \if{latex}{\out{\hypertarget{method-DataAnalytics-run_analysis}{}}}
-\subsection{Method \code{run_analysis()}}{
-Run the data analysis plan and store results in analysis_results
+\subsection{\code{DataAnalytics$run_analysis()}}{
+  Run the data analysis plan and store results in analysis_results
 
 Executes every indicator twice: once using the full survey design (weighted)
 and once using a simple unweighted design.  Both sets are stored in
@@ -914,156 +972,172 @@ and once using a simple unweighted design.  Both sets are stored in
 
 After storing the results, \code{self$post_run_analysis()} is called to
 allow subclasses to perform additional analysis steps.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DataAnalytics$run_analysis()}\if{html}{\out{</div>}}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DataAnalytics$run_analysis()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly returns self.
+  }
 }
 
-\subsection{Returns}{
-Invisibly returns self.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DataAnalytics-post_run_analysis"></a>}}
 \if{latex}{\out{\hypertarget{method-DataAnalytics-post_run_analysis}{}}}
-\subsection{Method \code{post_run_analysis()}}{
-Post-analysis hook called at the end of \code{run_analysis()}.
+\subsection{\code{DataAnalytics$post_run_analysis()}}{
+  Post-analysis hook called at the end of \code{run_analysis()}.
 
 The default implementation is a no-op.  Subclasses can override this
 method to perform additional analysis steps after the standard analysis
 plan has been executed and stored in \code{self$analysis_results}.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DataAnalytics$post_run_analysis()}\if{html}{\out{</div>}}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DataAnalytics$post_run_analysis()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly returns self.
+  }
 }
 
-\subsection{Returns}{
-Invisibly returns self.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DataAnalytics-get_results"></a>}}
 \if{latex}{\out{\hypertarget{method-DataAnalytics-get_results}{}}}
-\subsection{Method \code{get_results()}}{
-Retrieve analysis results
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DataAnalytics$get_results()}\if{html}{\out{</div>}}
+\subsection{\code{DataAnalytics$get_results()}}{
+  Retrieve analysis results
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DataAnalytics$get_results()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A named list with elements survey_design and base, or NULL
+  }
 }
 
-\subsection{Returns}{
-A named list with elements survey_design and base, or NULL
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DataAnalytics-export_results"></a>}}
 \if{latex}{\out{\hypertarget{method-DataAnalytics-export_results}{}}}
-\subsection{Method \code{export_results()}}{
-Export analysis results to a file
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DataAnalytics$export_results(path, format = "xlsx")}\if{html}{\out{</div>}}
+\subsection{\code{DataAnalytics$export_results()}}{
+  Export analysis results to a file
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DataAnalytics$export_results(path, format = "xlsx")}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{path}}{Character; file path for the output file.}
+      \item{\code{format}}{Character; "xlsx" (default) or "csv".}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly returns self.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{path}}{Character; file path for the output file.}
-
-\item{\code{format}}{Character; "xlsx" (default) or "csv".}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly returns self.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DataAnalytics-export_state_object"></a>}}
 \if{latex}{\out{\hypertarget{method-DataAnalytics-export_state_object}{}}}
-\subsection{Method \code{export_state_object()}}{
-Export the internal state as an R list for session serialisation
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DataAnalytics$export_state_object()}\if{html}{\out{</div>}}
+\subsection{\code{DataAnalytics$export_state_object()}}{
+  Export the internal state as an R list for session serialisation
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DataAnalytics$export_state_object()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A named list of internal state fields.
+  }
 }
 
-\subsection{Returns}{
-A named list of internal state fields.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DataAnalytics-load_state_object"></a>}}
 \if{latex}{\out{\hypertarget{method-DataAnalytics-load_state_object}{}}}
-\subsection{Method \code{load_state_object()}}{
-Restore internal state from a previously exported state list
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DataAnalytics$load_state_object(state)}\if{html}{\out{</div>}}
+\subsection{\code{DataAnalytics$load_state_object()}}{
+  Restore internal state from a previously exported state list
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DataAnalytics$load_state_object(state)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{state}}{A named list as returned by export_state_object().}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly returns self.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{state}}{A named list as returned by export_state_object().}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly returns self.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DataAnalytics-export_analysis_schema"></a>}}
 \if{latex}{\out{\hypertarget{method-DataAnalytics-export_analysis_schema}{}}}
-\subsection{Method \code{export_analysis_schema()}}{
-Export the analysis schema to a file
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DataAnalytics$export_analysis_schema(path, format = "xlsx")}\if{html}{\out{</div>}}
+\subsection{\code{DataAnalytics$export_analysis_schema()}}{
+  Export the analysis schema to a file
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DataAnalytics$export_analysis_schema(path, format = "xlsx")}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{path}}{Character; destination file path (including extension).}
+      \item{\code{format}}{Character; "xlsx" (default) or "csv".}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly returns self.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{path}}{Character; destination file path (including extension).}
-
-\item{\code{format}}{Character; "xlsx" (default) or "csv".}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly returns self.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DataAnalytics-import_analysis_schema"></a>}}
 \if{latex}{\out{\hypertarget{method-DataAnalytics-import_analysis_schema}{}}}
-\subsection{Method \code{import_analysis_schema()}}{
-Import an analysis schema from a file
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DataAnalytics$import_analysis_schema(path)}\if{html}{\out{</div>}}
+\subsection{\code{DataAnalytics$import_analysis_schema()}}{
+  Import an analysis schema from a file
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DataAnalytics$import_analysis_schema(path)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{path}}{Character; path to the schema file (.xlsx, .csv, or .rds).}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly returns self.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{path}}{Character; path to the schema file (.xlsx, .csv, or .rds).}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly returns self.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DataAnalytics-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-DataAnalytics-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{DataAnalytics$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{DataAnalytics$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DataAnalytics$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

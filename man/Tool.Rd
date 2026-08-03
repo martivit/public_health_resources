@@ -29,172 +29,181 @@ This class provides methods for:
 - Validating structure according to XLSForm specification
 }
 \section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{survey}}{Data frame containing the survey sheet of the XLSForm.}
+  \if{html}{\out{<div class="r6-fields">}}
+  \describe{
+    \item{\code{survey}}{Data frame containing the survey sheet of the XLSForm.}
 
-\item{\code{choices}}{Data frame containing the choices sheet of the XLSForm.}
+    \item{\code{choices}}{Data frame containing the choices sheet of the XLSForm.}
 
-\item{\code{settings}}{Data frame containing the settings sheet of the XLSForm.}
+    \item{\code{settings}}{Data frame containing the settings sheet of the XLSForm.}
 
-\item{\code{revised_survey}}{Working copy of the survey sheet, updated by filter
+    \item{\code{revised_survey}}{Working copy of the survey sheet, updated by filter
 or modification methods.  Initialised as a copy of \code{survey} on
 construction.}
 
-\item{\code{revised_choices}}{Working copy of the choices sheet, updated by
+    \item{\code{revised_choices}}{Working copy of the choices sheet, updated by
 filter or modification methods.  Initialised as a copy of \code{choices}
 on construction.}
 
-\item{\code{revised_settings}}{Working copy of the settings sheet, updated by
+    \item{\code{revised_settings}}{Working copy of the settings sheet, updated by
 modification methods.  Initialised as a copy of \code{settings} on
 construction.}
 
-\item{\code{metadata}}{List containing tool metadata including
+    \item{\code{metadata}}{List containing tool metadata including
 \code{created_datetime} and \code{modified_datetime}.}
-}
-\if{html}{\out{</div>}}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-Tool-new}{\code{Tool$new()}}
-\item \href{#method-Tool-touch}{\code{Tool$touch()}}
-\item \href{#method-Tool-get_name}{\code{Tool$get_name()}}
-\item \href{#method-Tool-set_name}{\code{Tool$set_name()}}
-\item \href{#method-Tool-get_tool_type}{\code{Tool$get_tool_type()}}
-\item \href{#method-Tool-change_default_language}{\code{Tool$change_default_language()}}
-\item \href{#method-Tool-filter_survey_by_indicator}{\code{Tool$filter_survey_by_indicator()}}
-\item \href{#method-Tool-update_choice_list}{\code{Tool$update_choice_list()}}
-\item \href{#method-Tool-add_numbered_list}{\code{Tool$add_numbered_list()}}
-\item \href{#method-Tool-add_teams_to_choices}{\code{Tool$add_teams_to_choices()}}
-\item \href{#method-Tool-add_enumerators_to_choices}{\code{Tool$add_enumerators_to_choices()}}
-\item \href{#method-Tool-update_settings}{\code{Tool$update_settings()}}
-\item \href{#method-Tool-get_indicator_codes}{\code{Tool$get_indicator_codes()}}
-\item \href{#method-Tool-get_selected_indicators}{\code{Tool$get_selected_indicators()}}
-\item \href{#method-Tool-set_selected_indicators}{\code{Tool$set_selected_indicators()}}
-\item \href{#method-Tool-get_filtered_survey}{\code{Tool$get_filtered_survey()}}
-\item \href{#method-Tool-get_filtered_choices}{\code{Tool$get_filtered_choices()}}
-\item \href{#method-Tool-validate}{\code{Tool$validate()}}
-\item \href{#method-Tool-get_validation_errors}{\code{Tool$get_validation_errors()}}
-\item \href{#method-Tool-is_valid}{\code{Tool$is_valid()}}
-\item \href{#method-Tool-get_choices_for_list}{\code{Tool$get_choices_for_list()}}
-\item \href{#method-Tool-get_choice_list_names}{\code{Tool$get_choice_list_names()}}
-\item \href{#method-Tool-clone}{\code{Tool$clone()}}
-}
+  \itemize{
+    \item \href{#method-Tool-initialize}{\code{Tool$new()}}
+    \item \href{#method-Tool-touch}{\code{Tool$touch()}}
+    \item \href{#method-Tool-get_name}{\code{Tool$get_name()}}
+    \item \href{#method-Tool-set_name}{\code{Tool$set_name()}}
+    \item \href{#method-Tool-get_tool_type}{\code{Tool$get_tool_type()}}
+    \item \href{#method-Tool-change_default_language}{\code{Tool$change_default_language()}}
+    \item \href{#method-Tool-filter_survey_by_indicator}{\code{Tool$filter_survey_by_indicator()}}
+    \item \href{#method-Tool-update_choice_list}{\code{Tool$update_choice_list()}}
+    \item \href{#method-Tool-add_numbered_list}{\code{Tool$add_numbered_list()}}
+    \item \href{#method-Tool-add_teams_to_choices}{\code{Tool$add_teams_to_choices()}}
+    \item \href{#method-Tool-add_enumerators_to_choices}{\code{Tool$add_enumerators_to_choices()}}
+    \item \href{#method-Tool-update_settings}{\code{Tool$update_settings()}}
+    \item \href{#method-Tool-get_indicator_codes}{\code{Tool$get_indicator_codes()}}
+    \item \href{#method-Tool-get_selected_indicators}{\code{Tool$get_selected_indicators()}}
+    \item \href{#method-Tool-set_selected_indicators}{\code{Tool$set_selected_indicators()}}
+    \item \href{#method-Tool-get_filtered_survey}{\code{Tool$get_filtered_survey()}}
+    \item \href{#method-Tool-get_filtered_choices}{\code{Tool$get_filtered_choices()}}
+    \item \href{#method-Tool-validate}{\code{Tool$validate()}}
+    \item \href{#method-Tool-get_validation_errors}{\code{Tool$get_validation_errors()}}
+    \item \href{#method-Tool-is_valid}{\code{Tool$is_valid()}}
+    \item \href{#method-Tool-get_choices_for_list}{\code{Tool$get_choices_for_list()}}
+    \item \href{#method-Tool-get_choice_list_names}{\code{Tool$get_choice_list_names()}}
+    \item \href{#method-Tool-clone}{\code{Tool$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Tool-new"></a>}}
-\if{latex}{\out{\hypertarget{method-Tool-new}{}}}
-\subsection{Method \code{new()}}{
-Initialize a new Tool object.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Tool$new(name = NULL, survey = NULL, choices = NULL, settings = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<a id="method-Tool-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-Tool-initialize}{}}}
+\subsection{\code{Tool$new()}}{
+  Initialize a new Tool object.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Tool$new(name = NULL, survey = NULL, choices = NULL, settings = NULL)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{name}}{Optional name for the tool.}
+      \item{\code{survey}}{Optional data.frame containing the survey sheet (master).}
+      \item{\code{choices}}{Optional data.frame containing the choices sheet (master).}
+      \item{\code{settings}}{Optional data.frame containing the settings sheet.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A new Tool object.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{name}}{Optional name for the tool.}
-
-\item{\code{survey}}{Optional data.frame containing the survey sheet (master).}
-
-\item{\code{choices}}{Optional data.frame containing the choices sheet (master).}
-
-\item{\code{settings}}{Optional data.frame containing the settings sheet.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A new Tool object.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Tool-touch"></a>}}
 \if{latex}{\out{\hypertarget{method-Tool-touch}{}}}
-\subsection{Method \code{touch()}}{
-Update tool modification metadata timestamps.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Tool$touch()}\if{html}{\out{</div>}}
+\subsection{\code{Tool$touch()}}{
+  Update tool modification metadata timestamps.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Tool$touch()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly returns \code{self}.
+  }
 }
 
-\subsection{Returns}{
-Invisibly returns \code{self}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Tool-get_name"></a>}}
 \if{latex}{\out{\hypertarget{method-Tool-get_name}{}}}
-\subsection{Method \code{get_name()}}{
-Get the tool name.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Tool$get_name()}\if{html}{\out{</div>}}
+\subsection{\code{Tool$get_name()}}{
+  Get the tool name.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Tool$get_name()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Character string with tool name.
+  }
 }
 
-\subsection{Returns}{
-Character string with tool name.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Tool-set_name"></a>}}
 \if{latex}{\out{\hypertarget{method-Tool-set_name}{}}}
-\subsection{Method \code{set_name()}}{
-Set the tool name.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Tool$set_name(name)}\if{html}{\out{</div>}}
+\subsection{\code{Tool$set_name()}}{
+  Set the tool name.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Tool$set_name(name)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{name}}{Character string for the tool name.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly returns self for method chaining.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{name}}{Character string for the tool name.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly returns self for method chaining.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Tool-get_tool_type"></a>}}
 \if{latex}{\out{\hypertarget{method-Tool-get_tool_type}{}}}
-\subsection{Method \code{get_tool_type()}}{
-Get the tool type.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Tool$get_tool_type()}\if{html}{\out{</div>}}
+\subsection{\code{Tool$get_tool_type()}}{
+  Get the tool type.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Tool$get_tool_type()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Character string indicating the tool type.
+  }
 }
 
-\subsection{Returns}{
-Character string indicating the tool type.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Tool-change_default_language"></a>}}
 \if{latex}{\out{\hypertarget{method-Tool-change_default_language}{}}}
-\subsection{Method \code{change_default_language()}}{
-Change the default language stored in the revised_settings data frame.
+\subsection{\code{Tool$change_default_language()}}{
+  Change the default language stored in the revised_settings data frame.
 Updates the \code{default_language} column of \code{revised_settings}.
 Allowable options: \code{"english"}, \code{"french"}, \code{"arabic"},
 \code{"spanish"} (case-insensitive).
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Tool$change_default_language(language)}\if{html}{\out{</div>}}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Tool$change_default_language(language)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{language}}{Character string for the new default language.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly returns self for method chaining.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{language}}{Character string for the new default language.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly returns self for method chaining.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Tool-filter_survey_by_indicator"></a>}}
 \if{latex}{\out{\hypertarget{method-Tool-filter_survey_by_indicator}{}}}
-\subsection{Method \code{filter_survey_by_indicator()}}{
-Filter the master survey and choices by a vector of \code{indicator_code}
+\subsection{\code{Tool$filter_survey_by_indicator()}}{
+  Filter the master survey and choices by a vector of \code{indicator_code}
 values and store the results in \code{revised_survey} and
 \code{revised_choices}.
 
@@ -206,326 +215,355 @@ general/structural questions shared across all indicators are preserved.
 The \code{revised_choices} is then derived from \code{revised_survey} by
 retaining only choice list rows whose \code{indicator_code} column matches
 one of the indicator codes present in \code{revised_survey}.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Tool$filter_survey_by_indicator(indicator_codes)}\if{html}{\out{</div>}}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Tool$filter_survey_by_indicator(indicator_codes)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{indicator_codes}}{Numeric or character vector (or list) of
+\code{indicator_code} values to retain.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly returns \code{self} for method chaining.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{indicator_codes}}{Numeric or character vector (or list) of
-\code{indicator_code} values to retain.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly returns \code{self} for method chaining.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Tool-update_choice_list"></a>}}
 \if{latex}{\out{\hypertarget{method-Tool-update_choice_list}{}}}
-\subsection{Method \code{update_choice_list()}}{
-Safely update a specific choice list in the revised choices with new
+\subsection{\code{Tool$update_choice_list()}}{
+  Safely update a specific choice list in the revised choices with new
 or revised values.  The existing entries for \code{list_name} are
 replaced entirely with \code{new_choices}.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Tool$update_choice_list(list_name, new_choices)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{list_name}}{Character. Name of the choice list to replace.}
-
-\item{\code{new_choices}}{Data frame with the new choice entries.  Must contain
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Tool$update_choice_list(list_name, new_choices)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{list_name}}{Character. Name of the choice list to replace.}
+      \item{\code{new_choices}}{Data frame with the new choice entries.  Must contain
 at minimum a \code{name} column.  A \code{list_name} column will be
 added/overwritten with the value of \code{list_name}.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly returns self for method chaining.
+  }
 }
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly returns self for method chaining.
-}
-}
+
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Tool-add_numbered_list"></a>}}
 \if{latex}{\out{\hypertarget{method-Tool-add_numbered_list}{}}}
-\subsection{Method \code{add_numbered_list()}}{
-Add/replace a numbered choice list in revised choices.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Tool$add_numbered_list(list_name, prefix_val, prefix_lbl, n)}\if{html}{\out{</div>}}
+\subsection{\code{Tool$add_numbered_list()}}{
+  Add/replace a numbered choice list in revised choices.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Tool$add_numbered_list(list_name, prefix_val, prefix_lbl, n)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{list_name}}{Character choice list name.}
+      \item{\code{prefix_val}}{Character value prefix.}
+      \item{\code{prefix_lbl}}{Character label prefix.}
+      \item{\code{n}}{Positive integer number of entries.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly returns \code{self}.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{list_name}}{Character choice list name.}
-
-\item{\code{prefix_val}}{Character value prefix.}
-
-\item{\code{prefix_lbl}}{Character label prefix.}
-
-\item{\code{n}}{Positive integer number of entries.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly returns \code{self}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Tool-add_teams_to_choices"></a>}}
 \if{latex}{\out{\hypertarget{method-Tool-add_teams_to_choices}{}}}
-\subsection{Method \code{add_teams_to_choices()}}{
-Add/replace a \code{teams} choice list.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Tool$add_teams_to_choices(n_teams)}\if{html}{\out{</div>}}
+\subsection{\code{Tool$add_teams_to_choices()}}{
+  Add/replace a \code{teams} choice list.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Tool$add_teams_to_choices(n_teams)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{n_teams}}{Positive integer number of teams.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly returns \code{self}.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{n_teams}}{Positive integer number of teams.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly returns \code{self}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Tool-add_enumerators_to_choices"></a>}}
 \if{latex}{\out{\hypertarget{method-Tool-add_enumerators_to_choices}{}}}
-\subsection{Method \code{add_enumerators_to_choices()}}{
-Add/replace an \code{enumerators} choice list.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Tool$add_enumerators_to_choices(n_enumerators)}\if{html}{\out{</div>}}
+\subsection{\code{Tool$add_enumerators_to_choices()}}{
+  Add/replace an \code{enumerators} choice list.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Tool$add_enumerators_to_choices(n_enumerators)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{n_enumerators}}{Positive integer number of enumerators.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly returns \code{self}.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{n_enumerators}}{Positive integer number of enumerators.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly returns \code{self}.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Tool-update_settings"></a>}}
 \if{latex}{\out{\hypertarget{method-Tool-update_settings}{}}}
-\subsection{Method \code{update_settings()}}{
-Update a value in the settings data frame.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Tool$update_settings(key, value)}\if{html}{\out{</div>}}
+\subsection{\code{Tool$update_settings()}}{
+  Update a value in the settings data frame.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Tool$update_settings(key, value)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{key}}{Character. Column name in the settings data frame to update.}
+      \item{\code{value}}{The new value for the setting.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly returns self for method chaining.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{key}}{Character. Column name in the settings data frame to update.}
-
-\item{\code{value}}{The new value for the setting.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly returns self for method chaining.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Tool-get_indicator_codes"></a>}}
 \if{latex}{\out{\hypertarget{method-Tool-get_indicator_codes}{}}}
-\subsection{Method \code{get_indicator_codes()}}{
-Return a unique integer vector of all indicator codes present in the
+\subsection{\code{Tool$get_indicator_codes()}}{
+  Return a unique integer vector of all indicator codes present in the
 \code{indicator_code} column of \code{revised_survey} (falling back to
 \code{survey}).  Cells that contain multiple comma-separated codes (e.g.
 \code{"10501, 10502"}) are split so every individual code is returned as
 a separate element.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Tool$get_indicator_codes(prefer_revised = TRUE)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{prefer_revised}}{Logical.  When \code{TRUE} (default) use
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Tool$get_indicator_codes(prefer_revised = TRUE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{prefer_revised}}{Logical.  When \code{TRUE} (default) use
 \code{revised_survey}; otherwise use the master \code{survey}.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Integer vector of unique indicator codes.  Returns
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Integer vector of unique indicator codes.  Returns
   \code{integer(0)} when the sheet is empty or has no
   \code{indicator_code} column.
+  }
 }
-}
+
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Tool-get_selected_indicators"></a>}}
 \if{latex}{\out{\hypertarget{method-Tool-get_selected_indicators}{}}}
-\subsection{Method \code{get_selected_indicators()}}{
-Get the currently selected indicators.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Tool$get_selected_indicators()}\if{html}{\out{</div>}}
+\subsection{\code{Tool$get_selected_indicators()}}{
+  Get the currently selected indicators.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Tool$get_selected_indicators()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Character vector of selected indicator names.
+  }
 }
 
-\subsection{Returns}{
-Character vector of selected indicator names.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Tool-set_selected_indicators"></a>}}
 \if{latex}{\out{\hypertarget{method-Tool-set_selected_indicators}{}}}
-\subsection{Method \code{set_selected_indicators()}}{
-Set the selected indicators for filtering.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Tool$set_selected_indicators(indicators)}\if{html}{\out{</div>}}
+\subsection{\code{Tool$set_selected_indicators()}}{
+  Set the selected indicators for filtering.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Tool$set_selected_indicators(indicators)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{indicators}}{Character vector of indicator names to select.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly returns self for method chaining.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{indicators}}{Character vector of indicator names to select.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Invisibly returns self for method chaining.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Tool-get_filtered_survey"></a>}}
 \if{latex}{\out{\hypertarget{method-Tool-get_filtered_survey}{}}}
-\subsection{Method \code{get_filtered_survey()}}{
-Get the survey sheet filtered by selected indicators.
+\subsection{\code{Tool$get_filtered_survey()}}{
+  Get the survey sheet filtered by selected indicators.
 Filters questions based on a mapping between indicators and question names.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Tool$get_filtered_survey(indicator_mapping = NULL)}\if{html}{\out{</div>}}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Tool$get_filtered_survey(indicator_mapping = NULL)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{indicator_mapping}}{Named list mapping indicator names to question names.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Data frame with filtered survey rows.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{indicator_mapping}}{Named list mapping indicator names to question names.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Data frame with filtered survey rows.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Tool-get_filtered_choices"></a>}}
 \if{latex}{\out{\hypertarget{method-Tool-get_filtered_choices}{}}}
-\subsection{Method \code{get_filtered_choices()}}{
-Get the choices sheet filtered to only include choice lists used by the filtered survey questions.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Tool$get_filtered_choices(indicator_mapping = NULL)}\if{html}{\out{</div>}}
+\subsection{\code{Tool$get_filtered_choices()}}{
+  Get the choices sheet filtered to only include choice lists used by the filtered survey questions.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Tool$get_filtered_choices(indicator_mapping = NULL)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{indicator_mapping}}{Named list mapping indicator names to question names.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Data frame with filtered choices rows.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{indicator_mapping}}{Named list mapping indicator names to question names.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Data frame with filtered choices rows.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Tool-validate"></a>}}
 \if{latex}{\out{\hypertarget{method-Tool-validate}{}}}
-\subsection{Method \code{validate()}}{
-Validate the entire XLSForm structure.
+\subsection{\code{Tool$validate()}}{
+  Validate the entire XLSForm structure.
 Checks for required columns, valid question types, choice list references,
 and coherence between revised survey and revised choices.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Tool$validate()}\if{html}{\out{</div>}}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Tool$validate()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Logical TRUE if valid, FALSE if there are validation errors.
+  }
 }
 
-\subsection{Returns}{
-Logical TRUE if valid, FALSE if there are validation errors.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Tool-get_validation_errors"></a>}}
 \if{latex}{\out{\hypertarget{method-Tool-get_validation_errors}{}}}
-\subsection{Method \code{get_validation_errors()}}{
-Get validation errors from the last validation run.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Tool$get_validation_errors()}\if{html}{\out{</div>}}
+\subsection{\code{Tool$get_validation_errors()}}{
+  Get validation errors from the last validation run.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Tool$get_validation_errors()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    List of validation error messages.
+  }
 }
 
-\subsection{Returns}{
-List of validation error messages.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Tool-is_valid"></a>}}
 \if{latex}{\out{\hypertarget{method-Tool-is_valid}{}}}
-\subsection{Method \code{is_valid()}}{
-Check if the tool is valid (has no validation errors).
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Tool$is_valid()}\if{html}{\out{</div>}}
+\subsection{\code{Tool$is_valid()}}{
+  Check if the tool is valid (has no validation errors).
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Tool$is_valid()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Logical indicating validity.
+  }
 }
 
-\subsection{Returns}{
-Logical indicating validity.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Tool-get_choices_for_list"></a>}}
 \if{latex}{\out{\hypertarget{method-Tool-get_choices_for_list}{}}}
-\subsection{Method \code{get_choices_for_list()}}{
-Get all choices for a specific choice list (from master choices).
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Tool$get_choices_for_list(list_name)}\if{html}{\out{</div>}}
+\subsection{\code{Tool$get_choices_for_list()}}{
+  Get all choices for a specific choice list (from master choices).
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Tool$get_choices_for_list(list_name)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{list_name}}{Name of the choice list.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Data frame with choices for the specified list.
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{list_name}}{Name of the choice list.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Data frame with choices for the specified list.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Tool-get_choice_list_names"></a>}}
 \if{latex}{\out{\hypertarget{method-Tool-get_choice_list_names}{}}}
-\subsection{Method \code{get_choice_list_names()}}{
-Get all unique choice list names (from master choices).
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Tool$get_choice_list_names()}\if{html}{\out{</div>}}
+\subsection{\code{Tool$get_choice_list_names()}}{
+  Get all unique choice list names (from master choices).
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Tool$get_choice_list_names()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Character vector of choice list names.
+  }
 }
 
-\subsection{Returns}{
-Character vector of choice list names.
-}
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Tool-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-Tool-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Tool$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{Tool$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{Tool$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

@@ -96,6 +96,8 @@ Orchestrator <- R6::R6Class(
     #' @param role Optional character scalar used to resolve a list element in
     #'   \code{field} by role-like name (for example \code{"household"} for
     #'   \code{"tool_household_iphra_v2"}).
+    #' @param update_sync Logical indicating whether to synchronize state after access.
+    #' @param update_modified Logical indicating whether to update the modified timestamp.
     #' @param ... Arguments passed to the nested method when \code{member}
     #'   resolves to a function.
     #' @return The requested nested value, or the nested method result.
@@ -202,6 +204,8 @@ Orchestrator <- R6::R6Class(
   private = list(
     #' @description Update modified timestamp metadata.
     #' @return Invisibly returns \code{NULL}.
+    #' @keywords internal
+    #' @noRd
     ..touch = function() {
       if (is.null(self$metadata) || !is.list(self$metadata)) {
         self$metadata <- list()
@@ -221,6 +225,8 @@ Orchestrator <- R6::R6Class(
     #' @param name Optional named list entry inside \code{field}.
     #' @param role Optional role-based list resolution key.
     #' @return Invisibly returns resolved value (targeted mode) or \code{NULL}.
+    #' @keywords internal
+    #' @noRd
     ..sync_state = function(
       field = NULL,
       member = NULL,
@@ -334,6 +340,8 @@ Orchestrator <- R6::R6Class(
     #' @param name Optional exact list element name.
     #' @param role Optional role-style key for list lookup.
     #' @return Resolved object.
+    #' @keywords internal
+    #' @noRd
     ..resolve_nested_target = function(field, name = NULL, role = NULL) {
       phr_assert(
         is.character(field) && length(field) == 1L && nzchar(field),
@@ -428,6 +436,8 @@ Orchestrator <- R6::R6Class(
     #' @description Normalize role names for fuzzy list matching.
     #' @param x Character role/name input.
     #' @return Normalized character key.
+    #' @keywords internal
+    #' @noRd
     ..normalize_role_name = function(x) {
       x <- tolower(as.character(x %||% ""))
       x <- gsub("^tool_", "", x)
@@ -440,6 +450,8 @@ Orchestrator <- R6::R6Class(
     #' @param target_field Character path using \code{$} separators.
     #' @param value Value to assign.
     #' @return Invisibly returns \code{NULL}.
+    #' @keywords internal
+    #' @noRd
     ..assign_sync_value = function(target_field, value) {
       phr_assert(
         is.character(target_field) &&

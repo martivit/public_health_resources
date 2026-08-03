@@ -36,8 +36,8 @@
 #' and `xlsform_check_undefined_references()`.
 #'
 #' @param cell    A single character string (one XLSForm cell value).
-#' @param pattern A PCRE-compatible regular expression.  The default
-#'   `"\\$\\{([^}]+)\\}"` captures XLSForm variable names.
+#' @param pattern A PCRE-compatible regular expression. The default
+#'   pattern captures XLSForm variable names from `${}` references.
 #'
 #' @return A character vector of extracted values (one per match).
 #'   Returns `character(0)` when no matches are found or when `cell`

@@ -320,6 +320,8 @@ SamplingFrame <- R6::R6Class(
   private = list(
     #' @description Update modified timestamp.
     #' @return Invisibly returns NULL.
+    #' @keywords internal
+    #' @noRd
     ..touch = function() {
       self$metadata$modified_datetime <- Sys.time()
       invisible(NULL)
@@ -334,6 +336,8 @@ SamplingFrame <- R6::R6Class(
     #' @param cluster_size Integer cluster size.
     #' @param seed Integer random seed.
     #' @return Data frame with sampled PSUs and allocated sample columns.
+    #' @keywords internal
+    #' @noRd
     ..apply_sampling_method = function(
       frame,
       method_site,
@@ -462,6 +466,8 @@ SamplingFrame <- R6::R6Class(
     #' @param stratum_n_eligible Integer number of eligible units in stratum.
     #' @param total_n_eligible Integer total number of eligible units.
     #' @return List with elements: method_site, method_hh, sample_size, n_psu, cluster_size, n_sites.
+    #' @keywords internal
+    #' @noRd
     ..params_from_strata_row = function(
       st_row,
       stratum_n_eligible,
