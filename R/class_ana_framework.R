@@ -38,18 +38,18 @@ ANAFramework <- R6::R6Class(
       super$initialize()
 
       # ---- Load master objectives schema from reference_objectives.xlsx ----
-      phr_try({
+      phrutils::phr_try({
         objectives <- load_objective_schema()
         if (!is.null(objectives) && is.data.frame(objectives) && nrow(objectives) > 0) {
           self$master_objectives_schema <- objectives
-          phr_message(
+          phrutils::phr_message(
             phr_txt(
               "ANAFramework: master objectives schema loaded ({nrow(objectives)} rows)."
             ),
             origin = "ANAFramework$initialize"
           )
         } else {
-          phr_warning(
+          phrutils::phr_warning(
             message = phr_txt(
               "ANAFramework: reference_objectives.xlsx could not be loaded; master_objectives_schema is NULL."
             ),
@@ -62,19 +62,19 @@ ANAFramework <- R6::R6Class(
       }, on_error = "warn", origin = "ANAFramework$initialize")
 
       # ---- Load indicator bank from reference_indicator_bank.xlsx ----
-      phr_try({
+      phrutils::phr_try({
         indicators <- load_indicator_bank()
         if (!is.null(indicators) && is.data.frame(indicators) && nrow(indicators) > 0) {
           self$master_indicator_bank   <- indicators
           self$modified_indicator_bank <- indicators
-          phr_message(
+          phrutils::phr_message(
             phr_txt(
               "ANAFramework: indicator bank loaded ({nrow(indicators)} rows)."
             ),
             origin = "ANAFramework$initialize"
           )
         } else {
-          phr_warning(
+          phrutils::phr_warning(
             message = phr_txt(
               "ANAFramework: reference_indicator_bank.xlsx could not be loaded; master_indicator_bank is NULL."
             ),
@@ -87,7 +87,7 @@ ANAFramework <- R6::R6Class(
       }, on_error = "warn", origin = "ANAFramework$initialize")
 
       # ---- Load master SVG from ana_framework.svg ----
-      phr_try({
+      phrutils::phr_try({
         svg_file <- system.file("resources", "ana_framework.svg", package = "phr")
         if (!nzchar(svg_file) || !file.exists(svg_file)) {
           svg_file <- file.path("resources", "ana_framework.svg")
@@ -96,12 +96,12 @@ ANAFramework <- R6::R6Class(
           svg_content <- paste(readLines(svg_file, warn = FALSE), collapse = "\n")
           self$master_svg  <- svg_content
           self$adjusted_svg <- svg_content
-          phr_message(
+          phrutils::phr_message(
             phr_txt("ANAFramework: master SVG loaded from ana_framework.svg."),
             origin = "ANAFramework$initialize"
           )
         } else {
-          phr_warning(
+          phrutils::phr_warning(
             message = phr_txt(
               "ANAFramework: ana_framework.svg could not be found; master_svg is NULL."
             ),

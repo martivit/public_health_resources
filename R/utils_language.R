@@ -78,7 +78,7 @@ phr_txt <- function(key, lang = NULL, default = NULL, session = NULL) {
 
   if (is.null(lang)) {
     if (!is.null(session) && !is.null(session$userData$lang)) {
-      # Safe reactive access \u2014 only works once session$userData$lang is defined
+      # Safe reactive access — only works once session$userData$lang is defined
       lang <- tryCatch(session$userData$lang(), error = function(e) NULL)
     }
   }

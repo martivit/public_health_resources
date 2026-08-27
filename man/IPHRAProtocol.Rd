@@ -26,11 +26,11 @@ and sampling-frame functionality.
 \section{Key methods}{
 
 \describe{
-  \item{`initialize()`}{Create a new IPHRA protocol with an ANA framework.}
-  \item{`add_tools()`}{Add a recognised IPHRA household, KII, or observation tool.}
-  \item{`get_allowable_tools()`}{Return all recognised IPHRA tool names.}
-  \item{`update_recall_date()`}{Update recall-date calculate rows in the household tool.}
-  \item{`get_quarto_params()`}{Return IPHRA-specific parameters for Quarto rendering.}
+  \item{\code{initialize()}}{Create a new IPHRA protocol with an ANA framework.}
+  \item{\code{add_tools()}}{Add a recognised IPHRA household, KII, or observation tool.}
+  \item{\code{get_allowable_tools()}}{Return all recognised IPHRA tool names.}
+  \item{\code{update_recall_date()}}{Update recall-date calculate rows in the household tool.}
+  \item{\code{get_quarto_params()}}{Return IPHRA-specific parameters for Quarto rendering.}
 }
 }
 
@@ -40,6 +40,49 @@ The class provides read-only active bindings for tool-presence flags,
 household indicator flags, tools/sample summary tables, pillar/sub-pillar
 tables, DAP tables, and the modified framework SVG path used in report
 generation.
+\describe{
+  \item{\code{.tool_household_iphra}}{Logical flag indicating if a household IPHRA tool is registered.}
+  \item{\code{.tool_community_kii}}{Logical flag indicating if a community KII tool is registered.}
+  \item{\code{.tool_fsl_provider_kii}}{Logical flag indicating if an FSL provider KII tool is registered.}
+  \item{\code{.tool_market_kii}}{Logical flag indicating if a market KII tool is registered.}
+  \item{\code{.tool_health_facility_kii}}{Logical flag indicating if a health facility KII tool is registered.}
+  \item{\code{.tool_nutrition_facility_kii}}{Logical flag indicating if a nutrition facility KII tool is registered.}
+  \item{\code{.tool_wash_provider_kii}}{Logical flag indicating if a WASH provider KII tool is registered.}
+  \item{\code{.tool_community_observation}}{Logical flag indicating if a community observation tool is registered.}
+  \item{\code{.tool_crops_livestock_observation}}{Logical flag indicating if a crops/livestock observation tool is registered.}
+  \item{\code{.tool_health_facility_observation}}{Logical flag indicating if a health facility observation tool is registered.}
+  \item{\code{.tool_latrine_observation}}{Logical flag indicating if a latrine observation tool is registered.}
+  \item{\code{.tool_water_point_observation}}{Logical flag indicating if a water point observation tool is registered.}
+  \item{\code{.ind_ecfies}}{Logical flag indicating if ECFIES indicator (10801) is included.}
+  \item{\code{.ind_iycfe}}{Logical flag indicating if IYCF-E indicator (10802) is included.}
+  \item{\code{.ind_measles_vaccination}}{Logical flag indicating if measles vaccination indicator (14304) is included.}
+  \item{\code{.ind_muac_children}}{Logical flag indicating if MUAC children indicator (10701) is included.}
+  \item{\code{.ind_muac_women}}{Logical flag indicating if MUAC women indicator (10702) is included.}
+  \item{\code{.ind_vitamin_a_coverage}}{Logical flag indicating if vitamin A coverage indicator (14305) is included.}
+  \item{\code{.ind_mortality}}{Logical flag indicating if mortality indicators (10501, 10502) are included.}
+  \item{\code{.ind_fcs}}{Logical flag indicating if FCS indicator (11205) is included.}
+  \item{\code{.ind_rcsi}}{Logical flag indicating if rCSI indicator (11202) is included.}
+  \item{\code{.ind_hhs}}{Logical flag indicating if HHS indicator (11201) is included.}
+  \item{\code{.ind_lcsi}}{Logical flag indicating if LCSI indicator (12301) is included.}
+  \item{\code{.ind_hwise}}{Logical flag indicating if HWISE indicator (11701) is included.}
+  \item{\code{.ind_lppd}}{Logical flag indicating if LPPD indicator (10901) is included.}
+  \item{\code{.tools_table_df}}{Data frame summarizing registered tools with sampling methods and sample sizes.}
+  \item{\code{.sample_table_df}}{Data frame of the nested sample table.}
+  \item{\code{.pillars_table_df}}{Data frame of framework pillars.}
+  \item{\code{.subpillars_table_df}}{Data frame of framework sub-pillars.}
+  \item{\code{.household_dap_df}}{Data frame containing the household data analysis plan.}
+  \item{\code{.community_kii_dap_df}}{Data frame containing the community KII data analysis plan.}
+  \item{\code{.fsl_provider_kii_dap_df}}{Data frame containing the FSL provider KII data analysis plan.}
+  \item{\code{.market_kii_dap_df}}{Data frame containing the market KII data analysis plan.}
+  \item{\code{.health_facility_kii_dap_df}}{Data frame containing the health facility KII data analysis plan.}
+  \item{\code{.nutrition_facility_kii_dap_df}}{Data frame containing the nutrition facility KII data analysis plan.}
+  \item{\code{.wash_provider_kii_dap_df}}{Data frame containing the WASH provider KII data analysis plan.}
+  \item{\code{.community_observation_dap_df}}{Data frame containing the community observation data analysis plan.}
+  \item{\code{.crops_livestock_observation_dap_df}}{Data frame containing the crops/livestock observation data analysis plan.}
+  \item{\code{.health_facility_observation_dap_df}}{Data frame containing the health facility observation data analysis plan.}
+  \item{\code{.water_point_observation_dap_df}}{Data frame containing the water point observation data analysis plan.}
+  \item{\code{.latrine_observation_dap_df}}{Data frame containing the latrine observation data analysis plan.}
+}
 }
 
 \section{Supported IPHRA tools}{
@@ -66,7 +109,94 @@ protocol$.tools_table_df
 
 }
 \section{Super classes}{
-\code{Orchestrator} -> \code{Document} -> \code{Protocol} -> \code{SurveyProtocol} -> \code{IPHRAProtocol}
+\code{\link[phr:Orchestrator]{Orchestrator}} -> \code{\link[phr:Document]{Document}} -> \code{\link[phr:Protocol]{Protocol}} -> \code{\link[phr:SurveyProtocol]{SurveyProtocol}} -> \code{IPHRAProtocol}
+}
+\section{Active bindings}{
+  \if{html}{\out{<div class="r6-active-bindings">}}
+  \describe{
+    \item{\code{.tool_household_iphra}}{Logical flag indicating if a household IPHRA tool is registered.}
+
+    \item{\code{.tool_community_kii}}{Logical flag indicating if a community KII tool is registered.}
+
+    \item{\code{.tool_fsl_provider_kii}}{Logical flag indicating if an FSL provider KII tool is registered.}
+
+    \item{\code{.tool_market_kii}}{Logical flag indicating if a market KII tool is registered.}
+
+    \item{\code{.tool_health_facility_kii}}{Logical flag indicating if a health facility KII tool is registered.}
+
+    \item{\code{.tool_nutrition_facility_kii}}{Logical flag indicating if a nutrition facility KII tool is registered.}
+
+    \item{\code{.tool_wash_provider_kii}}{Logical flag indicating if a WASH provider KII tool is registered.}
+
+    \item{\code{.ind_ecfies}}{Logical flag indicating if ECFIES indicator (10801) is included.}
+
+    \item{\code{.ind_iycfe}}{Logical flag indicating if IYCF-E indicator (10802) is included.}
+
+    \item{\code{.ind_measles_vaccination}}{Logical flag indicating if measles vaccination indicator (14304) is included.}
+
+    \item{\code{.ind_muac_children}}{Logical flag indicating if MUAC children indicator (10701) is included.}
+
+    \item{\code{.ind_muac_women}}{Logical flag indicating if MUAC women indicator (10702) is included.}
+
+    \item{\code{.ind_vitamin_a_coverage}}{Logical flag indicating if vitamin A coverage indicator (14305) is included.}
+
+    \item{\code{.ind_mortality}}{Logical flag indicating if mortality indicators (10501, 10502) are included.}
+
+    \item{\code{.ind_fcs}}{Logical flag indicating if FCS indicator (11205) is included.}
+
+    \item{\code{.ind_rcsi}}{Logical flag indicating if rCSI indicator (11202) is included.}
+
+    \item{\code{.ind_hhs}}{Logical flag indicating if HHS indicator (11201) is included.}
+
+    \item{\code{.ind_lcsi}}{Logical flag indicating if LCSI indicator (12301) is included.}
+
+    \item{\code{.ind_hwise}}{Logical flag indicating if HWISE indicator (11701) is included.}
+
+    \item{\code{.ind_lppd}}{Logical flag indicating if LPPD indicator (10901) is included.}
+
+    \item{\code{.tool_community_observation}}{Logical flag indicating if a community observation tool is registered.}
+
+    \item{\code{.tool_crops_livestock_observation}}{Logical flag indicating if a crops/livestock observation tool is registered.}
+
+    \item{\code{.tool_health_facility_observation}}{Logical flag indicating if a health facility observation tool is registered.}
+
+    \item{\code{.tool_latrine_observation}}{Logical flag indicating if a latrine observation tool is registered.}
+
+    \item{\code{.tool_water_point_observation}}{Logical flag indicating if a water point observation tool is registered.}
+
+    \item{\code{.tools_table_df}}{Data frame summarizing registered tools with sampling methods and sample sizes.}
+
+    \item{\code{.household_pillars_table_df}}{Active binding.}
+
+    \item{\code{.kii_pillars_table_df}}{Active binding.}
+
+    \item{\code{.observation_pillars_table_df}}{Active binding.}
+
+    \item{\code{.household_dap_df}}{Data frame containing the household data analysis plan.}
+
+    \item{\code{.community_kii_dap_df}}{Data frame containing the community KII data analysis plan.}
+
+    \item{\code{.community_observation_dap_df}}{Data frame containing the community observation data analysis plan.}
+
+    \item{\code{.health_facility_kii_dap_df}}{Data frame containing the health facility KII data analysis plan.}
+
+    \item{\code{.health_facility_observation_dap_df}}{Data frame containing the health facility observation data analysis plan.}
+
+    \item{\code{.nutrition_facility_kii_dap_df}}{Data frame containing the nutrition facility KII data analysis plan.}
+
+    \item{\code{.fsl_provider_kii_dap_df}}{Data frame containing the FSL provider KII data analysis plan.}
+
+    \item{\code{.market_kii_dap_df}}{Data frame containing the market KII data analysis plan.}
+
+    \item{\code{.crop_livstock_observation_dap_df}}{Active binding.}
+
+    \item{\code{.wash_provider_kii_dap_df}}{Data frame containing the WASH provider KII data analysis plan.}
+
+    \item{\code{.water_point_observation_dap_df}}{Data frame containing the water point observation data analysis plan.}
+
+    \item{\code{.latrine_observation_dap_df}}{Data frame containing the latrine observation data analysis plan.}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
@@ -81,25 +211,27 @@ protocol$.tools_table_df
 }
 \if{html}{\out{<details><summary>Inherited methods</summary>
 <ul>
-  <li><code>Orchestrator$access_nested()</code></li>
-  <li><code>Orchestrator$pre_sync_state()</code></li>
-  <li><code>Orchestrator$set_nested()</code></li>
-  <li><code>Orchestrator$sync_state()</code></li>
-  <li><code>Document$generate_quarto_doc()</code></li>
-  <li><code>Document$generate_quarto_ppt()</code></li>
-  <li><code>Protocol$get_dap_table()</code></li>
-  <li><code>Protocol$get_issues()</code></li>
-  <li><code>Protocol$get_tool_names()</code></li>
-  <li><code>Protocol$is_tool_included()</code></li>
-  <li><code>Protocol$validate_objective_schema()</code></li>
-  <li><code>SurveyProtocol$diagnose_coherence()</code></li>
-  <li><code>SurveyProtocol$get_frame_column()</code></li>
-  <li><code>SurveyProtocol$get_sample_table()</code></li>
-  <li><code>SurveyProtocol$get_sampling_methods()</code></li>
-  <li><code>SurveyProtocol$get_strata_names()</code></li>
-  <li><code>SurveyProtocol$post_sync_state()</code></li>
-  <li><code>SurveyProtocol$set_sampling_frame()</code></li>
-  <li><code>SurveyProtocol$validate_strata_table()</code></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Orchestrator" data-id="access_nested"><a href='../../phr/html/Orchestrator.html#method-Orchestrator-access_nested'><code>Orchestrator$access_nested()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Orchestrator" data-id="pre_sync_state"><a href='../../phr/html/Orchestrator.html#method-Orchestrator-pre_sync_state'><code>Orchestrator$pre_sync_state()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Orchestrator" data-id="set"><a href='../../phr/html/Orchestrator.html#method-Orchestrator-set'><code>Orchestrator$set()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Orchestrator" data-id="set_nested"><a href='../../phr/html/Orchestrator.html#method-Orchestrator-set_nested'><code>Orchestrator$set_nested()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Orchestrator" data-id="sync_state"><a href='../../phr/html/Orchestrator.html#method-Orchestrator-sync_state'><code>Orchestrator$sync_state()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Document" data-id="generate_quarto_doc"><a href='../../phr/html/Document.html#method-Document-generate_quarto_doc'><code>Document$generate_quarto_doc()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Document" data-id="generate_quarto_ppt"><a href='../../phr/html/Document.html#method-Document-generate_quarto_ppt'><code>Document$generate_quarto_ppt()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Protocol" data-id="get_dap_table"><a href='../../phr/html/Protocol.html#method-Protocol-get_dap_table'><code>Protocol$get_dap_table()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Protocol" data-id="get_issues"><a href='../../phr/html/Protocol.html#method-Protocol-get_issues'><code>Protocol$get_issues()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Protocol" data-id="get_tool_names"><a href='../../phr/html/Protocol.html#method-Protocol-get_tool_names'><code>Protocol$get_tool_names()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Protocol" data-id="is_tool_included"><a href='../../phr/html/Protocol.html#method-Protocol-is_tool_included'><code>Protocol$is_tool_included()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Protocol" data-id="remove_tools"><a href='../../phr/html/Protocol.html#method-Protocol-remove_tools'><code>Protocol$remove_tools()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Protocol" data-id="validate_objective_schema"><a href='../../phr/html/Protocol.html#method-Protocol-validate_objective_schema'><code>Protocol$validate_objective_schema()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="SurveyProtocol" data-id="diagnose_coherence"><a href='../../phr/html/SurveyProtocol.html#method-SurveyProtocol-diagnose_coherence'><code>SurveyProtocol$diagnose_coherence()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="SurveyProtocol" data-id="get_frame_column"><a href='../../phr/html/SurveyProtocol.html#method-SurveyProtocol-get_frame_column'><code>SurveyProtocol$get_frame_column()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="SurveyProtocol" data-id="get_sample_table"><a href='../../phr/html/SurveyProtocol.html#method-SurveyProtocol-get_sample_table'><code>SurveyProtocol$get_sample_table()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="SurveyProtocol" data-id="get_sampling_methods"><a href='../../phr/html/SurveyProtocol.html#method-SurveyProtocol-get_sampling_methods'><code>SurveyProtocol$get_sampling_methods()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="SurveyProtocol" data-id="get_strata_names"><a href='../../phr/html/SurveyProtocol.html#method-SurveyProtocol-get_strata_names'><code>SurveyProtocol$get_strata_names()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="SurveyProtocol" data-id="post_sync_state"><a href='../../phr/html/SurveyProtocol.html#method-SurveyProtocol-post_sync_state'><code>SurveyProtocol$post_sync_state()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="SurveyProtocol" data-id="set_sampling_frame"><a href='../../phr/html/SurveyProtocol.html#method-SurveyProtocol-set_sampling_frame'><code>SurveyProtocol$set_sampling_frame()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="SurveyProtocol" data-id="validate_strata_table"><a href='../../phr/html/SurveyProtocol.html#method-SurveyProtocol-validate_strata_table'><code>SurveyProtocol$validate_strata_table()</code></a></span></li>
 </ul>
 </details>}}
 \if{html}{\out{<hr>}}

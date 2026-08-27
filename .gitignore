@@ -29,3 +29,9 @@ tempfile.R
 inst/resources/~$reference_indicator_bank.xlsx
 .posit/assistant/plans/2026-06-18-2151-plan.md
 .gitignore
+tests/manual/test fcs data.xlsx
+Data_standardized.csv
+tests/manual/output/01_basic_zscore_plot.png
+.positai
+tests/testthat/Data_standardized.csv
+.posit/assistant

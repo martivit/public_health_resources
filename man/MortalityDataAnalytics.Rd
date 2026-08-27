@@ -22,7 +22,10 @@ optional and are populated when generated from a \code{HouseholdData} object via
 \code{generate_data_analytics(type = "mortality")}. When \code{run_analysis()} or
 \code{run_outputs()} are called, each available dataset (household, roster, deaths) is
 processed using its dedicated schema and results are stored under the corresponding
-named sub-list.
+named sub-list. This is driven by the \code{pre_run_analysis()} and
+\code{pre_run_outputs()} hooks, which return one input set (data, schema, survey
+designs, analysis plan) per available dataset; the inherited \code{run_analysis()}
+and \code{run_outputs()} iterate over these sets.
 }
 \seealso{
 [DataAnalytics]
@@ -96,8 +99,8 @@ named sub-list.
     \item \href{#method-MortalityDataAnalytics-default_analysis_schema_deaths}{\code{MortalityDataAnalytics$default_analysis_schema_deaths()}}
     \item \href{#method-MortalityDataAnalytics-generate_dap_from_schema_roster}{\code{MortalityDataAnalytics$generate_dap_from_schema_roster()}}
     \item \href{#method-MortalityDataAnalytics-generate_dap_from_schema_deaths}{\code{MortalityDataAnalytics$generate_dap_from_schema_deaths()}}
-    \item \href{#method-MortalityDataAnalytics-run_analysis}{\code{MortalityDataAnalytics$run_analysis()}}
-    \item \href{#method-MortalityDataAnalytics-run_outputs}{\code{MortalityDataAnalytics$run_outputs()}}
+    \item \href{#method-MortalityDataAnalytics-pre_run_analysis}{\code{MortalityDataAnalytics$pre_run_analysis()}}
+    \item \href{#method-MortalityDataAnalytics-pre_run_outputs}{\code{MortalityDataAnalytics$pre_run_outputs()}}
     \item \href{#method-MortalityDataAnalytics-clone}{\code{MortalityDataAnalytics$clone()}}
   }
 }
@@ -105,6 +108,7 @@ named sub-list.
 <ul>
   <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id=".compute_results_by_group"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-.compute_results_by_group'><code>DataAnalytics$.compute_results_by_group()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id=".translate_canonical_to_actual_vars"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-.translate_canonical_to_actual_vars'><code>DataAnalytics$.translate_canonical_to_actual_vars()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="add_all_to_dap"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-add_all_to_dap'><code>DataAnalytics$add_all_to_dap()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="add_indicator_dap"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-add_indicator_dap'><code>DataAnalytics$add_indicator_dap()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="analysis_diagnose"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-analysis_diagnose'><code>DataAnalytics$analysis_diagnose()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="calculate_overall_score"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-calculate_overall_score'><code>DataAnalytics$calculate_overall_score()</code></a></span></li>
@@ -131,9 +135,13 @@ named sub-list.
   <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="load_state_object"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-load_state_object'><code>DataAnalytics$load_state_object()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="outputs_diagnose"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-outputs_diagnose'><code>DataAnalytics$outputs_diagnose()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="post_run_analysis"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-post_run_analysis'><code>DataAnalytics$post_run_analysis()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="pre_add_all_to_dap"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-pre_add_all_to_dap'><code>DataAnalytics$pre_add_all_to_dap()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="pre_run_quality_checks"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-pre_run_quality_checks'><code>DataAnalytics$pre_run_quality_checks()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="quality_diagnose"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-quality_diagnose'><code>DataAnalytics$quality_diagnose()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="remove_indicator_dap"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-remove_indicator_dap'><code>DataAnalytics$remove_indicator_dap()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="results_to_table"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-results_to_table'><code>DataAnalytics$results_to_table()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="run_analysis"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-run_analysis'><code>DataAnalytics$run_analysis()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="run_outputs"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-run_outputs'><code>DataAnalytics$run_outputs()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="run_quality_checks"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-run_quality_checks'><code>DataAnalytics$run_quality_checks()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="schema_to_table"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-schema_to_table'><code>DataAnalytics$schema_to_table()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="set_analysis_schema"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-set_analysis_schema'><code>DataAnalytics$set_analysis_schema()</code></a></span></li>
@@ -365,67 +373,54 @@ stores the resulting plan in \code{data_analysis_plan_deaths}.
 }
 
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-MortalityDataAnalytics-run_analysis"></a>}}
-\if{latex}{\out{\hypertarget{method-MortalityDataAnalytics-run_analysis}{}}}
-\subsection{\code{MortalityDataAnalytics$run_analysis()}}{
-  Run quantitative analysis for all available mortality datasets.
+\if{html}{\out{<a id="method-MortalityDataAnalytics-pre_run_analysis"></a>}}
+\if{latex}{\out{\hypertarget{method-MortalityDataAnalytics-pre_run_analysis}{}}}
+\subsection{\code{MortalityDataAnalytics$pre_run_analysis()}}{
+  Pre-hook providing the input sets used by the inherited \code{run_analysis()}.
 
-Analysis is run independently for each available dataset:
+Returns one input set per available mortality dataset:
 \describe{
-  \item{household}{Always run using the inherited \code{analysis_schema} and
-    survey design from the household data. Results stored in
-    \code{analysis_results$household}.}
-  \item{roster}{Run when \code{linked_ind_roster_data} is available and
+  \item{household}{Always included, using the core \code{data},
+    \code{survey_design} and \code{data_analysis_plan} fields. Results
+    stored in \code{analysis_results$household}.}
+  \item{roster}{Included when \code{linked_ind_roster_data} is available and
     \code{data_analysis_plan_roster} contains at least one indicator. Results
     stored in \code{analysis_results$roster}.}
-  \item{deaths}{Run when \code{linked_ind_deaths_data} is available and
+  \item{deaths}{Included when \code{linked_ind_deaths_data} is available and
     \code{data_analysis_plan_deaths} contains at least one indicator. Results
     stored in \code{analysis_results$deaths}.}
 }
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{MortalityDataAnalytics$run_analysis()}
+    \preformatted{MortalityDataAnalytics$pre_run_analysis()}
     \if{html}{\out{</div>}}
   }
   \subsection{Returns}{
-    Invisibly returns self.
+    A named list of field sets.
   }
 }
 
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-MortalityDataAnalytics-run_outputs"></a>}}
-\if{latex}{\out{\hypertarget{method-MortalityDataAnalytics-run_outputs}{}}}
-\subsection{\code{MortalityDataAnalytics$run_outputs()}}{
-  Run all outputs for all available mortality datasets.
+\if{html}{\out{<a id="method-MortalityDataAnalytics-pre_run_outputs"></a>}}
+\if{latex}{\out{\hypertarget{method-MortalityDataAnalytics-pre_run_outputs}{}}}
+\subsection{\code{MortalityDataAnalytics$pre_run_outputs()}}{
+  Pre-hook providing the input sets used by the inherited \code{run_outputs()}.
 
-Outputs are generated independently for each available dataset and stored
-in named sub-lists:
-\describe{
-  \item{\code{visualizations$household} / \code{tables$household}}{Household outputs
-    using \code{outputs_schema}.}
-  \item{\code{visualizations$roster} / \code{tables$roster}}{Roster outputs using
-    \code{outputs_schema_roster} (only when \code{linked_ind_roster_data} is set and
-    \code{outputs_schema_roster} is non-empty).}
-  \item{\code{visualizations$deaths} / \code{tables$deaths}}{Deaths outputs using
-    \code{outputs_schema_deaths} (only when \code{linked_ind_deaths_data} is set and
-    \code{outputs_schema_deaths} is non-empty).}
-}
+Returns one input set per available mortality dataset so that outputs are
+generated independently for each dataset and stored in named sub-lists
+(\code{visualizations$household} / \code{tables$household},
+\code{visualizations$roster} / \code{tables$roster},
+\code{visualizations$deaths} / \code{tables$deaths}). Each set passes
+the appropriate survey design objects for the dataset, so output entries
+with \code{dataset_type = "survey_design"} receive the weighted design and
+\code{"data"}/\code{"base"} entries receive the unweighted base design.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{MortalityDataAnalytics$run_outputs(language = "english")}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{language}}{Character string specifying the language for auto-generated
-titles. One of \code{"english"} (default), \code{"french"}, or
-\code{"arabic"}.}
-    }
+    \preformatted{MortalityDataAnalytics$pre_run_outputs()}
     \if{html}{\out{</div>}}
   }
   \subsection{Returns}{
-    Invisibly returns a list with \code{visualizations} and \code{tables}.
+    A named list of field sets.
   }
 }
 

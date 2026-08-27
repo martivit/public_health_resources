@@ -57,10 +57,10 @@ phr_calc_survey_from_plan <- function(design,
                                         analysis_plan,
                                         high_design_complexity = FALSE) {
   origin <- "phr_calc_survey_from_plan"
-  phr_message(origin, "Starting execution of data analysis plan...")
+  phrutils::phr_message(origin, "Starting execution of data analysis plan...")
 
   # --- Validation
-  phr_try({
+  phrutils::phr_try({
     if (is.null(design)) phr_error(origin, "Survey design object is NULL.")
     if (!inherits(analysis_plan, "data.frame")) {
       phr_error(origin, "analysis_plan must be a data.frame or tibble.")
@@ -93,11 +93,11 @@ phr_calc_survey_from_plan <- function(design,
     mult      <- ifelse(is.null(row$multiplier) || is.na(row$multiplier), 1, row$multiplier)
     unit      <- ifelse(is.null(row$indicator_unit) || is.na(row$indicator_unit), "", row$indicator_unit)
 
-    phr_message(origin, paste0("Running [", i, "/", nrow(analysis_plan), "]: ", indicator, " (", calc_type, ")"))
+    phrutils::phr_message(origin, paste0("Running [", i, "/", nrow(analysis_plan), "]: ", indicator, " (", calc_type, ")"))
 
     # --- Internal helper for one calculation
     run_single_calc <- function(design_subset, group_value = NA_character_) {
-      result_i <- phr_try({
+      result_i <- phrutils::phr_try({
         if (calc_type %in% c("prop", "proportion")) {
           phr_calc_survey_prop_single(
             design = design_subset,
@@ -165,7 +165,7 @@ phr_calc_survey_from_plan <- function(design,
             high_design_complexity = high_design_complexity
           )
         } else {
-          phr_warning(origin, paste("Unknown calculation type for indicator:", indicator))
+          phrutils::phr_warning(origin, paste("Unknown calculation type for indicator:", indicator))
           tibble::tibble(
             variable = var_name,
             indicator_name = indicator,
@@ -213,13 +213,13 @@ phr_calc_survey_from_plan <- function(design,
     # --- Handle disaggregated analysis
     if (!is.null(disagg) && disagg %in% names(design$variables)) {
       group_levels <- unique(na.omit(design$variables[[disagg]]))
-      phr_message(origin, paste("Disaggregating by:", disagg, "(", length(group_levels), "groups )"))
+      phrutils::phr_message(origin, paste("Disaggregating by:", disagg, "(", length(group_levels), "groups )"))
 
       group_results <- purrr::map_dfr(group_levels, function(g) {
         subset_design <- tryCatch(
           subset(design, design$variables[[disagg]] == g),
           error = function(e) {
-            phr_warning(origin, paste("Subset failed for", disagg, "=", g))
+            phrutils::phr_warning(origin, paste("Subset failed for", disagg, "=", g))
             NULL
           }
         )
@@ -241,12 +241,12 @@ phr_calc_survey_from_plan <- function(design,
   out <- tryCatch(
     dplyr::bind_rows(results),
     error = function(e) {
-      phr_warning(origin, paste("Binding failed:", e$message))
+      phrutils::phr_warning(origin, paste("Binding failed:", e$message))
       dplyr::tibble()
     }
   )
 
-  phr_message(origin, paste("Completed", nrow(analysis_plan), "indicators successfully."))
+  phrutils::phr_message(origin, paste("Completed", nrow(analysis_plan), "indicators successfully."))
   return(out)
 }
 
@@ -418,7 +418,7 @@ phr_calc_survey_prop_single <- function(design,
                                           group_name_label = "Overall",
                                           high_design_complexity = FALSE) {
   origin <- "phr_calc_survey_prop_single"
-  phr_message(origin, paste("Starting proportion calculation for:", indicator_name))
+  phrutils::phr_message(origin, paste("Starting proportion calculation for:", indicator_name))
 
 
   # 1. Input Validation
@@ -472,7 +472,7 @@ phr_calc_survey_prop_single <- function(design,
   unique_vals <- unique(stats::na.omit(data[[var_name]]))
   valid_binary <- all(unique_vals %in% c(0, 1))
   if (!valid_binary) {
-    phr_warning(origin, paste0("Variable '", var_name,
+    phrutils::phr_warning(origin, paste0("Variable '", var_name,
                                  "' is not binary (contains values other than 0, 1, or NA)."))
     return(tibble::tibble(
       variable = var_name,
@@ -565,7 +565,7 @@ phr_calc_survey_prop_single <- function(design,
   # For "wilson", use method="mean" to obtain the weighted point estimate;
   # CI bounds are computed analytically in step 7.
 
-  est <- phr_try({
+  est <- phrutils::phr_try({
     fmla <- as.formula(paste0("~I(", var_name, " == 1)"))
     suppressWarnings({
       if (policy$method == "design-logit") {
@@ -667,7 +667,7 @@ phr_calc_survey_prop_single <- function(design,
     note               = safe_chr(policy$note)
   )
 
-  phr_message(origin, paste("Completed proportion estimate for:", indicator_name))
+  phrutils::phr_message(origin, paste("Completed proportion estimate for:", indicator_name))
   return(out)
 }
 
@@ -703,7 +703,7 @@ phr_calc_survey_mean_single <- function(design,
                                           group_name_label = "Overall",
                                           high_design_complexity = FALSE) {
   origin <- "phr_calc_survey_mean_single"
-  phr_message(origin, paste("Starting mean calculation for:", indicator_name))
+  phrutils::phr_message(origin, paste("Starting mean calculation for:", indicator_name))
 
 
   # 1. Input Validation
@@ -755,7 +755,7 @@ phr_calc_survey_mean_single <- function(design,
   # 2. Numeric Validation for Means
 
   if (!is.numeric(data[[var_name]])) {
-    phr_warning(origin, paste0("Variable '", var_name, "' is not numeric."))
+    phrutils::phr_warning(origin, paste0("Variable '", var_name, "' is not numeric."))
     return(tibble::tibble(
       variable = var_name,
       indicator_name = indicator_name,
@@ -822,7 +822,7 @@ phr_calc_survey_mean_single <- function(design,
 
   # 5. Estimate weighted mean
 
-  est <- phr_try({
+  est <- phrutils::phr_try({
     fmla <- as.formula(paste0("~", var_name))
     suppressWarnings({
       survey::svymean(fmla, design, na.rm = TRUE, deff = "replace")
@@ -887,7 +887,7 @@ phr_calc_survey_mean_single <- function(design,
     note               = safe_chr(policy$note)
   )
 
-  phr_message(origin, paste("Completed mean estimate for:", indicator_name))
+  phrutils::phr_message(origin, paste("Completed mean estimate for:", indicator_name))
   return(out)
 }
 
@@ -922,7 +922,7 @@ phr_calc_survey_median_single <- function(design,
                                             group_name_label = "Overall",
                                             high_design_complexity = FALSE) {
   origin <- "phr_calc_survey_median_single"
-  phr_message(origin, paste("Starting median calculation for:", indicator_name))
+  phrutils::phr_message(origin, paste("Starting median calculation for:", indicator_name))
 
 
 
@@ -975,7 +975,7 @@ phr_calc_survey_median_single <- function(design,
   # 2. Numeric Validation
 
   if (!is.numeric(data[[var_name]])) {
-    phr_warning(origin, paste0("Variable '", var_name, "' is not numeric."))
+    phrutils::phr_warning(origin, paste0("Variable '", var_name, "' is not numeric."))
     return(tibble::tibble(
       variable = var_name,
       indicator_name = indicator_name,
@@ -1042,7 +1042,7 @@ phr_calc_survey_median_single <- function(design,
 
   # 5. Estimate weighted median (survey quantile)
 
-  est <- phr_try({
+  est <- phrutils::phr_try({
     fmla <- as.formula(paste0("~", var_name))
     suppressWarnings({
       survey::svyquantile(fmla, design, quantiles = 0.5, ci = TRUE, na.rm = TRUE)[[1]]
@@ -1116,7 +1116,7 @@ phr_calc_survey_median_single <- function(design,
     note               = safe_chr(policy$note)
   )
 
-  phr_message(origin, paste("Completed median estimate for:", indicator_name))
+  phrutils::phr_message(origin, paste("Completed median estimate for:", indicator_name))
   return(out)
 }
 
@@ -1154,7 +1154,7 @@ phr_calc_survey_ratio_single <- function(design,
                                            group_name_label = "Overall",
                                            high_design_complexity = FALSE) {
   origin <- "phr_calc_survey_ratio_single"
-  phr_message(origin, paste("Starting ratio calculation for:", indicator_name))
+  phrutils::phr_message(origin, paste("Starting ratio calculation for:", indicator_name))
 
 
   # 1. Validation
@@ -1209,7 +1209,7 @@ phr_calc_survey_ratio_single <- function(design,
   # 2. Numeric validation
 
   if (!is.numeric(data[[numerator_var]]) || !is.numeric(data[[denominator_var]])) {
-    phr_warning(origin, paste("Numerator and denominator must be numeric:", numerator_var, denominator_var))
+    phrutils::phr_warning(origin, paste("Numerator and denominator must be numeric:", numerator_var, denominator_var))
     return(tibble::tibble(
       variable = paste0(numerator_var, "/", denominator_var),
       indicator_name = indicator_name,
@@ -1273,7 +1273,7 @@ phr_calc_survey_ratio_single <- function(design,
     is_ratio = TRUE
   )
 
-  phr_message(origin, paste("Policy decision:", policy$method))
+  phrutils::phr_message(origin, paste("Policy decision:", policy$method))
 
 
   # 5. Estimation logic by method
@@ -1282,9 +1282,9 @@ phr_calc_survey_ratio_single <- function(design,
   note <- policy$note
 
   if (policy$method == "design-taylor") {
-    phr_message(origin, "Using Taylor-linearized variance (svyratio).")
+    phrutils::phr_message(origin, "Using Taylor-linearized variance (svyratio).")
 
-    est <- phr_try({
+    est <- phrutils::phr_try({
       survey::svyratio(
         numerator = as.formula(paste0("~", numerator_var)),
         denominator = as.formula(paste0("~", denominator_var)),
@@ -1295,7 +1295,7 @@ phr_calc_survey_ratio_single <- function(design,
     if (!is.null(est)) {
       vc <- tryCatch(vcov(est), error = function(e) NA)
       if (anyNA(vc) || any(vc <= 0)) {
-        phr_warning(origin, "Variance estimation failed for svyratio (Taylor).")
+        phrutils::phr_warning(origin, "Variance estimation failed for svyratio (Taylor).")
         policy$method <- "design-meanbased"
         note <- paste(note, "Taylor variance failed; fallback to mean-based ratio.")
       } else {
@@ -1309,10 +1309,10 @@ phr_calc_survey_ratio_single <- function(design,
   }
 
   if (policy$method == "design-replicate") {
-    phr_message(origin, "Attempting replicate-weight variance method.")
+    phrutils::phr_message(origin, "Attempting replicate-weight variance method.")
     rep_design <- tryCatch(survey::as.svrepdesign(design, type = "bootstrap"), error = function(e) NULL)
     if (!is.null(rep_design)) {
-      est <- phr_try({
+      est <- phrutils::phr_try({
         survey::svyratio(
           numerator = as.formula(paste0("~", numerator_var)),
           denominator = as.formula(paste0("~", denominator_var)),
@@ -1327,14 +1327,14 @@ phr_calc_survey_ratio_single <- function(design,
         upper_ci <- ratio_est + ci_range
       }
     } else {
-      phr_warning(origin, "Replicate design could not be created; using mean-based fallback.")
+      phrutils::phr_warning(origin, "Replicate design could not be created; using mean-based fallback.")
       policy$method <- "design-meanbased"
       note <- paste(note, "Replicate design unavailable; fallback to mean-based ratio.")
     }
   }
 
   if (policy$method == "design-meanbased") {
-    phr_message(origin, "Using fallback: mean-based ratio.")
+    phrutils::phr_message(origin, "Using fallback: mean-based ratio.")
     ratio_est <- mean(data[[numerator_var]], na.rm = TRUE) / mean(data[[denominator_var]], na.rm = TRUE)
     lower_ci <- NA_real_
     upper_ci <- NA_real_
@@ -1375,7 +1375,7 @@ phr_calc_survey_ratio_single <- function(design,
     note               = safe_chr(note)
   )
 
-  phr_message(origin, paste("Completed ratio estimate for:", indicator_name))
+  phrutils::phr_message(origin, paste("Completed ratio estimate for:", indicator_name))
   return(out)
 }
 
@@ -1493,7 +1493,7 @@ phr_calc_multiple_choice_cat <- function(
     high_design_complexity = FALSE
 ) {
   origin <- "phr_calc_multiple_choice_cat"
-  phr_message(origin, paste("Starting select-multiple calculation for:", indicator_name))
+  phrutils::phr_message(origin, paste("Starting select-multiple calculation for:", indicator_name))
 
   # Helper to build a standard NA result row
   na_row <- function(note_text) {
@@ -1530,7 +1530,7 @@ phr_calc_multiple_choice_cat <- function(
   raw_values <- design$variables[[var_name]]
 
   if (!is.character(raw_values) && !is.factor(raw_values)) {
-    phr_warning(origin, paste0("Variable '", var_name,
+    phrutils::phr_warning(origin, paste0("Variable '", var_name,
                                "' is not character or factor; coercing to character."))
   }
   raw_values <- as.character(raw_values)
@@ -1552,7 +1552,7 @@ phr_calc_multiple_choice_cat <- function(
     return(na_row("no valid response tokens found in variable"))
   }
 
-  phr_message(origin, paste0("Found ", length(unique_responses),
+  phrutils::phr_message(origin, paste0("Found ", length(unique_responses),
                               " unique response(s): ",
                               paste(unique_responses, collapse = ", ")))
 
@@ -1564,7 +1564,7 @@ phr_calc_multiple_choice_cat <- function(
     subset(design, !is.na(design$variables[[var_name]]) &
              nzchar(trimws(as.character(design$variables[[var_name]])))),
     error = function(e) {
-      phr_warning(origin, paste("Could not subset to non-missing respondents:", e$message))
+      phrutils::phr_warning(origin, paste("Could not subset to non-missing respondents:", e$message))
       design
     }
   )
@@ -1602,6 +1602,6 @@ phr_calc_multiple_choice_cat <- function(
     out
   })
 
-  phr_message(origin, paste("Completed select-multiple calculation for:", indicator_name))
+  phrutils::phr_message(origin, paste("Completed select-multiple calculation for:", indicator_name))
   return(results)
 }

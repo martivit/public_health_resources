@@ -6,6 +6,9 @@
 \usage{
 n_reserve_clusters(n_main)
 }
+\arguments{
+\item{n_main}{Integer. Number of main (non-reserve) clusters.}
+}
 \description{
 Functions for drawing samples from sampling frames using various methods.
 PSU-level sampling functions (prefixed \code{draw_sample_psu_}) operate on an
@@ -24,4 +27,9 @@ frame augmented with two new columns:
 }
 The filtering of non-selected PSUs is performed by the caller (e.g.
 \code{Protocol$draw_sample()}) after the full annotated frame is returned.
+Determine the number of reserve clusters
+
+Determine the number of reserve clusters to add based on the main draw size.
+Returns 3 for n_main <= 10, 4 for n_main <= 20, and 5 for n_main > 20.
 }
+\keyword{internal}

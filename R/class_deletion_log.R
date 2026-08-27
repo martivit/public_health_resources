@@ -125,7 +125,7 @@ DeletionLog <- R6::R6Class(
     #' Sets self$validated and self$issues based on results.
     validate = function(check_against = NULL, stage = "clean") {
 
-      phr_try({
+      phrutils::phr_try({
 
         # ---- 1. Run base Log validation first ----
         super_issues <- super$validate()
@@ -147,7 +147,7 @@ DeletionLog <- R6::R6Class(
         if (length(incomplete_cols) > 0) {
           super_issues$missing_or_empty <- incomplete_cols
 
-          phr_warning(
+          phrutils::phr_warning(
             self$log_name,
             phr_txt(
               "Deletion log contains missing or empty values in: {paste(incomplete_cols, collapse=', ')}."
@@ -205,7 +205,7 @@ DeletionLog <- R6::R6Class(
 
       out <- list()
 
-      phr_try({
+      phrutils::phr_try({
 
         df <- self$log_df
 
@@ -225,7 +225,7 @@ DeletionLog <- R6::R6Class(
         if (length(missing_uuid) > 0) {
           out$missing_uuid <- missing_uuid
 
-          phr_warning(
+          phrutils::phr_warning(
             "DeletionLog",
             phr_txt(
               "The following UUIDs in deletion log do not exist in dataset: {paste(missing_uuid, collapse=', ')}"

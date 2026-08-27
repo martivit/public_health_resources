@@ -261,11 +261,11 @@ test_that("calculate_sample_size_individual cluster design gives larger sample t
   expect_true(cluster$sample_size_individuals > simple$sample_size_individuals)
 })
 
-# ---- calculate_sample_size_mortality --------------------------------------
+# ---- calculate_sample_size_rate --------------------------------------
 
-test_that("calculate_sample_size_mortality returns a named list", {
-  result <- calculate_sample_size_mortality(
-    expected_death_rate = 0.5,
+test_that("calculate_sample_size_rate returns a named list", {
+  result <- calculate_sample_size_rate(
+    expected_rate = 0.5,
     desired_precision = 0.2,
     average_household_size = 5
   )
@@ -280,9 +280,9 @@ test_that("calculate_sample_size_mortality returns a named list", {
   )
 })
 
-test_that("calculate_sample_size_mortality returns positive numeric values", {
-  result <- calculate_sample_size_mortality(
-    expected_death_rate = 0.5,
+test_that("calculate_sample_size_rate returns positive numeric values", {
+  result <- calculate_sample_size_rate(
+    expected_rate = 0.5,
     desired_precision = 0.2,
     average_household_size = 5
   )
@@ -291,16 +291,16 @@ test_that("calculate_sample_size_mortality returns positive numeric values", {
   expect_true(result$sample_size_person_time > 0)
 })
 
-test_that("calculate_sample_size_mortality default design is cluster and applies design_effect", {
-  simple <- calculate_sample_size_mortality(
-    expected_death_rate = 0.5,
+test_that("calculate_sample_size_rate default design is cluster and applies design_effect", {
+  simple <- calculate_sample_size_rate(
+    expected_rate = 0.5,
     desired_precision = 0.2,
     average_household_size = 5,
     design = "simple_random",
     non_response_rate = 0
   )
-  cluster <- calculate_sample_size_mortality(
-    expected_death_rate = 0.5,
+  cluster <- calculate_sample_size_rate(
+    expected_rate = 0.5,
     desired_precision = 0.2,
     average_household_size = 5,
     design = "cluster",
@@ -310,16 +310,16 @@ test_that("calculate_sample_size_mortality default design is cluster and applies
   expect_true(cluster$sample_size_households > simple$sample_size_households)
 })
 
-test_that("calculate_sample_size_mortality longer recall_days increases person_time slightly", {
-  short <- calculate_sample_size_mortality(
-    expected_death_rate = 0.5,
+test_that("calculate_sample_size_rate longer recall_days increases person_time slightly", {
+  short <- calculate_sample_size_rate(
+    expected_rate = 0.5,
     desired_precision = 0.2,
     average_household_size = 5,
     recall_days = 30,
     non_response_rate = 0
   )
-  long <- calculate_sample_size_mortality(
-    expected_death_rate = 0.5,
+  long <- calculate_sample_size_rate(
+    expected_rate = 0.5,
     desired_precision = 0.2,
     average_household_size = 5,
     recall_days = 90,
@@ -328,16 +328,16 @@ test_that("calculate_sample_size_mortality longer recall_days increases person_t
   expect_true(long$sample_size_person_time >= short$sample_size_person_time)
 })
 
-test_that("calculate_sample_size_mortality longer recall_days decreases households needed", {
-  short <- calculate_sample_size_mortality(
-    expected_death_rate = 0.5,
+test_that("calculate_sample_size_rate longer recall_days decreases households needed", {
+  short <- calculate_sample_size_rate(
+    expected_rate = 0.5,
     desired_precision = 0.2,
     average_household_size = 5,
     recall_days = 30,
     non_response_rate = 0
   )
-  long <- calculate_sample_size_mortality(
-    expected_death_rate = 0.5,
+  long <- calculate_sample_size_rate(
+    expected_rate = 0.5,
     desired_precision = 0.2,
     average_household_size = 5,
     recall_days = 90,
@@ -346,15 +346,15 @@ test_that("calculate_sample_size_mortality longer recall_days decreases househol
   expect_true(long$sample_size_households < short$sample_size_households)
 })
 
-test_that("calculate_sample_size_mortality non_response_rate increases households", {
-  no_nr <- calculate_sample_size_mortality(
-    expected_death_rate = 0.5,
+test_that("calculate_sample_size_rate non_response_rate increases households", {
+  no_nr <- calculate_sample_size_rate(
+    expected_rate = 0.5,
     desired_precision = 0.2,
     average_household_size = 5,
     non_response_rate = 0
   )
-  with_nr <- calculate_sample_size_mortality(
-    expected_death_rate = 0.5,
+  with_nr <- calculate_sample_size_rate(
+    expected_rate = 0.5,
     desired_precision = 0.2,
     average_household_size = 5,
     non_response_rate = 20
@@ -362,33 +362,33 @@ test_that("calculate_sample_size_mortality non_response_rate increases household
   expect_true(with_nr$sample_size_households > no_nr$sample_size_households)
 })
 
-test_that("calculate_sample_size_mortality errors when expected_death_rate <= 0", {
+test_that("calculate_sample_size_rate errors when expected_rate <= 0", {
   expect_error(
-    calculate_sample_size_mortality(0, 0.2, average_household_size = 5)
+    calculate_sample_size_rate(0, 0.2, average_household_size = 5)
   )
   expect_error(
-    calculate_sample_size_mortality(-0.1, 0.2, average_household_size = 5)
-  )
-})
-
-test_that("calculate_sample_size_mortality errors when desired_precision <= 0", {
-  expect_error(
-    calculate_sample_size_mortality(0.5, 0, average_household_size = 5)
+    calculate_sample_size_rate(-0.1, 0.2, average_household_size = 5)
   )
 })
 
-test_that("calculate_sample_size_mortality errors when average_household_size is missing or <= 0", {
+test_that("calculate_sample_size_rate errors when desired_precision <= 0", {
   expect_error(
-    calculate_sample_size_mortality(0.5, 0.2)
-  )
-  expect_error(
-    calculate_sample_size_mortality(0.5, 0.2, average_household_size = 0)
+    calculate_sample_size_rate(0.5, 0, average_household_size = 5)
   )
 })
 
-test_that("calculate_sample_size_mortality errors on invalid recall_days", {
+test_that("calculate_sample_size_rate errors when average_household_size is missing or <= 0", {
   expect_error(
-    calculate_sample_size_mortality(
+    calculate_sample_size_rate(0.5, 0.2)
+  )
+  expect_error(
+    calculate_sample_size_rate(0.5, 0.2, average_household_size = 0)
+  )
+})
+
+test_that("calculate_sample_size_rate errors on invalid recall_days", {
+  expect_error(
+    calculate_sample_size_rate(
       0.5,
       0.2,
       average_household_size = 5,
@@ -396,7 +396,7 @@ test_that("calculate_sample_size_mortality errors on invalid recall_days", {
     )
   )
   expect_error(
-    calculate_sample_size_mortality(
+    calculate_sample_size_rate(
       0.5,
       0.2,
       average_household_size = 5,
@@ -405,9 +405,9 @@ test_that("calculate_sample_size_mortality errors on invalid recall_days", {
   )
 })
 
-test_that("calculate_sample_size_mortality errors on unknown design", {
+test_that("calculate_sample_size_rate errors on unknown design", {
   expect_error(
-    calculate_sample_size_mortality(
+    calculate_sample_size_rate(
       0.5,
       0.2,
       average_household_size = 5,
@@ -416,9 +416,9 @@ test_that("calculate_sample_size_mortality errors on unknown design", {
   )
 })
 
-test_that("calculate_sample_size_mortality fpc=TRUE requires total_population", {
+test_that("calculate_sample_size_rate fpc=TRUE requires total_population", {
   expect_error(
-    calculate_sample_size_mortality(
+    calculate_sample_size_rate(
       0.5,
       0.2,
       average_household_size = 5,
@@ -426,7 +426,7 @@ test_that("calculate_sample_size_mortality fpc=TRUE requires total_population", 
     )
   )
   expect_error(
-    calculate_sample_size_mortality(
+    calculate_sample_size_rate(
       0.5,
       0.2,
       average_household_size = 5,
@@ -436,16 +436,16 @@ test_that("calculate_sample_size_mortality fpc=TRUE requires total_population", 
   )
 })
 
-test_that("calculate_sample_size_mortality fpc=TRUE reduces individual sample size", {
-  no_fpc <- calculate_sample_size_mortality(
-    expected_death_rate = 0.5,
+test_that("calculate_sample_size_rate fpc=TRUE reduces individual sample size", {
+  no_fpc <- calculate_sample_size_rate(
+    expected_rate = 0.5,
     desired_precision = 0.2,
     average_household_size = 5,
     fpc = FALSE,
     non_response_rate = 0
   )
-  with_fpc <- calculate_sample_size_mortality(
-    expected_death_rate = 0.5,
+  with_fpc <- calculate_sample_size_rate(
+    expected_rate = 0.5,
     desired_precision = 0.2,
     average_household_size = 5,
     fpc = TRUE,
@@ -520,8 +520,8 @@ test_that("estimate_field_plan cluster returns non-NA psu estimates", {
     number_of_teams = 2,
     enumerators_per_team = 3,
     number_of_psu_per_team_per_day = 2,
-    start_time = "2024-01-01",
-    end_time = "2024-01-31",
+    start_time = "09:00",
+    end_time = "17:00",
     average_interview_time = 30,
     average_travel_time = 60,
     average_rest_time = 60,
@@ -539,8 +539,8 @@ test_that("estimate_field_plan more teams reduces days needed", {
     sample_design = "simple_random",
     number_of_teams = 1,
     enumerators_per_team = 3,
-    start_time = "2024-01-01",
-    end_time = "2025-01-01",
+    start_time = "09:00",
+    end_time = "17:00",
     average_interview_time = 45,
     average_travel_time = 30,
     average_rest_time = 60,
@@ -550,8 +550,8 @@ test_that("estimate_field_plan more teams reduces days needed", {
     sample_design = "simple_random",
     number_of_teams = 4,
     enumerators_per_team = 3,
-    start_time = "2024-01-01",
-    end_time = "2025-01-01",
+    start_time = "09:00",
+    end_time = "17:00",
     average_interview_time = 45,
     average_travel_time = 30,
     average_rest_time = 60,
@@ -881,10 +881,10 @@ test_that("calculate_sample_size_individual sub_population_percent increases ind
   )
 })
 
-test_that("calculate_sample_size_mortality recall_days is preserved in return value", {
-  result <- calculate_sample_size_mortality(
+test_that("calculate_sample_size_rate recall_days is preserved in return value", {
+  result <- calculate_sample_size_rate(
     design = "simple_random",
-    expected_death_rate = 0.5,
+    expected_rate = 0.5,
     desired_precision = 0.2,
     average_household_size = 5,
     recall_days = 93,
@@ -898,10 +898,10 @@ test_that("calculate_sample_size_mortality recall_days is preserved in return va
   expect_equal(result$sample_size_households, 1033, tolerance = 1)
 })
 
-test_that("calculate_sample_size_mortality with nonresponse simple random against ENA", {
-  result <- calculate_sample_size_mortality(
+test_that("calculate_sample_size_rate with nonresponse simple random against ENA", {
+  result <- calculate_sample_size_rate(
     design = "simple_random",
-    expected_death_rate = 0.5,
+    expected_rate = 0.5,
     desired_precision = 0.2,
     average_household_size = 5,
     recall_days = 93,
@@ -915,10 +915,10 @@ test_that("calculate_sample_size_mortality with nonresponse simple random agains
   expect_equal(result$sample_size_households, result_ena_hh, tolerance = 1)
 })
 
-test_that("calculate_sample_size_mortality with nonresponse cluster against ENA", {
-  result <- calculate_sample_size_mortality(
+test_that("calculate_sample_size_rate with nonresponse cluster against ENA", {
+  result <- calculate_sample_size_rate(
     design = "cluster",
-    expected_death_rate = 1,
+    expected_rate = 1,
     design_effect = 2,
     desired_precision = 0.4,
     average_household_size = 6,
@@ -934,10 +934,10 @@ test_that("calculate_sample_size_mortality with nonresponse cluster against ENA"
 })
 
 
-test_that("calculate_sample_size_mortality with fpc nonresponse simple random against ENA", {
-  result <- calculate_sample_size_mortality(
+test_that("calculate_sample_size_rate with fpc nonresponse simple random against ENA", {
+  result <- calculate_sample_size_rate(
     design = "simple_random",
-    expected_death_rate = 0.5,
+    expected_rate = 0.5,
     desired_precision = 0.2,
     average_household_size = 5,
     recall_days = 93,
@@ -953,10 +953,10 @@ test_that("calculate_sample_size_mortality with fpc nonresponse simple random ag
   expect_equal(result$sample_size_households, result_ena_hh, tolerance = 1)
 })
 
-test_that("calculate_sample_size_mortality with fpc nonresponse cluster against ENA", {
-  result <- calculate_sample_size_mortality(
+test_that("calculate_sample_size_rate with fpc nonresponse cluster against ENA", {
+  result <- calculate_sample_size_rate(
     design = "cluster",
-    expected_death_rate = 1,
+    expected_rate = 1,
     desired_precision = 0.4,
     design_effect = 2,
     average_household_size = 6,

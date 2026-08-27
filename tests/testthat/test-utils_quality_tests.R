@@ -252,7 +252,9 @@ test_that("quality_test_chisq removes missing values", {
   )
   sdesign <- srvyr::as_survey_design(df, ids = 1)
 
-  result <- quality_test_chisq(sdesign, c("gender", "outcome"))
+  suppressWarnings(
+    result <- quality_test_chisq(sdesign, c("gender", "outcome"))
+  )
 
   expect_true(is.list(result))
   # Should calculate with complete cases only
@@ -265,10 +267,10 @@ test_that("quality_test_chisq handles small contingency tables", {
   )
   sdesign <- srvyr::as_survey_design(df, ids = 1)
 
-  expect_warning(
+  suppressWarnings(expect_warning(
     result <- quality_test_chisq(sdesign, c("var1", "var2")),
     regexp = "Contingency table too small" # May warn about table size
-  )
+  ))
 })
 
 # 4. FLAG PERCENTAGE TEST ####
@@ -1729,7 +1731,9 @@ test_that("quality tests work together in a pipeline", {
   expect_true(!is.na(t_result$statistic))
 
   # Chi-squared test
-  chisq_result <- quality_test_chisq(sdesign, c("gender", "employed"))
+  suppressWarnings(
+    chisq_result <- quality_test_chisq(sdesign, c("gender", "employed"))
+  )
   expect_true(is.list(chisq_result))
 })
 
@@ -2162,7 +2166,7 @@ test_that("digit_preference_score returns a single numeric value", {
 test_that("digit_preference_score detects strong digit preference (all 0s)", {
   # All values end in 0 -> perfect preference for digit 0 -> high DPS
   x <- seq(100, 200, by = 10)
-  result <- phr:::digit_preference_score(x)
+  suppressWarnings(result <- phr:::digit_preference_score(x))
   expect_true(
     result > 20,
     info = "Strong preference for 0 should yield DPS > 20 (Problematic)"
@@ -2180,7 +2184,7 @@ test_that("quality_test_digit_preference returns list with statistic and p_value
   set.seed(7)
   df <- tibble::tibble(muac = round(rnorm(50, 12.5, 1.5), 1))
   sdesign <- srvyr::as_survey_design(df, ids = 1)
-  result <- quality_test_digit_preference(sdesign, "muac")
+  suppressWarnings(result <- quality_test_digit_preference(sdesign, "muac"))
   expect_true(is.list(result))
   expect_true("statistic" %in% names(result))
   expect_true("p_value" %in% names(result))
@@ -2191,10 +2195,10 @@ test_that("quality_test_digit_preference returns list with statistic and p_value
 test_that("quality_test_digit_preference warns for insufficient data", {
   df <- tibble::tibble(muac = c(12.5, 11.0, 13.0))
   sdesign <- srvyr::as_survey_design(df, ids = 1)
-  expect_warning(
+  suppressWarnings(expect_warning(
     result <- quality_test_digit_preference(sdesign, "muac"),
     regexp = "Insufficient data"
-  )
+  ))
   expect_true(is.na(result$statistic))
 })
 
@@ -2344,11 +2348,12 @@ test_that("quality_test_count handles missing column", {
 
 test_that("quality_test_index_dispersion performs test correctly", {
   df <- tibble::tibble(
-    events = c(5, 8, 3, 6, 4, 7, 2, 9, 5, 6)
+    events = c(5, 8, 3, 6, 4, 7, 2, 9, 5, 6),
+    clusters = rep(1:5, each = 2)
   )
   sdesign <- srvyr::as_survey_design(df, ids = 1)
 
-  result <- quality_test_index_dispersion(sdesign, "events")
+  result <- quality_test_index_dispersion(sdesign, c("events", "clusters"))
 
   expect_true(is.list(result))
   expect_true("test_statistic" %in% names(result))
@@ -2363,16 +2368,19 @@ test_that("quality_test_index_dispersion errors with multiple variables", {
 
   expect_warning(
     quality_test_index_dispersion(sdesign, c("events", "another")),
-    regexp = "exactly 1 column name"
+    regexp = "not found in data"
   )
 })
 
 test_that("quality_test_index_dispersion handles missing column", {
-  df <- tibble::tibble(events = c(5, 8, 3))
+  df <- tibble::tibble(events = c(5, 8, 3), clusters = c(1, 1, 2))
   sdesign <- srvyr::as_survey_design(df, ids = 1)
 
   expect_warning(
-    result <- quality_test_index_dispersion(sdesign, "nonexistent"),
+    result <- quality_test_index_dispersion(
+      sdesign,
+      c("nonexistent", "clusters")
+    ),
     regexp = "not found"
   )
   expect_true(is.na(result$test_statistic))
@@ -2380,12 +2388,13 @@ test_that("quality_test_index_dispersion handles missing column", {
 
 test_that("quality_test_index_dispersion handles negative counts", {
   df <- tibble::tibble(
-    events = c(5, -2, 3)
+    events = c(5, -2, 3),
+    clusters = c(1, 1, 2)
   )
   sdesign <- srvyr::as_survey_design(df, ids = 1)
 
   expect_warning(
-    result <- quality_test_index_dispersion(sdesign, "events"),
+    result <- quality_test_index_dispersion(sdesign, c("events", "clusters")),
     regexp = "Negative event counts"
   )
   expect_true(is.na(result$test_statistic))
@@ -2393,11 +2402,14 @@ test_that("quality_test_index_dispersion handles negative counts", {
 
 test_that("quality_test_index_dispersion handles all NA values", {
   df <- tibble::tibble(
-    events = c(NA, NA, NA)
+    events = c(NA, NA, NA),
+    clusters = c(1, 1, 2)
   )
   sdesign <- srvyr::as_survey_design(df, ids = 1)
 
-  result <- quality_test_index_dispersion(sdesign, "events")
+  suppressWarnings(
+    result <- quality_test_index_dispersion(sdesign, c("events", "clusters"))
+  )
 
   expect_true(is.na(result$test_statistic))
 })
@@ -2543,13 +2555,13 @@ test_that("quality_test_anova_by_exposure handles non-positive exposure", {
   )
   sdesign <- srvyr::as_survey_design(df, ids = 1)
 
-  expect_warning(
+  suppressWarnings(expect_warning(
     result <- quality_test_anova_by_exposure(
       sdesign,
       c("events", "exposure", "group")
     ),
     regexp = "2 records with non-positive exposure were removed"
-  )
+  ))
   expect_true(is.na(result$statistic))
 })
 
@@ -2647,13 +2659,13 @@ test_that("quality_test_event_group_variance handles non-positive exposure", {
   )
   sdesign <- srvyr::as_survey_design(df, ids = 1)
 
-  expect_warning(
+  suppressWarnings(expect_warning(
     result <- quality_test_event_group_variance(
       sdesign,
       c("events", "exposure", "enum", "cluster")
     ),
-    regexp = "Exposure must be positive"
-  )
+    regexp = "non-positive exposure"
+  ))
   expect_true(is.na(result$test_statistic))
 })
 
@@ -2948,13 +2960,13 @@ test_that("quality_test_sd_across_percentage handles missing columns", {
   df <- tibble::tibble(var1 = 1:5, var2 = 2:6)
   sdesign <- srvyr::as_survey_design(df, ids = 1)
 
-  expect_warning(
+  suppressWarnings(expect_warning(
     result <- quality_test_sd_across_percentage(
       sdesign,
       c("var1", "nonexistent")
     ),
     regexp = "not found"
-  )
+  ))
 })
 
 test_that("quality_test_sd_across_percentage uses custom threshold", {
@@ -3119,12 +3131,14 @@ test_that("quality_test_sexratio handles custom expected ratio", {
   )
   sdesign <- srvyr::as_survey_design(df, ids = 1)
 
-  result <- quality_test_sexratio(
-    sdesign,
-    "sex",
-    male_val = "M",
-    female_val = "F",
-    expected_ratio_val = 1.5
+  suppressWarnings(
+    result <- quality_test_sexratio(
+      sdesign,
+      "sex",
+      male_val = "M",
+      female_val = "F",
+      expected_ratio_val = 1.5
+    )
   )
 
   expect_true(is.numeric(result$statistic))
@@ -3141,7 +3155,9 @@ test_that("quality_test_ageratio performs test correctly", {
   )
   sdesign <- srvyr::as_survey_design(df, ids = 1)
 
-  result <- quality_test_ageratio(sdesign, c("age_group1", "age_group2"))
+  suppressWarnings(
+    result <- quality_test_ageratio(sdesign, c("age_group1", "age_group2"))
+  )
 
   expect_true(is.list(result))
   expect_true("statistic" %in% names(result))

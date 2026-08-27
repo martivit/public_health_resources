@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils_quality_tests.R
 \name{quality_test_poisson_ratio}
 \alias{quality_test_poisson_ratio}
-\title{Poisson Rate Test (Row-wise)}
+\title{Poisson Rate Test}
 \usage{
 quality_test_poisson_ratio(
   survey_design,
@@ -31,6 +31,6 @@ Data frame with an additional column containing the row-wise
   or invalid values receive \code{NA}
 }
 \description{
-Perform a row-wise exact Poisson test comparing an observed event count
+Perform an exact Poisson test comparing an observed event count
 against an expected rate, appending a p-value column to the data frame.
 }

@@ -1,13 +1,10 @@
-
 # CLEANING LOG TEST SUITE
-
 
 library(testthat)
 library(tibble)
 
 
 # Helpers: Minimal mock Data object for post_validate tests
-
 
 MockData <- R6::R6Class(
   classname = "MockData",
@@ -30,56 +27,57 @@ MockData <- R6::R6Class(
 
 # 1. INITIALIZATION TESTS
 
-
 test_that("CleaningLog initializes with required columns", {
+  suppressMessages(log <- CleaningLog$new())
 
-  log <- CleaningLog$new()
-
-  expect_true(is.data.frame(log$log_df))
+  expect_true(is.data.frame(log$get("log_df")))
   expect_setequal(
-    names(log$log_df),
+    names(log$get("log_df")),
     c(
-      "uuid","enum_id","device_id","question.name","issue",
-      "feedback","changed","old.value","new.value"
+      "uuid",
+      "enum_id",
+      "device_id",
+      "question.name",
+      "issue",
+      "feedback",
+      "changed",
+      "old.value",
+      "new.value"
     )
   )
 })
 
 test_that("CleaningLog fills missing required columns when provided log_df is incomplete", {
+  df <- tibble(uuid = "1", issue = "x") # missing many required columns
 
-  df <- tibble(uuid = "1", issue = "x")   # missing many required columns
-
-  log <- CleaningLog$new(log_df = df)
+  suppressMessages(log <- CleaningLog$new(log_df = df))
 
   # Should not error anymore
   expect_s3_class(log, "CleaningLog")
 
   # Required columns should all exist
-  expect_true(all(log$required_columns %in% names(log$log_df)))
+  expect_true(all(log$required_columns %in% names(log$get("log_df"))))
 
   # Columns not supplied should be filled with NA
   missing_cols <- setdiff(log$required_columns, names(df))
 
   for (col in missing_cols) {
-    expect_true(all(is.na(log$log_df[[col]])))
+    expect_true(all(is.na(log$get("log_df")[[col]])))
   }
 })
 
 test_that("CleaningLog attaches schema correctly", {
+  suppressMessages(log <- CleaningLog$new())
 
-  log <- CleaningLog$new()
-
-  expect_true("types" %in% names(log$schema))
-  expect_equal(log$schema$types$changed, "character")
-  expect_equal(log$schema$allowed_values$changed, c("yes","no"))
+  expect_true("types" %in% names(log$get("schema")))
+  expect_equal(log$get("schema")$types$changed, "character")
+  expect_equal(log$get("schema")$allowed_values$changed, c("yes", "no"))
 })
 
 
 # 2. INTERNAL VALIDATE() TESTS
 
-
 test_that("CleaningLog validate passes on correct data", {
-
   df <- tibble(
     uuid = "u1",
     enum_id = "e1",
@@ -92,13 +90,12 @@ test_that("CleaningLog validate passes on correct data", {
     new.value = "11"
   )
 
-  log <- CleaningLog$new(df)
+  suppressMessages(log <- CleaningLog$new(df))
 
   expect_silent(log$validate())
 })
 
 test_that("CleaningLog validate warns on empty required fields and sets validated = FALSE", {
-
   df <- tibble(
     uuid = "",
     enum_id = "e",
@@ -111,7 +108,7 @@ test_that("CleaningLog validate warns on empty required fields and sets validate
     new.value = "11"
   )
 
-  log <- CleaningLog$new(df)
+  suppressMessages(log <- CleaningLog$new(df))
 
   expect_warning(
     {
@@ -124,7 +121,6 @@ test_that("CleaningLog validate warns on empty required fields and sets validate
 })
 
 test_that("CleaningLog validate checks allowed values for changed", {
-
   df <- tibble::tibble(
     uuid = "u1",
     enum_id = "e",
@@ -132,12 +128,12 @@ test_that("CleaningLog validate checks allowed values for changed", {
     question.name = "age",
     issue = "x",
     feedback = "y",
-    changed = "maybe",   # invalid
+    changed = "maybe", # invalid
     old.value = "10",
     new.value = "11"
   )
 
-  log <- CleaningLog$new(df)
+  suppressMessages(log <- CleaningLog$new(df))
 
   # Run once to get issues (suppress the expected warning output)
   issues <- suppressWarnings(log$validate())
@@ -152,9 +148,8 @@ test_that("CleaningLog validate checks allowed values for changed", {
 })
 
 test_that("CleaningLog validate coerces safely coercible types", {
-
   df <- tibble(
-    uuid = 1,            # numeric → coercible to character
+    uuid = 1, # numeric → coercible to character
     enum_id = "e",
     device_id = "d",
     question.name = "age",
@@ -165,20 +160,18 @@ test_that("CleaningLog validate coerces safely coercible types", {
     new.value = "11"
   )
 
-  log <- CleaningLog$new(df)
-  expect_no_error(log$validate())
-  expect_true(is.character(log$log_df$uuid))
+  suppressMessages(log <- CleaningLog$new(df))
+  suppressMessages(expect_no_error(log$validate()))
+  expect_true(is.character(log$get("log_df")$uuid))
 })
 
 
 # 3. ADD_CHANGE() TEST
 
-
 test_that("add_change() inserts properly formatted row", {
+  suppressMessages(log <- CleaningLog$new())
 
-  log <- CleaningLog$new()
-
-  log$add_change(
+  suppressMessages(log$add_change(
     uuid = "u1",
     enum_id = "e1",
     device_id = "d1",
@@ -188,18 +181,16 @@ test_that("add_change() inserts properly formatted row", {
     changed = "YES",
     old.value = "10",
     new.value = "20"
-  )
+  ))
 
-  expect_equal(nrow(log$log_df), 1)
-  expect_equal(log$log_df$changed, "yes")
+  expect_equal(nrow(log$get("log_df")), 1)
+  expect_equal(log$get("log_df")$changed, "yes")
 })
 
 
 # 4. POST VALIDATE TESTS
 
-
 test_that("post_validate errors if dataset is NULL", {
-
   df_log <- tibble(
     uuid = "u1",
     enum_id = "e1",
@@ -212,17 +203,16 @@ test_that("post_validate errors if dataset is NULL", {
     new.value = "11"
   )
 
-  log <- CleaningLog$new(df_log)
+  suppressMessages(log <- CleaningLog$new(df_log))
   d <- MockData$new(df = NULL)
 
-  expect_error(
+  suppressMessages(expect_error(
     log$post_validate(d),
     regexp = "Dataset is NULL"
-  )
+  ))
 })
 
 test_that("post_validate errors if UUID column missing from dataset", {
-
   df_log <- tibble(
     uuid = "u1",
     enum_id = "e1",
@@ -235,18 +225,17 @@ test_that("post_validate errors if UUID column missing from dataset", {
     new.value = "11"
   )
 
-  log <- CleaningLog$new(df_log)
+  suppressMessages(log <- CleaningLog$new(df_log))
 
-  d <- MockData$new(tibble(x = 1))   # missing uuid column
+  d <- MockData$new(tibble(x = 1)) # missing uuid column
 
-  expect_error(
+  suppressMessages(expect_error(
     log$post_validate(d),
     regexp = "missing UUID column"
-  )
+  ))
 })
 
 test_that("post_validate errors if uuid not present in dataset", {
-
   df_log <- tibble(
     uuid = "missing",
     enum_id = "e1",
@@ -260,17 +249,16 @@ test_that("post_validate errors if uuid not present in dataset", {
   )
 
   df_data <- tibble(uuid = "u1", age = "10")
-  log <- CleaningLog$new(df_log)
+  suppressMessages(log <- CleaningLog$new(df_log))
   d <- MockData$new(df_data)
 
-  expect_warning(
+  suppressMessages(expect_warning(
     log$post_validate(d),
     regexp = "Unknown UUID"
-  )
+  ))
 })
 
 test_that("post_validate errors if question.name not in dataset", {
-
   df_log <- tibble(
     uuid = "u1",
     enum_id = "e1",
@@ -284,17 +272,16 @@ test_that("post_validate errors if question.name not in dataset", {
   )
 
   df_data <- tibble(uuid = "u1", age = "10")
-  log <- CleaningLog$new(df_log)
+  suppressMessages(log <- CleaningLog$new(df_log))
   d <- MockData$new(df_data)
 
-  expect_warning(
+  suppressMessages(expect_warning(
     log$post_validate(d),
     regexp = "Unknown question.name"
-  )
+  ))
 })
 
 test_that("post_validate errors on old.value mismatch", {
-
   df_log <- tibble(
     uuid = "u1",
     enum_id = "e1",
@@ -303,22 +290,21 @@ test_that("post_validate errors on old.value mismatch", {
     issue = "x",
     feedback = "y",
     changed = "yes",
-    old.value = "10",   # should match dataset
+    old.value = "10", # should match dataset
     new.value = "12"
   )
 
-  df_data <- tibble(uuid = "u1", age = "99")   # mismatch
-  log <- CleaningLog$new(df_log)
+  df_data <- tibble(uuid = "u1", age = "99") # mismatch
+  suppressMessages(log <- CleaningLog$new(df_log))
   d <- MockData$new(df_data)
 
-  expect_warning(
+  suppressMessages(expect_warning(
     log$post_validate(d),
     regexp = "old.value mismatch"
-  )
+  ))
 })
 
 test_that("post_validate passes on fully matching data", {
-
   df_log <- tibble(
     uuid = "u1",
     enum_id = "e1",
@@ -332,7 +318,7 @@ test_that("post_validate passes on fully matching data", {
   )
 
   df_data <- tibble(uuid = "u1", age = "30")
-  log <- CleaningLog$new(df_log)
+  suppressMessages(log <- CleaningLog$new(df_log))
   d <- MockData$new(df_data)
 
   expect_silent(log$post_validate(d))
@@ -341,27 +327,24 @@ test_that("post_validate passes on fully matching data", {
 
 # 5. EDGE CASES
 
-
 test_that("CleaningLog validate allows multiple rows", {
-
   df <- tibble(
-    uuid = c("u1","u2"),
-    enum_id = c("e1","e2"),
-    device_id = c("d1","d2"),
-    question.name = c("age","age"),
-    issue = c("fix","fix"),
-    feedback = c("ok","ok"),
-    changed = c("yes","no"),
-    old.value = c("10","20"),
-    new.value = c("11","20")
+    uuid = c("u1", "u2"),
+    enum_id = c("e1", "e2"),
+    device_id = c("d1", "d2"),
+    question.name = c("age", "age"),
+    issue = c("fix", "fix"),
+    feedback = c("ok", "ok"),
+    changed = c("yes", "no"),
+    old.value = c("10", "20"),
+    new.value = c("11", "20")
   )
 
-  log <- CleaningLog$new(df)
+  suppressMessages(log <- CleaningLog$new(df))
   expect_silent(log$validate())
 })
 
 test_that("CleaningLog ignores enum_id validations if no mapping exists", {
-
   df_log <- tibble(
     uuid = "u1",
     enum_id = "e_missing",
@@ -376,10 +359,9 @@ test_that("CleaningLog ignores enum_id validations if no mapping exists", {
 
   df_data <- tibble(uuid = "u1", age = "10")
 
-  log <- CleaningLog$new(df_log)
+  suppressMessages(log <- CleaningLog$new(df_log))
   d <- MockData$new(df_data)
-  d$variable_map <- list()   # no enum_id mapping
+  d$variable_map <- list() # no enum_id mapping
 
   expect_silent(log$post_validate(d))
 })
-

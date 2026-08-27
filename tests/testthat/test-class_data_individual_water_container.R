@@ -15,9 +15,9 @@ test_that("WaterContainerData initializes with minimal valid data", {
     hh_uuid = "hh_1"
   )
 
-  container <- suppressMessages(
+  container <- suppressWarnings(suppressMessages(
     WaterContainerData$new(data = df)
-  )
+  ))
 
   expect_s3_class(container, "WaterContainerData")
   expect_s3_class(container, "Data")
@@ -28,14 +28,14 @@ test_that("WaterContainerData supports multiple schemas and validations", {
 
   # Generate a dataset for testing
   df <- generate_water_count_loop_dataset(household_data_or_n = 5)
-  container <- suppressMessages(
+  container <- suppressWarnings(suppressMessages(
     WaterContainerData$new(data = df)
-  )
+  ))
 
   # Export schemas
-  type_schema <- container$export_variable_schema()
-  range_schema <- container$export_dependency_schema()
-  values_schema <- container$export_indicator_schema()
+  type_schema <- suppressWarnings(suppressMessages(container$export_variable_schema()))
+  range_schema <- suppressWarnings(suppressMessages(container$export_dependency_schema()))
+  values_schema <- suppressWarnings(suppressMessages(container$export_indicator_schema()))
 
   # Define specific tests for each schema
 

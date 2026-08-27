@@ -348,7 +348,7 @@ data_schema_to_table <- function(schema_list) {
 #' @export
 data_table_to_schema <- function(df) {
 
-  phr_validate_dataframe(df, origin = "data_table_to_schema", soft = FALSE)
+  phrutils::phr_validate_dataframe(df, origin = "data_table_to_schema", soft = FALSE)
 
   # Validate the table format
   data_validate_table_to_schema(df)
@@ -486,10 +486,10 @@ data_table_to_schema <- function(df) {
 #' @export
 data_validate_table_to_schema <- function(df, data_obj = NULL) {
 
-  phr_try({
+  phrutils::phr_try({
 
     # Validate dataframe
-    phr_validate_dataframe(df, origin = "data_validate_table_to_schema", soft = FALSE)
+    phrutils::phr_validate_dataframe(df, origin = "data_validate_table_to_schema", soft = FALSE)
 
     # Fixed required columns - now includes "value" column
     required_cols <- c(
@@ -499,7 +499,7 @@ data_validate_table_to_schema <- function(df, data_obj = NULL) {
       "question_type","is_other","other_column_link"
     )
 
-    phr_validate_columns(
+    phrutils::phr_validate_columns(
       df,
       required_cols = required_cols,
       origin = "data_validate_table_to_schema",
@@ -530,7 +530,7 @@ data_validate_table_to_schema <- function(df, data_obj = NULL) {
 
     dups <- var_value_key[duplicated(var_value_key)]
     if (length(dups) > 0) {
-      phr_warning(
+      phrutils::phr_warning(
         origin  = "data_validate_table_to_schema",
         message = phr_txt("Duplicate (variable, value) rows detected: {paste(unique(dups), collapse=', ')}."),
         hint    = "Only the last row per (variable, value) pair will be retained."
@@ -730,7 +730,7 @@ data_validate_schema_to_table <- function(schema_list, origin = "schema") {
 
         bad_val <- paste0(capture.output(str(val)), collapse = " ")
 
-        phr_warning(
+        phrutils::phr_warning(
           origin  = origin,
           message = phr_txt("Pattern for '{varname}' should be a single regex string. Note: patterns have moved to dependency_schema."),
           hint    = phr_txt("Received: {bad_val}")
@@ -792,7 +792,7 @@ data_validate_schema_to_table <- function(schema_list, origin = "schema") {
     valid_langs <- c("en", "fr", "ar")
     bad_langs <- setdiff(names(variable_labels), valid_langs)
     if (length(bad_langs) > 0) {
-      phr_warning(
+      phrutils::phr_warning(
         origin  = origin,
         message = phr_txt("Unexpected language keys in `variable_labels`: {paste(bad_langs, collapse=', ')}."),
         hint    = phr_txt("Expected keys: {paste(valid_langs, collapse=', ')}.")
@@ -1130,7 +1130,7 @@ indicator_schema_to_table <- function(indicator_schema_list) {
 #' @export
 indicator_table_to_schema <- function(df) {
 
-  phr_validate_dataframe(df, origin = "indicator_table_to_schema", soft = FALSE)
+  phrutils::phr_validate_dataframe(df, origin = "indicator_table_to_schema", soft = FALSE)
 
   # Validate the table format
   indicator_validate_table_to_schema(df)
@@ -1207,10 +1207,10 @@ indicator_table_to_schema <- function(df) {
 #' @export
 indicator_validate_table_to_schema <- function(df) {
 
-  phr_try({
+  phrutils::phr_try({
 
     # Validate dataframe
-    phr_validate_dataframe(df, origin = "indicator_validate_table_to_schema", soft = FALSE)
+    phrutils::phr_validate_dataframe(df, origin = "indicator_validate_table_to_schema", soft = FALSE)
 
     # Required columns
     required_cols <- c(
@@ -1222,7 +1222,7 @@ indicator_validate_table_to_schema <- function(df) {
       "comment"
     )
 
-    phr_validate_columns(
+    phrutils::phr_validate_columns(
       df,
       required_cols = required_cols,
       origin = "indicator_validate_table_to_schema",
@@ -1234,7 +1234,7 @@ indicator_validate_table_to_schema <- function(df) {
     ind_names <- df$indicator_name[!is.na(df$indicator_name) & df$indicator_name != ""]
     dups <- ind_names[duplicated(ind_names)]
     if (length(dups) > 0) {
-      phr_warning(
+      phrutils::phr_warning(
         origin  = "indicator_validate_table_to_schema",
         message = phr_txt("Duplicate indicator names detected: {paste(unique(dups), collapse=', ')}."),
         hint    = "Only the last row per indicator name will be retained."
@@ -1350,7 +1350,7 @@ dependency_schema_to_table <- function(dependency_schema_list) {
 #' @export
 dependency_table_to_schema <- function(df) {
 
-  phr_validate_dataframe(df, origin = "dependency_table_to_schema", soft = FALSE)
+  phrutils::phr_validate_dataframe(df, origin = "dependency_table_to_schema", soft = FALSE)
 
   # Validate the table format
   dependency_validate_table_to_schema(df)
@@ -1424,10 +1424,10 @@ dependency_table_to_schema <- function(df) {
 #' @export
 dependency_validate_table_to_schema <- function(df) {
 
-  phr_try({
+  phrutils::phr_try({
 
     # Validate dataframe
-    phr_validate_dataframe(df, origin = "dependency_validate_table_to_schema", soft = FALSE)
+    phrutils::phr_validate_dataframe(df, origin = "dependency_validate_table_to_schema", soft = FALSE)
 
     # Required columns
     required_cols <- c(
@@ -1441,7 +1441,7 @@ dependency_validate_table_to_schema <- function(df) {
       "comment"
     )
 
-    phr_validate_columns(
+    phrutils::phr_validate_columns(
       df,
       required_cols = required_cols,
       origin = "dependency_validate_table_to_schema",
@@ -1464,7 +1464,7 @@ dependency_validate_table_to_schema <- function(df) {
         dep_names <- rule_rows$dep_name[!is.na(rule_rows$dep_name) & rule_rows$dep_name != ""]
         dups <- dep_names[duplicated(dep_names)]
         if (length(dups) > 0) {
-          phr_warning(
+          phrutils::phr_warning(
             origin  = "dependency_validate_table_to_schema",
             message = phr_txt("Duplicate {rule_type} names detected: {paste(unique(dups), collapse=', ')}."),
             hint    = "Only the last row per dependency name will be retained."

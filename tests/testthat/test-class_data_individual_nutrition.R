@@ -15,9 +15,9 @@ test_that("NutritionIndividualData initializes with minimal valid data", {
     hh_uuid = "hh_1"
   )
 
-  nutr <- suppressMessages(
+  nutr <- suppressWarnings(suppressMessages(
     NutritionIndividualData$new(data = df)
-  )
+  ))
 
   expect_s3_class(nutr, "NutritionIndividualData")
   expect_s3_class(nutr, "IndividualData")
@@ -29,9 +29,9 @@ test_that("NutritionIndividualData initializes with nutrition-specific columns r
 
   df <- generate_child_nutrition_dataset(roster_data_or_n = 10)
 
-  nutr <- suppressMessages(
+  nutr <- suppressWarnings(suppressMessages(
     NutritionIndividualData$new(data = df)
-  )
+  ))
 
   expect_true("nut_muac_mm" %in% names(nutr$variable_map))
   expect_true("ecfies_s01" %in% names(nutr$variable_map))
@@ -46,21 +46,21 @@ test_that("NutritionIndividualData completes full pipeline", {
 
   df <- generate_child_nutrition_dataset(roster_data_or_n = 50)
 
-  nutr <- suppressMessages(
+  nutr <- suppressWarnings(suppressMessages(
     NutritionIndividualData$new(data = df)
-  )
+  ))
 
   # Validation
-  expect_no_error(nutr$validate())
+  expect_no_error(suppressWarnings(suppressMessages(nutr$validate())))
   expect_true(nutr$validated)
 
   # Standardization
-  expect_no_error(nutr$standardize())
+  expect_no_error(suppressWarnings(suppressMessages(nutr$standardize())))
   expect_true(nutr$standardized)
 
   # Cleaning
-  expect_no_error(nutr$generate_cleaning_log(stage = "standardized"))
-  expect_no_error(nutr$clean())
+  expect_no_error(suppressWarnings(suppressMessages(nutr$generate_cleaning_log(stage = "standardized"))))
+  expect_no_error(suppressWarnings(suppressMessages(nutr$clean())))
   expect_true(nutr$cleaned)
 
   # Summary
@@ -72,15 +72,17 @@ test_that("NutritionIndividualData can link to HouseholdData", {
   hh_df <- generate_household_dataset(n = 10)
   nutr_df <- generate_child_nutrition_dataset(roster_data_or_n = 30, hh_uuids = hh_df$uuid)
 
-  hh <- suppressMessages(
+  hh <- suppressWarnings(suppressMessages(
     HouseholdData$new(data = hh_df)
-  )
-  nutr <- suppressMessages(
+  ))
+  nutr <- suppressWarnings(suppressMessages(
     NutritionIndividualData$new(data = nutr_df)
-  )
+  ))
 
   # Link nutrition data to households
-  nutr$add_linked_dataset("household", hh, by_self_role = "hh_uuid", by_other_role = "uuid")
+  suppressWarnings(suppressMessages(
+    nutr$add_linked_dataset("household", hh, by_self_role = "hh_uuid", by_other_role = "uuid")
+  ))
 
   expect_true("household" %in% names(nutr$linked_objects))
 })
@@ -100,13 +102,13 @@ test_that("NutritionIndividualData handles realistic SMART survey data", {
     nutr_oedema = sample(c("yes", "no"), n, replace = TRUE, prob = c(0.02, 0.98))
   )
 
-  nutr <- suppressMessages(
+  nutr <- suppressWarnings(suppressMessages(
     NutritionIndividualData$new(data = df)
-  )
+  ))
 
   expect_no_error({
-    nutr$validate()
-    nutr$standardize()
+    suppressWarnings(suppressMessages(nutr$validate()))
+    suppressWarnings(suppressMessages(nutr$standardize()))
   })
 
   # Check that malnutrition was classified

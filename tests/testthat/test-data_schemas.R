@@ -4,6 +4,8 @@ library(testthat)
 library(tibble)
 library(withr)
 
+source(testthat::test_path("map_schema_vars_functions.R"))
+
 # Data class indicator schema field ####
 
 test_that("Data class has indicator_schema field", {
@@ -26,12 +28,7 @@ test_that("Data class has indicator_schema field", {
 
 test_that("Data class processes indicator schema during standardize", {
 
-  # Create a mock add_ function for testing
-  add_test_indicator <- function(.dataset, multiplier = "2") {
-    mult <- as.numeric(multiplier)
-    .dataset$result <- .dataset$value * mult
-    return(.dataset)
-  }
+  
 
   # Make function available
   assign("add_test_indicator", add_test_indicator, envir = .GlobalEnv)
@@ -71,11 +68,7 @@ test_that("Data class processes indicator schema during standardize", {
 
 test_that("Data class resolves variable_map in indicator arguments", {
 
-  # Create a mock add_ function
-  add_test_var_map <- function(.dataset, input_col = "value") {
-    .dataset$output <- .dataset[[input_col]] * 2
-    return(.dataset)
-  }
+  
 
   assign("add_test_var_map", add_test_var_map, envir = .GlobalEnv)
   withr::defer(rm(add_test_var_map, envir = .GlobalEnv))
@@ -157,11 +150,7 @@ test_that("Data class skips indicator with missing function name", {
 
 test_that("Data class skips indicator when required variables are not mapped", {
 
-  # Create a mock add_ function
-  add_test_vars <- function(.dataset, var1 = "a", var2 = "b") {
-    .dataset$result <- .dataset[[var1]] + .dataset[[var2]]
-    return(.dataset)
-  }
+  
 
   assign("add_test_vars", add_test_vars, envir = .GlobalEnv)
   withr::defer(rm(add_test_vars, envir = .GlobalEnv))
@@ -193,12 +182,7 @@ test_that("Data class skips indicator when required variables are not mapped", {
 
 test_that("Data class uses variable_map to resolve canonical names in indicator variables", {
 
-  # Create a mock add_ function that uses canonical variable references
-  add_wash_indicator <- function(.dataset, plans_col = "wash_hwise_plans", drink_col = "wash_hwise_drink") {
-    # Simple indicator that combines two columns
-    .dataset$wash_indicator <- paste(.dataset[[plans_col]], .dataset[[drink_col]], sep = "_")
-    return(.dataset)
-  }
+
 
   assign("add_wash_indicator", add_wash_indicator, envir = .GlobalEnv)
   withr::defer(rm(add_wash_indicator, envir = .GlobalEnv))
@@ -249,13 +233,9 @@ test_that("Data class uses variable_map to resolve canonical names in indicator 
 
 test_that("Data class skips indicator when mapped columns don't exist in dataset", {
 
-  # Create a mock add_ function
-  add_test_indicator <- function(.dataset, col1 = "col1") {
-    .dataset$result <- .dataset[[col1]] * 2
-    return(.dataset)
-  }
 
-  assign("add_test_indicator", add_test_indicator, envir = .GlobalEnv)
+
+  assign("add_test_indicator", add_test_indicator_y, envir = .GlobalEnv)
   withr::defer(rm(add_test_indicator, envir = .GlobalEnv))
 
   # Data has different columns than what's mapped
@@ -264,7 +244,7 @@ test_that("Data class skips indicator when mapped columns don't exist in dataset
   indicator_schema <- list(
     test_ind = list(
       indicator_name = "test_ind",
-      function_name = "add_test_indicator",
+      function_name = "add_test_indicator_y",
       variables = c("canonical_var"),  # Canonical name
       arguments = list(col1 = "@variable_map$canonical_var")
     )
@@ -294,16 +274,7 @@ test_that("Data class skips indicator when mapped columns don't exist in dataset
 
 test_that("Multiple indicators are executed in order with proper variable mapping", {
 
-  # Create two mock add_ functions
-  add_step1 <- function(.dataset, input = "value") {
-    .dataset$step1_result <- .dataset[[input]] * 2
-    return(.dataset)
-  }
-
-  add_step2 <- function(.dataset, input = "step1_result") {
-    .dataset$step2_result <- .dataset[[input]] + 10
-    return(.dataset)
-  }
+  
 
   assign("add_step1", add_step1, envir = .GlobalEnv)
   assign("add_step2", add_step2, envir = .GlobalEnv)
@@ -1664,7 +1635,7 @@ test_that("indicator with all resolved @variable_map$ references works", {
   )
 
   # Run standardize - should work without warnings
-  test_data$standardize()
+  suppressWarnings(test_data$standardize())
 
   # Check that standardized data was created successfully
   expect_true(test_data$standardized)

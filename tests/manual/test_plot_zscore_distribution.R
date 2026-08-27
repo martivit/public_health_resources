@@ -29,21 +29,38 @@ cat(strrep("-", 60), "\n")
 
 # Create simple dummy data with z-scores
 set.seed(123)
+
 df_basic <- data.frame(
   id = 1:200,
-  wfhz = rnorm(200, mean = -1, sd = 1.2),  # Weight-for-height z-scores
+  wfhz = rnorm(200, mean = -1, sd = 1.2), # Weight-for-height z-scores
   hfaz = rnorm(200, mean = -0.8, sd = 1.1), # Height-for-age z-scores
-  district = sample(c("District A", "District B", "District C"), 200, replace = TRUE)
+  district = sample(
+    c("District A", "District B", "District C"),
+    200,
+    replace = TRUE
+  )
 )
+
+# Minimal change: wrap df_basic in a srvyr survey design
+sdesign_basic <- srvyr::as_survey_design(
+  df_basic,
+  ids = 1
+)
+
 
 # Basic plot with default settings
 p1 <- plot_zscore_distribution(
-  df = df_basic,
+  survey_design = sdesign_basic,
   zscore_var = "wfhz"
 )
 
 print(p1)
-ggsave(file.path(output_dir, "01_basic_zscore_plot.png"), p1, width = 8, height = 6)
+ggsave(
+  file.path(output_dir, "01_basic_zscore_plot.png"),
+  p1,
+  width = 8,
+  height = 6
+)
 cat("✓ Saved: 01_basic_zscore_plot.png\n\n")
 
 # ============================================================================
@@ -75,11 +92,17 @@ p3 <- plot_zscore_distribution(
   zscore_var = "wfhz",
   grouping = "district",
   title_name = "Z-Score Distribution by District",
-  x_label = "Weight-for-Height Z-Score", color_palette = "reach1"
+  x_label = "Weight-for-Height Z-Score",
+  color_palette = "reach1"
 )
 
 print(p3)
-ggsave(file.path(output_dir, "03_grouped_by_district.png"), p3, width = 10, height = 6)
+ggsave(
+  file.path(output_dir, "03_grouped_by_district.png"),
+  p3,
+  width = 10,
+  height = 6
+)
 cat("✓ Saved: 03_grouped_by_district.png\n\n")
 
 # ============================================================================
@@ -98,7 +121,12 @@ p4 <- plot_zscore_distribution(
 )
 
 print(p4)
-ggsave(file.path(output_dir, "04_custom_reference_lines.png"), p4, width = 8, height = 6)
+ggsave(
+  file.path(output_dir, "04_custom_reference_lines.png"),
+  p4,
+  width = 8,
+  height = 6
+)
 cat("✓ Saved: 04_custom_reference_lines.png\n\n")
 
 # ============================================================================
@@ -116,7 +144,12 @@ p5 <- plot_zscore_distribution(
 )
 
 print(p5)
-ggsave(file.path(output_dir, "05_no_reference_lines.png"), p5, width = 8, height = 6)
+ggsave(
+  file.path(output_dir, "05_no_reference_lines.png"),
+  p5,
+  width = 8,
+  height = 6
+)
 cat("✓ Saved: 05_no_reference_lines.png\n\n")
 
 # ============================================================================
@@ -129,13 +162,13 @@ cat(strrep("-", 60), "\n")
 df_with_flags <- data.frame(
   id = 1:250,
   wfhz = c(
-    rnorm(230, mean = -1, sd = 1),        # Normal values
-    runif(10, -8, -6),                     # Extreme low outliers
-    runif(10, 6, 8)                        # Extreme high outliers
+    rnorm(230, mean = -1, sd = 1), # Normal values
+    runif(10, -8, -6), # Extreme low outliers
+    runif(10, 6, 8) # Extreme high outliers
   ),
   wfhz_noflag = c(
-    rnorm(230, mean = -1, sd = 1),        # Normal values
-    rep(NA, 20)                            # Flagged values removed
+    rnorm(230, mean = -1, sd = 1), # Normal values
+    rep(NA, 20) # Flagged values removed
   )
 )
 
@@ -158,7 +191,12 @@ p6b <- plot_zscore_distribution(
 print(p6a)
 print(p6b)
 ggsave(file.path(output_dir, "06a_with_flags.png"), p6a, width = 8, height = 6)
-ggsave(file.path(output_dir, "06b_without_flags.png"), p6b, width = 8, height = 6)
+ggsave(
+  file.path(output_dir, "06b_without_flags.png"),
+  p6b,
+  width = 8,
+  height = 6
+)
 cat("✓ Saved: 06a_with_flags.png and 06b_without_flags.png\n\n")
 
 # ============================================================================
@@ -185,7 +223,12 @@ p7 <- plot_zscore_distribution(
 )
 
 print(p7)
-ggsave(file.path(output_dir, "07_income_zscore.png"), p7, width = 10, height = 6)
+ggsave(
+  file.path(output_dir, "07_income_zscore.png"),
+  p7,
+  width = 10,
+  height = 6
+)
 cat("✓ Saved: 07_income_zscore.png\n\n")
 
 # ============================================================================
@@ -212,8 +255,18 @@ p8b <- plot_zscore_distribution(
 
 print(p8a)
 print(p8b)
-ggsave(file.path(output_dir, "08a_palette_reach1.png"), p8a, width = 10, height = 6)
-ggsave(file.path(output_dir, "08b_palette_reach2.png"), p8b, width = 10, height = 6)
+ggsave(
+  file.path(output_dir, "08a_palette_reach1.png"),
+  p8a,
+  width = 10,
+  height = 6
+)
+ggsave(
+  file.path(output_dir, "08b_palette_reach2.png"),
+  p8b,
+  width = 10,
+  height = 6
+)
 cat("✓ Saved: 08a_palette_reach1.png and 08b_palette_reach2.png\n\n")
 
 # ============================================================================
@@ -226,13 +279,26 @@ p9 <- plot_zscore_distribution(
   df = df_basic,
   zscore_var = "wfhz",
   vline_intercepts = c(-3, -2, -1, 0, 1, 2, 3),
-  vline_colors = c("red", "orange", "yellow", "black", "yellow", "orange", "red"),
+  vline_colors = c(
+    "red",
+    "orange",
+    "yellow",
+    "black",
+    "yellow",
+    "orange",
+    "red"
+  ),
   title_name = "Distribution with Multiple Reference Lines",
   x_label = "Weight-for-Height Z-Score"
 )
 
 print(p9)
-ggsave(file.path(output_dir, "09_multiple_reference_lines.png"), p9, width = 8, height = 6)
+ggsave(
+  file.path(output_dir, "09_multiple_reference_lines.png"),
+  p9,
+  width = 8,
+  height = 6
+)
 cat("✓ Saved: 09_multiple_reference_lines.png\n\n")
 
 # ============================================================================
@@ -281,10 +347,27 @@ p10c <- plot_zscore_distribution(
 print(p10a)
 print(p10b)
 print(p10c)
-ggsave(file.path(output_dir, "10a_wfhz_by_age.png"), p10a, width = 10, height = 6)
-ggsave(file.path(output_dir, "10b_hfaz_by_age.png"), p10b, width = 10, height = 6)
-ggsave(file.path(output_dir, "10c_wfaz_by_round.png"), p10c, width = 10, height = 6)
-cat("✓ Saved: 10a_wfhz_by_age.png, 10b_hfaz_by_age.png, 10c_wfaz_by_round.png\n\n")
+ggsave(
+  file.path(output_dir, "10a_wfhz_by_age.png"),
+  p10a,
+  width = 10,
+  height = 6
+)
+ggsave(
+  file.path(output_dir, "10b_hfaz_by_age.png"),
+  p10b,
+  width = 10,
+  height = 6
+)
+ggsave(
+  file.path(output_dir, "10c_wfaz_by_round.png"),
+  p10c,
+  width = 10,
+  height = 6
+)
+cat(
+  "✓ Saved: 10a_wfhz_by_age.png, 10b_hfaz_by_age.png, 10c_wfaz_by_round.png\n\n"
+)
 
 # ============================================================================
 # Summary

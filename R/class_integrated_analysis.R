@@ -27,12 +27,12 @@ IntegratedAnalysis <- R6::R6Class(
     #' @param analytics A \code{\link{DataAnalytics}} object.
     #' @return Invisibly returns \code{self}.
     add_data_analytics = function(name, analytics) {
-      phr_assert(
+      phrutils::phr_assert(
         is.character(name) && length(name) == 1L && nzchar(name),
         message = phr_txt("name must be a non-empty character string."),
         origin = "IntegratedAnalysis$add_data_analytics"
       )
-      phr_assert(
+      phrutils::phr_assert(
         !is.null(analytics) && inherits(analytics, "DataAnalytics"),
         message = phr_txt("analytics must inherit from DataAnalytics."),
         origin = "IntegratedAnalysis$add_data_analytics"
@@ -54,7 +54,7 @@ IntegratedAnalysis <- R6::R6Class(
     #'   analytics object that should be row-bound.
     #' @return Combined data frame with an added \code{analysis_name} column.
     build_unified_table = function(field) {
-      phr_assert(
+      phrutils::phr_assert(
         is.character(field) && length(field) == 1L && nzchar(field),
         message = phr_txt("field must be a non-empty character string."),
         origin = "IntegratedAnalysis$build_unified_table"

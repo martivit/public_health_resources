@@ -28,7 +28,7 @@ WomenIndividualData <- R6::R6Class(
                           metadata = NULL,
                           variable_map = NULL) {
 
-      phr_try({
+      phrutils::phr_try({
 
         women_map <- list(
           # Demographics (use generic names that map to data columns)
@@ -56,7 +56,7 @@ WomenIndividualData <- R6::R6Class(
         default_ind_schema <- self$default_indicator_schema()
         if (length(default_ind_schema) > 0) {
           self$set_indicator_schema(default_ind_schema)
-          phr_message(
+          phrutils::phr_message(
             phr_txt("Loaded default indicator schema with {length(default_ind_schema)} indicator(s).")
           )
         }
@@ -65,12 +65,12 @@ WomenIndividualData <- R6::R6Class(
         default_dep_schema <- self$default_dependency_schema()
         if (length(default_dep_schema$dependencies) > 0) {
           self$set_dependency_schema(default_dep_schema)
-          phr_message(
+          phrutils::phr_message(
             phr_txt("Loaded default dependency schema with {length(default_dep_schema$dependencies)} dependency/ies.")
           )
         }
 
-        phr_message(
+        phrutils::phr_message(
           phr_txt("{dataset_name} initialized as WomenIndividualData object.")
         )
 
@@ -135,7 +135,7 @@ WomenIndividualData <- R6::R6Class(
       )
 
       if (!file.exists(file)) {
-        phr_warning(
+        phrutils::phr_warning(
           origin  = "WomenIndividualData$default_indicator_schema",
           message = phr_txt("indicator_schema_data_individual_maternalhealth_template.xlsx not found in package resources. Continuing without default indicator schema.")
         )
@@ -146,7 +146,7 @@ WomenIndividualData <- R6::R6Class(
       df <- tryCatch(
         readxl::read_xlsx(file),
         error = function(e) {
-          phr_warning(
+          phrutils::phr_warning(
             origin  = "WomenIndividualData$default_indicator_schema",
             message = phr_txt("Failed to read indicator_schema_data_individual_maternalhealth_template.xlsx: {e$message}")
           )
@@ -178,7 +178,7 @@ WomenIndividualData <- R6::R6Class(
       )
 
       if (!file.exists(file)) {
-        phr_warning(
+        phrutils::phr_warning(
           origin  = "WomenIndividualData$default_dependency_schema",
           message = phr_txt("dependency_schema_data_individual_maternalhealth_template.xlsx not found in package resources. Continuing without default dependency schema.")
         )
@@ -189,7 +189,7 @@ WomenIndividualData <- R6::R6Class(
       df <- tryCatch(
         readxl::read_xlsx(file),
         error = function(e) {
-          phr_warning(
+          phrutils::phr_warning(
             origin  = "WomenIndividualData$default_dependency_schema",
             message = phr_txt("Failed to read dependency_schema_data_individual_maternalhealth_template.xlsx: {e$message}")
           )
@@ -218,12 +218,12 @@ WomenIndividualData <- R6::R6Class(
 
       stage <- match.arg(stage)
 
-      phr_try({
+      phrutils::phr_try({
 
         df <- self$get_data(stage)
 
         if (is.null(df)) {
-          phr_warning(
+          phrutils::phr_warning(
             self$dataset_name,
             phr_txt("No {stage} data available for DataAnalytics generation.")
           )
@@ -247,7 +247,7 @@ WomenIndividualData <- R6::R6Class(
           value_label        = self$value_label
         )
 
-        phr_message(
+        phrutils::phr_message(
           phr_txt("Generated DataAnalytics object for {self$dataset_name}.")
         )
 

@@ -43,7 +43,7 @@ WaterContainerData <- R6::R6Class(
                           metadata = NULL,
                           variable_map = NULL) {
 
-      phr_try({
+      phrutils::phr_try({
 
         # Default mapping for water container data
         default_map <- list(
@@ -89,7 +89,7 @@ WaterContainerData <- R6::R6Class(
         default_ind_schema <- self$default_indicator_schema()
         if (length(default_ind_schema) > 0) {
           self$set_indicator_schema(default_ind_schema)
-          phr_message(
+          phrutils::phr_message(
             phr_txt("Loaded default indicator schema with {length(default_ind_schema)} indicator(s).")
           )
         }
@@ -98,12 +98,12 @@ WaterContainerData <- R6::R6Class(
         default_dep_schema <- self$default_dependency_schema()
         if (length(default_dep_schema$dependencies) > 0) {
           self$set_dependency_schema(default_dep_schema)
-          phr_message(
+          phrutils::phr_message(
             phr_txt("Loaded default dependency schema with {length(default_dep_schema$dependencies)} dependency/ies.")
           )
         }
 
-        phr_message(
+        phrutils::phr_message(
           phr_txt("{dataset_name} initialized as WaterContainerData object.")
         )
 
@@ -168,7 +168,7 @@ WaterContainerData <- R6::R6Class(
       )
 
       if (!file.exists(file)) {
-        phr_warning(
+        phrutils::phr_warning(
           origin  = "WaterContainerData$default_indicator_schema",
           message = phr_txt("indicator_schema_data_water_container_template.xlsx not found in package resources. Continuing without default indicator schema.")
         )
@@ -179,7 +179,7 @@ WaterContainerData <- R6::R6Class(
       df <- tryCatch(
         readxl::read_xlsx(file),
         error = function(e) {
-          phr_warning(
+          phrutils::phr_warning(
             origin  = "WaterContainerData$default_indicator_schema",
             message = phr_txt("Failed to read indicator_schema_data_water_container_template.xlsx: {e$message}")
           )
@@ -211,7 +211,7 @@ WaterContainerData <- R6::R6Class(
       )
 
       if (!file.exists(file)) {
-        phr_warning(
+        phrutils::phr_warning(
           origin  = "WaterContainerData$default_dependency_schema",
           message = phr_txt("dependency_schema_data_water_container_template.xlsx not found in package resources. Continuing without default dependency schema.")
         )
@@ -222,7 +222,7 @@ WaterContainerData <- R6::R6Class(
       df <- tryCatch(
         readxl::read_xlsx(file),
         error = function(e) {
-          phr_warning(
+          phrutils::phr_warning(
             origin  = "WaterContainerData$default_dependency_schema",
             message = phr_txt("Failed to read dependency_schema_data_water_container_template.xlsx: {e$message}")
           )
@@ -254,7 +254,7 @@ WaterContainerData <- R6::R6Class(
       # Track whether any issues occurred
       had_issues <- FALSE
 
-      phr_try({
+      phrutils::phr_try({
 
         if (is.null(df)) df <- self$get_data("raw")
 
@@ -270,7 +270,7 @@ WaterContainerData <- R6::R6Class(
           rng <- schema$ranges[[v]]
           if (any(vals < rng[1], na.rm = TRUE) ||
               any(vals > rng[2], na.rm = TRUE)) {
-            phr_warning(
+            phrutils::phr_warning(
               nm,
               phr_txt(glue::glue("Variable '{col}' has values outside range [{rng[1]}, {rng[2]}]."))
             )
@@ -285,7 +285,7 @@ WaterContainerData <- R6::R6Class(
           allowed <- schema$allowed_values[[v]]
           bad <- setdiff(unique(df[[col]]), c(allowed, NA, "", NULL))
           if (length(bad) > 0) {
-            phr_warning(
+            phrutils::phr_warning(
               nm,
               phr_txt(glue::glue("Variable '{col}' contains invalid values: {paste(bad, collapse=', ')}."))
             )
@@ -305,7 +305,7 @@ WaterContainerData <- R6::R6Class(
           inconsistent <- not_tested & has_result
 
           if (any(inconsistent, na.rm = TRUE)) {
-            phr_warning(
+            phrutils::phr_warning(
               nm,
               phr_txt(glue::glue("Inconsistent data: not tested but has E.coli result for {sum(inconsistent)} records."))
             )
@@ -313,7 +313,7 @@ WaterContainerData <- R6::R6Class(
           }
         }
 
-        phr_message(
+        phrutils::phr_message(
           phr_txt(glue::glue("Container-specific post-validation for {nm} complete."))
         )
 
@@ -336,12 +336,12 @@ WaterContainerData <- R6::R6Class(
 
       stage <- match.arg(stage)
 
-      phr_try({
+      phrutils::phr_try({
 
         df <- self$get_data(stage)
 
         if (is.null(df)) {
-          phr_warning(
+          phrutils::phr_warning(
             self$dataset_name,
             phr_txt("No {stage} data available for DataAnalytics generation.")
           )
@@ -365,7 +365,7 @@ WaterContainerData <- R6::R6Class(
           value_label        = self$value_label
         )
 
-        phr_message(
+        phrutils::phr_message(
           phr_txt("Generated WaterContainerDataAnalytics object for {self$dataset_name}.")
         )
 

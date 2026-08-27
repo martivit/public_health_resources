@@ -1,9 +1,8 @@
 library(testthat)
 library(tibble)
 
-
+source(testthat::test_path("map_schema_vars_functions.R")) # Assuming Data class is defined in R/Data.R
 # Test: map_schema_vars method
-
 
 test_that("map_schema_vars returns invisible self when no schema is defined", {
   df <- tibble::tibble(id = 1:3)
@@ -51,7 +50,7 @@ test_that("map_schema_vars maps columns based on col_names in schema", {
   d$map_schema_vars()
 
   # Check that variables were mapped
-  expect_equal(d$variable_map$uuid, "id")  # Already set at init
+  expect_equal(d$variable_map$uuid, "id") # Already set at init
   expect_equal(d$variable_map$sex, "person_sex")
   expect_equal(d$variable_map$age, "individual_age")
 
@@ -79,7 +78,7 @@ test_that("map_schema_vars does not map values for numeric types", {
       score = c("score", "my_score", "test_score")
     ),
     allowed_values = list(
-      score = c(1, 2, 3, 4, 5)  # Even with allowed values, should not map
+      score = c(1, 2, 3, 4, 5) # Even with allowed values, should not map
     )
   )
 
@@ -87,7 +86,7 @@ test_that("map_schema_vars does not map values for numeric types", {
   d$map_schema_vars()
 
   expect_equal(d$variable_map$score, "my_score")
-  expect_false("score" %in% names(d$value_map))  # Should NOT map values for numeric
+  expect_false("score" %in% names(d$value_map)) # Should NOT map values for numeric
 })
 
 test_that("map_schema_vars does not overwrite existing mappings", {
@@ -162,7 +161,7 @@ test_that("map_schema_vars only maps found allowed values", {
       category = c("category", "my_category")
     ),
     allowed_values = list(
-      category = c("cat_a", "cat_b", "cat_c", "cat_d", "cat_e")  # cat_d and cat_e not in data
+      category = c("cat_a", "cat_b", "cat_c", "cat_d", "cat_e") # cat_d and cat_e not in data
     )
   )
 
@@ -176,9 +175,7 @@ test_that("map_schema_vars only maps found allowed values", {
 })
 
 
-
 # Test: repair_maps method
-
 
 test_that("repair_maps updates variable_map from dataframe", {
   df <- tibble::tibble(
@@ -336,7 +333,7 @@ test_that("repair_maps never removes uuid mapping", {
 
   var_map_df <- data.frame(
     role = c("uuid"),
-    column_name = c(NA),  # Try to remove uuid
+    column_name = c(NA), # Try to remove uuid
     stringsAsFactors = FALSE
   )
 
@@ -362,7 +359,12 @@ test_that("repair_maps validates column existence and returns warnings", {
     stringsAsFactors = FALSE
   )
 
-  result <- d$repair_maps(variable_map_df = var_map_df, validate_columns = TRUE)
+  suppressWarnings(
+    result <- d$repair_maps(
+      variable_map_df = var_map_df,
+      validate_columns = TRUE
+    )
+  )
 
   # Good mapping should work
   expect_equal(d$variable_map$good_mapping, "existing_col")
@@ -417,9 +419,7 @@ test_that("repair_maps errors on invalid input structure", {
 })
 
 
-
 # Test: get_maps_as_df method
-
 
 test_that("get_maps_as_df returns correct dataframes", {
   df <- tibble::tibble(id = 1:3)
@@ -445,7 +445,10 @@ test_that("get_maps_as_df returns correct dataframes", {
   expect_true("role" %in% names(maps$value_map_df))
   expect_true("values" %in% names(maps$value_map_df))
   expect_true("category" %in% maps$value_map_df$role)
-  expect_equal(maps$value_map_df$values[maps$value_map_df$role == "category"], "a,b,c")
+  expect_equal(
+    maps$value_map_df$values[maps$value_map_df$role == "category"],
+    "a,b,c"
+  )
 })
 
 test_that("get_maps_as_df returns empty dataframes when maps are empty", {
@@ -454,18 +457,16 @@ test_that("get_maps_as_df returns empty dataframes when maps are empty", {
   d <- suppressMessages(
     Data$new(data = df, dataset_name = "TestData", uuid = "id")
   )
-  d$value_map <- list()  # Empty value map
+  d$value_map <- list() # Empty value map
 
   maps <- d$get_maps_as_df()
 
   expect_true(nrow(maps$value_map_df) == 0)
-  expect_true(nrow(maps$variable_map_df) > 0)  # Should at least have uuid
+  expect_true(nrow(maps$variable_map_df) > 0) # Should at least have uuid
 })
 
 
-
 # Test: Integration with HouseholdData
-
 
 test_that("HouseholdData calls map_schema_vars on initialize", {
   # Create mock data with alternative column names that should be auto-mapped
@@ -473,7 +474,10 @@ test_that("HouseholdData calls map_schema_vars on initialize", {
     uuid = paste0("hh_", 1:10),
     consent = sample(c("yes", "no"), 10, replace = TRUE),
     interview_date = Sys.Date() - sample(1:30, 10),
-    enumerator_id = paste0("E", sprintf("%02d", sample(1:5, 10, replace = TRUE)))
+    enumerator_id = paste0(
+      "E",
+      sprintf("%02d", sample(1:5, 10, replace = TRUE))
+    )
   )
 
   # This should trigger map_schema_vars during initialization
@@ -493,9 +497,7 @@ test_that("HouseholdData calls map_schema_vars on initialize", {
 })
 
 
-
 # Test: map_schema_vars with select_multiple questions
-
 
 test_that("map_schema_vars handles select_multiple with value_map", {
   # Create data with select_multiple column (space-separated values)
@@ -704,7 +706,7 @@ test_that("map_schema_vars select_multiple only maps canonical values with found
       food = list(
         cereals = c("rice", "wheat", "maize"),
         legumes = c("beans", "lentils"),
-        vegetables = c("carrot", "tomato", "onion")  # None in data
+        vegetables = c("carrot", "tomato", "onion") # None in data
       )
     )
   )
@@ -737,8 +739,8 @@ test_that("map_schema_vars select_multiple uses word boundaries for matching", {
     question_types = list(activity = "select_multiple"),
     value_map = list(
       activity = list(
-        agriculture = c("farm", "farming"),  # "farm" should match, "farming" not in data
-        fishing = c("fishing", "fish")       # "fishing" should match, "fish" shouldn't
+        agriculture = c("farm", "farming"), # "farm" should match, "farming" not in data
+        fishing = c("fishing", "fish") # "fishing" should match, "fish" shouldn't
       )
     )
   )
@@ -798,8 +800,6 @@ test_that("map_schema_vars select_multiple handles special regex characters", {
 
   expect_true("special" %in% names(d$value_map$code))
   expect_true("C*" %in% d$value_map$code$special)
-
-
 })
 
 # Test: map_schema_vars column priority (preferential mapping) ####
@@ -880,7 +880,12 @@ test_that("map_schema_vars respects column order priority with three options", {
       deaths = "numeric"
     ),
     col_names = list(
-      deaths = c("linked_num_deaths", "num_deaths", "death_count", "deaths_total")
+      deaths = c(
+        "linked_num_deaths",
+        "num_deaths",
+        "death_count",
+        "deaths_total"
+      )
     )
   )
 
@@ -958,161 +963,188 @@ test_that("map_schema_vars remaps if existing mapping points to non-existent col
 # ============================================================================
 
 test_that("map_schema_vars adds ALL allowable values found in data to value_map", {
-    # This test verifies the core requirement:
-    # When using map_schema_vars to map variable and value names in Data Class,
-    # we ensure we are adding to the value_map ALL allowable values that are:
-    # 1. Found in the data
-    # 2. Listed as allowable in the variable schema
+  # This test verifies the core requirement:
+  # When using map_schema_vars to map variable and value names in Data Class,
+  # we ensure we are adding to the value_map ALL allowable values that are:
+  # 1. Found in the data
+  # 2. Listed as allowable in the variable schema
 
-    # Create test data with a mix of values
-    df <- tibble::tibble(
-      id = 1:10,
-      consent_status = c(
-        "yes", "oui", "si",          # 3 different "yes" variants
-        "no", "non", "nein",         # 3 different "no" variants
-        "maybe", "perhaps",          # 2 different "maybe" variants
-        "yes", "no"                  # Duplicates to verify uniqueness
+  # Create test data with a mix of values
+  df <- tibble::tibble(
+    id = 1:10,
+    consent_status = c(
+      "yes",
+      "oui",
+      "si", # 3 different "yes" variants
+      "no",
+      "non",
+      "nein", # 3 different "no" variants
+      "maybe",
+      "perhaps", # 2 different "maybe" variants
+      "yes",
+      "no" # Duplicates to verify uniqueness
+    ),
+    education = c(
+      "primary",
+      "secondary",
+      "university",
+      "primary",
+      "none",
+      "secondary",
+      "primary",
+      "university",
+      "none",
+      "secondary"
+    )
+  )
+
+  d <- suppressMessages(
+    Data$new(data = df, dataset_name = "TestData", uuid = "id")
+  )
+
+  # Define schema with nested value_map structure
+  # Some allowed values ARE in data, some are NOT
+  schema <- list(
+    types = list(
+      consent = "character",
+      education = "character"
+    ),
+    col_names = list(
+      consent = c("consent_status", "consent_col"),
+      education = c("education", "edu_level")
+    ),
+    value_map = list(
+      consent = list(
+        # For "yes" canonical value:
+        # - "yes", "oui", "si" ARE in data (should be included)
+        # - "ja", "sí" are NOT in data (should NOT be included)
+        yes = c("yes", "oui", "si", "ja", "sí"),
+
+        # For "no" canonical value:
+        # - "no", "non", "nein" ARE in data (should be included)
+        # - "nee" is NOT in data (should NOT be included)
+        no = c("no", "non", "nein", "nee"),
+
+        # For "maybe" canonical value:
+        # - "maybe", "perhaps" ARE in data (should be included)
+        # - "possibly" is NOT in data (should NOT be included)
+        maybe = c("maybe", "perhaps", "possibly"),
+
+        # For "declined" canonical value:
+        # - NONE of these are in data (entire canonical value should be EXCLUDED)
+        declined = c("declined", "refused", "reject")
       ),
-      education = c(
-        "primary", "secondary", "university",
-        "primary", "none", "secondary",
-        "primary", "university", "none", "secondary"
+      education = list(
+        basic = c("none", "primary"), # Both ARE in data
+        secondary = c("secondary", "high"), # "secondary" IS, "high" is NOT
+        tertiary = c("university", "college"), # "university" IS, "college" is NOT
+        vocational = c("technical", "trade") # NONE in data (should be EXCLUDED)
       )
     )
+  )
 
-    d <- suppressMessages(
-      Data$new(data = df, dataset_name = "TestData", uuid = "id")
-    )
+  d$set_variable_schema(schema)
+  d$map_schema_vars(stage = "raw")
 
-    # Define schema with nested value_map structure
-    # Some allowed values ARE in data, some are NOT
-    schema <- list(
-      types = list(
-        consent = "character",
-        education = "character"
-      ),
-      col_names = list(
-        consent = c("consent_status", "consent_col"),
-        education = c("education", "edu_level")
-      ),
-      value_map = list(
-        consent = list(
-          # For "yes" canonical value:
-          # - "yes", "oui", "si" ARE in data (should be included)
-          # - "ja", "sí" are NOT in data (should NOT be included)
-          yes = c("yes", "oui", "si", "ja", "sí"),
+  # ===== VERIFY VARIABLE MAPPINGS
+  expect_equal(d$variable_map$consent, "consent_status")
+  expect_equal(d$variable_map$education, "education")
 
-          # For "no" canonical value:
-          # - "no", "non", "nein" ARE in data (should be included)
-          # - "nee" is NOT in data (should NOT be included)
-          no = c("no", "non", "nein", "nee"),
+  # ===== VERIFY VALUE MAPPINGS FOR CONSENT
 
-          # For "maybe" canonical value:
-          # - "maybe", "perhaps" ARE in data (should be included)
-          # - "possibly" is NOT in data (should NOT be included)
-          maybe = c("maybe", "perhaps", "possibly"),
+  # Canonical value "yes" should include ALL found allowable values
+  expect_true("yes" %in% names(d$value_map$consent))
+  expect_true(all(c("yes", "oui", "si") %in% d$value_map$consent$yes))
+  expect_length(d$value_map$consent$yes, 3) # Exactly 3 values
+  # Should NOT include values not in data
+  expect_false("ja" %in% d$value_map$consent$yes)
+  expect_false("sí" %in% d$value_map$consent$yes)
 
-          # For "declined" canonical value:
-          # - NONE of these are in data (entire canonical value should be EXCLUDED)
-          declined = c("declined", "refused", "reject")
-        ),
-        education = list(
-          basic = c("none", "primary"),           # Both ARE in data
-          secondary = c("secondary", "high"),     # "secondary" IS, "high" is NOT
-          tertiary = c("university", "college"),  # "university" IS, "college" is NOT
-          vocational = c("technical", "trade")    # NONE in data (should be EXCLUDED)
-        )
-      )
-    )
+  # Canonical value "no" should include ALL found allowable values
+  expect_true("no" %in% names(d$value_map$consent))
+  expect_true(all(c("no", "non", "nein") %in% d$value_map$consent$no))
+  expect_length(d$value_map$consent$no, 3) # Exactly 3 values
+  # Should NOT include values not in data
+  expect_false("nee" %in% d$value_map$consent$no)
 
-    d$set_variable_schema(schema)
-    d$map_schema_vars(stage = "raw")
+  # Canonical value "maybe" should include ALL found allowable values
+  expect_true("maybe" %in% names(d$value_map$consent))
+  expect_true(all(c("maybe", "perhaps") %in% d$value_map$consent$maybe))
+  expect_length(d$value_map$consent$maybe, 2) # Exactly 2 values
+  # Should NOT include values not in data
+  expect_false("possibly" %in% d$value_map$consent$maybe)
 
-    # ===== VERIFY VARIABLE MAPPINGS
-    expect_equal(d$variable_map$consent, "consent_status")
-    expect_equal(d$variable_map$education, "education")
+  # Canonical value "declined" should NOT be in value_map at all
+  # because NONE of its allowable values are in the data
+  expect_false("declined" %in% names(d$value_map$consent))
 
-    # ===== VERIFY VALUE MAPPINGS FOR CONSENT
+  # ===== VERIFY VALUE MAPPINGS FOR EDUCATION
 
-    # Canonical value "yes" should include ALL found allowable values
-    expect_true("yes" %in% names(d$value_map$consent))
-    expect_true(all(c("yes", "oui", "si") %in% d$value_map$consent$yes))
-    expect_length(d$value_map$consent$yes, 3)  # Exactly 3 values
-    # Should NOT include values not in data
-    expect_false("ja" %in% d$value_map$consent$yes)
-    expect_false("sí" %in% d$value_map$consent$yes)
+  # Canonical value "basic" should include ALL found values
+  expect_true("basic" %in% names(d$value_map$education))
+  expect_true(all(c("none", "primary") %in% d$value_map$education$basic))
+  expect_length(d$value_map$education$basic, 2)
 
-    # Canonical value "no" should include ALL found allowable values
-    expect_true("no" %in% names(d$value_map$consent))
-    expect_true(all(c("no", "non", "nein") %in% d$value_map$consent$no))
-    expect_length(d$value_map$consent$no, 3)  # Exactly 3 values
-    # Should NOT include values not in data
-    expect_false("nee" %in% d$value_map$consent$no)
+  # Canonical value "secondary" should include only found value
+  expect_true("secondary" %in% names(d$value_map$education))
+  expect_true("secondary" %in% d$value_map$education$secondary)
+  expect_false("high" %in% d$value_map$education$secondary)
+  expect_length(d$value_map$education$secondary, 1)
 
-    # Canonical value "maybe" should include ALL found allowable values
-    expect_true("maybe" %in% names(d$value_map$consent))
-    expect_true(all(c("maybe", "perhaps") %in% d$value_map$consent$maybe))
-    expect_length(d$value_map$consent$maybe, 2)  # Exactly 2 values
-    # Should NOT include values not in data
-    expect_false("possibly" %in% d$value_map$consent$maybe)
+  # Canonical value "tertiary" should include only found value
+  expect_true("tertiary" %in% names(d$value_map$education))
+  expect_true("university" %in% d$value_map$education$tertiary)
+  expect_false("college" %in% d$value_map$education$tertiary)
+  expect_length(d$value_map$education$tertiary, 1)
 
-    # Canonical value "declined" should NOT be in value_map at all
-    # because NONE of its allowable values are in the data
-    expect_false("declined" %in% names(d$value_map$consent))
+  # Canonical value "vocational" should NOT be in value_map
+  expect_false("vocational" %in% names(d$value_map$education))
 
-    # ===== VERIFY VALUE MAPPINGS FOR EDUCATION
+  # ===== VERIFY COMPLETENESS
+  # Ensure ALL data values that are listed as allowable are captured
 
-    # Canonical value "basic" should include ALL found values
-    expect_true("basic" %in% names(d$value_map$education))
-    expect_true(all(c("none", "primary") %in% d$value_map$education$basic))
-    expect_length(d$value_map$education$basic, 2)
+  # Get all unique values from data
+  data_consent_values <- unique(df$consent_status)
+  data_education_values <- unique(df$education)
 
-    # Canonical value "secondary" should include only found value
-    expect_true("secondary" %in% names(d$value_map$education))
-    expect_true("secondary" %in% d$value_map$education$secondary)
-    expect_false("high" %in% d$value_map$education$secondary)
-    expect_length(d$value_map$education$secondary, 1)
+  # Flatten all values in value_map
+  all_mapped_consent <- unlist(d$value_map$consent, use.names = FALSE)
+  all_mapped_education <- unlist(d$value_map$education, use.names = FALSE)
 
-    # Canonical value "tertiary" should include only found value
-    expect_true("tertiary" %in% names(d$value_map$education))
-    expect_true("university" %in% d$value_map$education$tertiary)
-    expect_false("college" %in% d$value_map$education$tertiary)
-    expect_length(d$value_map$education$tertiary, 1)
+  # Every data value that's in the schema should be in value_map
+  # (This is the KEY requirement being tested)
+  schema_consent_all <- unlist(schema$value_map$consent, use.names = FALSE)
+  schema_education_all <- unlist(schema$value_map$education, use.names = FALSE)
 
-    # Canonical value "vocational" should NOT be in value_map
-    expect_false("vocational" %in% names(d$value_map$education))
+  data_values_in_schema_consent <- intersect(
+    data_consent_values,
+    schema_consent_all
+  )
+  data_values_in_schema_education <- intersect(
+    data_education_values,
+    schema_education_all
+  )
 
-    # ===== VERIFY COMPLETENESS
-    # Ensure ALL data values that are listed as allowable are captured
+  # Every data value that's allowable should be in the value_map
+  expect_true(
+    all(data_values_in_schema_consent %in% all_mapped_consent),
+    info = "All data values listed in schema should be in value_map"
+  )
+  expect_true(
+    all(data_values_in_schema_education %in% all_mapped_education),
+    info = "All data values listed in schema should be in value_map"
+  )
 
-    # Get all unique values from data
-    data_consent_values <- unique(df$consent_status)
-    data_education_values <- unique(df$education)
-
-    # Flatten all values in value_map
-    all_mapped_consent <- unlist(d$value_map$consent, use.names = FALSE)
-    all_mapped_education <- unlist(d$value_map$education, use.names = FALSE)
-
-    # Every data value that's in the schema should be in value_map
-    # (This is the KEY requirement being tested)
-    schema_consent_all <- unlist(schema$value_map$consent, use.names = FALSE)
-    schema_education_all <- unlist(schema$value_map$education, use.names = FALSE)
-
-    data_values_in_schema_consent <- intersect(data_consent_values, schema_consent_all)
-    data_values_in_schema_education <- intersect(data_education_values, schema_education_all)
-
-    # Every data value that's allowable should be in the value_map
-    expect_true(all(data_values_in_schema_consent %in% all_mapped_consent),
-                info = "All data values listed in schema should be in value_map")
-    expect_true(all(data_values_in_schema_education %in% all_mapped_education),
-                info = "All data values listed in schema should be in value_map")
-
-    # Conversely, no values should be in value_map that aren't in the data
-    expect_true(all(all_mapped_consent %in% data_consent_values),
-                info = "Only data values should be in value_map")
-    expect_true(all(all_mapped_education %in% data_education_values),
-                info = "Only data values should be in value_map")
-  })
+  # Conversely, no values should be in value_map that aren't in the data
+  expect_true(
+    all(all_mapped_consent %in% data_consent_values),
+    info = "Only data values should be in value_map"
+  )
+  expect_true(
+    all(all_mapped_education %in% data_education_values),
+    info = "Only data values should be in value_map"
+  )
+})
 
 
 test_that("map_schema_vars handles select_multiple with ALL allowable values", {
@@ -1140,7 +1172,12 @@ test_that("map_schema_vars handles select_multiple with ALL allowable values", {
     value_map = list(
       income = list(
         # Multiple synonyms for agriculture - some in data, some not
-        agriculture = c("farming", "agriculture", "cultivation", "crop_growing"),
+        agriculture = c(
+          "farming",
+          "agriculture",
+          "cultivation",
+          "crop_growing"
+        ),
         # Multiple synonyms for fishing - some in data, some not
         aquatic = c("fishing", "fishery", "aquaculture"),
         # Multiple synonyms for hunting - some in data, some not
@@ -1180,7 +1217,7 @@ test_that("map_schema_vars handles select_multiple with ALL allowable values", {
   expect_true("trading" %in% d$value_map$income$commerce)
   expect_true("selling" %in% d$value_map$income$commerce)
   expect_true("business" %in% d$value_map$income$commerce)
-  expect_length(d$value_map$income$commerce, 3)  # Exactly 3 found
+  expect_length(d$value_map$income$commerce, 3) # Exactly 3 found
   # But not the ones not in data
   expect_false("commerce" %in% d$value_map$income$commerce)
   expect_false("merchant" %in% d$value_map$income$commerce)
@@ -1195,8 +1232,16 @@ test_that("map_schema_vars with allowed_values (backward compat) includes ALL fo
 
   df <- tibble::tibble(
     id = 1:8,
-    status = c("active", "inactive", "pending", "active",
-               "suspended", "active", "pending", "inactive")
+    status = c(
+      "active",
+      "inactive",
+      "pending",
+      "active",
+      "suspended",
+      "active",
+      "pending",
+      "inactive"
+    )
   )
 
   d <- suppressMessages(
@@ -1208,8 +1253,15 @@ test_that("map_schema_vars with allowed_values (backward compat) includes ALL fo
     col_names = list(account_status = c("status", "account_status")),
     # Old-style allowed_values instead of nested value_map
     allowed_values = list(
-      account_status = c("active", "inactive", "pending", "suspended",
-                         "deleted", "archived", "banned")
+      account_status = c(
+        "active",
+        "inactive",
+        "pending",
+        "suspended",
+        "deleted",
+        "archived",
+        "banned"
+      )
     )
   )
 
@@ -1218,8 +1270,10 @@ test_that("map_schema_vars with allowed_values (backward compat) includes ALL fo
 
   # Should include ALL four values found in data
   expect_true("account_status" %in% names(d$value_map))
-  expect_true(all(c("active", "inactive", "pending", "suspended") %in%
-                    d$value_map$account_status))
+  expect_true(all(
+    c("active", "inactive", "pending", "suspended") %in%
+      d$value_map$account_status
+  ))
   expect_length(d$value_map$account_status, 4)
 
   # Should NOT include values not in data
@@ -1231,25 +1285,7 @@ test_that("map_schema_vars with allowed_values (backward compat) includes ALL fo
 
 # Test: map_schema_vars is called after each indicator in standardize
 
-
 test_that("map_schema_vars is called after each add_* function in standardize", {
-  # Create a mock add_ function that adds a column
-  add_test_indicator_1 <- function(.dataset) {
-    .dataset$indicator_1 <- rep("value_a", nrow(.dataset))
-    return(.dataset)
-  }
-
-  # Create a mock add_ function that depends on indicator_1
-  add_test_indicator_2 <- function(.dataset, dep_col) {
-    # This function checks if dep_col exists (should be mapped from indicator_1)
-    if (!is.null(dep_col) && dep_col %in% names(.dataset)) {
-      .dataset$indicator_2 <- paste0("depends_on_", .dataset[[dep_col]])
-    } else {
-      .dataset$indicator_2 <- "no_dependency"
-    }
-    return(.dataset)
-  }
-
   # Create test data
   df <- tibble::tibble(
     id = 1:5,
@@ -1281,9 +1317,9 @@ test_that("map_schema_vars is called after each add_* function in standardize", 
     ),
     test_indicator_2 = list(
       function_name = "add_test_indicator_2",
-      variables = c("test_indicator_1"),  # Depends on test_indicator_1
+      variables = c("test_indicator_1"), # Depends on test_indicator_1
       arguments = list(
-        dep_col = "@variable_map$test_indicator_1"  # Should resolve to "indicator_1"
+        dep_col = "@variable_map$test_indicator_1" # Should resolve to "indicator_1"
       )
     )
   )
@@ -1319,13 +1355,6 @@ test_that("map_schema_vars is called after each add_* function in standardize", 
 test_that("map_schema_vars updates to more preferred column when available", {
   # Test that if a more preferred column becomes available, the mapping is updated
 
-  # Create a mock add_ function that adds a preferred column
-  add_preferred_column <- function(.dataset) {
-    # Add a column with the most preferred name
-    .dataset$preferred_name <- .dataset$less_preferred_name
-    return(.dataset)
-  }
-
   # Create test data with less preferred column
   df <- tibble::tibble(
     id = 1:5,
@@ -1340,7 +1369,7 @@ test_that("map_schema_vars updates to more preferred column when available", {
     ),
     col_names = list(
       uuid = c("id"),
-      my_var = c("preferred_name", "less_preferred_name", "fallback_name")  # Order matters
+      my_var = c("preferred_name", "less_preferred_name", "fallback_name") # Order matters
     )
   )
 
@@ -1410,15 +1439,9 @@ test_that("map_schema_vars does not downgrade to less preferred column", {
   expect_equal(d$variable_map$my_var, "preferred_name")
 })
 
+
 test_that("map_schema_vars updates value_map when variable_map is updated", {
   # Test that when a more preferred column is found, value_map is also updated
-
-  # Create a mock add_ function
-  add_better_column <- function(.dataset) {
-    # Add a column with different values
-    .dataset$better_col <- c("new_val_1", "new_val_2", "new_val_1", "new_val_2", "new_val_1")
-    return(.dataset)
-  }
 
   # Create test data
   df <- tibble::tibble(
@@ -1462,7 +1485,7 @@ test_that("map_schema_vars updates value_map when variable_map is updated", {
   expect_true(all(c("old_val_1", "old_val_2") %in% d$value_map$status))
 
   # Run standardize
-  d$standardize()
+  suppressWarnings(d$standardize())
 
   # Should now map to better_col with new values
   expect_equal(d$variable_map$status, "better_col")
@@ -1487,27 +1510,27 @@ test_that("map_schema_labels returns invisible self when no schema is defined", 
 
 test_that("map_schema_labels populates variable_label and value_label from schema (english)", {
   df <- tibble::tibble(
-    id     = 1:4,
+    id = 1:4,
     gender = c("male", "female", "male", "female"),
-    age    = c(25L, 30L, 45L, 22L)
+    age = c(25L, 30L, 45L, 22L)
   )
   d <- suppressMessages(
     Data$new(data = df, dataset_name = "LabelTest", uuid = "id")
   )
 
   schema <- list(
-    types      = list(sex = "character", age = "integer"),
-    col_names  = list(sex = c("sex", "gender"), age = c("age")),
-    value_map  = list(sex = list(male = c("male"), female = c("female"))),
+    types = list(sex = "character", age = "integer"),
+    col_names = list(sex = c("sex", "gender"), age = c("age")),
+    value_map = list(sex = list(male = c("male"), female = c("female"))),
     variable_labels = list(
       en = list(sex = "Sex of Respondent", age = "Age in Years"),
-      fr = list(sex = "Sexe du répondant",  age = "Âge en années"),
-      ar = list(sex = "جنس المستجيب",        age = "العمر بالسنوات")
+      fr = list(sex = "Sexe du répondant", age = "Âge en années"),
+      ar = list(sex = "جنس المستجيب", age = "العمر بالسنوات")
     ),
     value_labels = list(
       en = list(sex = c(male = "Male", female = "Female")),
       fr = list(sex = c(male = "Homme", female = "Femme")),
-      ar = list(sex = c(male = "ذكر",   female = "أنثى"))
+      ar = list(sex = c(male = "ذكر", female = "أنثى"))
     )
   )
   d$set_variable_schema(schema)
@@ -1516,7 +1539,7 @@ test_that("map_schema_labels populates variable_label and value_label from schem
 
   expect_equal(d$variable_label$sex, "Sex of Respondent")
   expect_equal(d$variable_label$age, "Age in Years")
-  expect_equal(d$value_label$sex[["male"]],   "Male")
+  expect_equal(d$value_label$sex[["male"]], "Male")
   expect_equal(d$value_label$sex[["female"]], "Female")
 })
 
@@ -1527,7 +1550,7 @@ test_that("map_schema_labels respects language argument", {
   )
 
   schema <- list(
-    types     = list(sex = "character"),
+    types = list(sex = "character"),
     col_names = list(sex = c("sex", "gender")),
     value_map = list(sex = list(male = c("male"), female = c("female"))),
     variable_labels = list(
@@ -1536,9 +1559,9 @@ test_that("map_schema_labels respects language argument", {
       ar = list(sex = "جنس")
     ),
     value_labels = list(
-      en = list(sex = c(male = "Male",  female = "Female")),
+      en = list(sex = c(male = "Male", female = "Female")),
       fr = list(sex = c(male = "Homme", female = "Femme")),
-      ar = list(sex = c(male = "ذكر",   female = "أنثى"))
+      ar = list(sex = c(male = "ذكر", female = "أنثى"))
     )
   )
   d$set_variable_schema(schema)
@@ -1560,7 +1583,7 @@ test_that("map_schema_labels defaults to english for unknown language", {
   )
 
   schema <- list(
-    types     = list(sex = "character"),
+    types = list(sex = "character"),
     col_names = list(sex = c("sex", "gender")),
     variable_labels = list(en = list(sex = "Sex"), fr = list(sex = "Sexe"))
   )
@@ -1578,7 +1601,7 @@ test_that("map_schema_labels only labels variables present in variable_map", {
   )
 
   schema <- list(
-    types     = list(sex = "character", age = "integer"),
+    types = list(sex = "character", age = "integer"),
     col_names = list(sex = c("sex", "gender"), age = c("age")),
     variable_labels = list(
       en = list(sex = "Sex", age = "Age")
@@ -1600,11 +1623,11 @@ test_that("map_schema_labels is called automatically after map_schema_vars in st
   )
 
   schema <- list(
-    types     = list(sex = "character"),
+    types = list(sex = "character"),
     col_names = list(sex = c("sex", "gender")),
     value_map = list(sex = list(male = c("male"), female = c("female"))),
     variable_labels = list(en = list(sex = "Sex")),
-    value_labels    = list(en = list(sex = c(male = "Male", female = "Female")))
+    value_labels = list(en = list(sex = c(male = "Male", female = "Female")))
   )
   d$set_variable_schema(schema)
   d$standardize()
@@ -1612,4 +1635,3 @@ test_that("map_schema_labels is called automatically after map_schema_vars in st
   expect_equal(d$variable_label$sex, "Sex")
   expect_equal(d$value_label$sex[["male"]], "Male")
 })
-

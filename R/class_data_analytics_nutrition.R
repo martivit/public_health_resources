@@ -79,7 +79,7 @@ NutritionDataAnalytics <- R6::R6Class(
       self$plausibility_results_anthro <- list()
       self$plausibility_results_iycf   <- list()
 
-      phr_message(
+      phrutils::phr_message(
         phr_txt(glue::glue("{dataset_name} initialized as NutritionDataAnalytics object."))
       )
     },
@@ -126,15 +126,15 @@ NutritionDataAnalytics <- R6::R6Class(
         return(invisible(self))
       }
 
-      phr_message(origin, "Running MUAC age-weighted post-analysis...")
+      phrutils::phr_message(origin, "Running MUAC age-weighted post-analysis...")
 
       if (is.null(self$survey_design)) {
-        phr_warning(message = "Survey design not set; skipping MUAC post-analysis.", origin = origin)
+        phrutils::phr_warning(message = "Survey design not set; skipping MUAC post-analysis.", origin = origin)
         return(invisible(self))
       }
 
       if (is.null(self$data_analysis_plan) || nrow(self$data_analysis_plan$log_df) == 0) {
-        phr_warning(message = "No data_analysis_plan available; skipping MUAC post-analysis.", origin = origin)
+        phrutils::phr_warning(message = "No data_analysis_plan available; skipping MUAC post-analysis.", origin = origin)
         return(invisible(self))
       }
 
@@ -145,7 +145,7 @@ NutritionDataAnalytics <- R6::R6Class(
       muac_rows <- dap_full[grepl("muac", dap_full$var_name, ignore.case = TRUE), , drop = FALSE]
 
       if (nrow(muac_rows) == 0) {
-        phr_message(origin, "No 'muac' variables found in analysis plan; skipping MUAC post-analysis.")
+        phrutils::phr_message(origin, "No 'muac' variables found in analysis plan; skipping MUAC post-analysis.")
         return(invisible(self))
       }
 
@@ -155,7 +155,7 @@ NutritionDataAnalytics <- R6::R6Class(
       alt_weights <- private$.compute_weights_muac_alt(expected_prop_0_23)
 
       if (is.null(alt_weights)) {
-        phr_warning(
+        phrutils::phr_warning(
           message = "Could not compute MUAC age-adjustment weights (age column missing or no eligible children). Skipping.",
           origin  = origin
         )
@@ -179,13 +179,20 @@ NutritionDataAnalytics <- R6::R6Class(
       modified_data <- sd_vars
       modified_data[[tmp_col]] <- composite_wt
 
+      # Restrict to rows with a valid composite weight (i.e. children aged
+      # 0-59 months). Rows outside this range receive NA from
+      # .compute_weights_muac_alt and must be dropped before survey design
+      # construction, otherwise srvyr raises "missing values in 'weights'".
+      valid_rows    <- !is.na(modified_data[[tmp_col]])
+      modified_data <- modified_data[valid_rows, , drop = FALSE]
+
       # ------------------------------------------------------------------
       # 5. Build temporary survey design with the composite weight
       # ------------------------------------------------------------------
       muac_design <- private$.build_muac_survey_design(modified_data, tmp_col)
 
       if (is.null(muac_design)) {
-        phr_warning(
+        phrutils::phr_warning(
           message = "Could not create MUAC-weighted survey design. Skipping.",
           origin  = origin
         )
@@ -195,7 +202,7 @@ NutritionDataAnalytics <- R6::R6Class(
       # ------------------------------------------------------------------
       # 6. Run analysis and store under 'muac_weighted'
       # ------------------------------------------------------------------
-      muac_results <- phr_try(
+      muac_results <- phrutils::phr_try(
         phr_calc_survey_from_plan(
           design        = muac_design,
           analysis_plan = muac_rows
@@ -207,7 +214,7 @@ NutritionDataAnalytics <- R6::R6Class(
 
       self$analysis_results[["muac_weighted"]] <- muac_results
 
-      phr_message(origin, glue::glue(
+      phrutils::phr_message(origin, glue::glue(
         "MUAC age-weighted post-analysis complete: {nrow(muac_rows)} indicator(s) stored under 'muac_weighted'."
       ))
 
@@ -228,7 +235,7 @@ NutritionDataAnalytics <- R6::R6Class(
 
       origin <- paste0(self$dataset_name, "$quality_diagnose")
 
-      phr_try({
+      phrutils::phr_try({
 
         empty_row <- tibble::tibble(
           schema_type         = character(),
@@ -252,7 +259,7 @@ NutritionDataAnalytics <- R6::R6Class(
         diagnose_schema <- function(schema, schema_label) {
 
           if (is.null(schema) || length(schema) == 0) {
-            phr_warning(
+            phrutils::phr_warning(
               message = glue::glue("No {schema_label} quality schema defined. Skipping."),
               origin  = origin
             )
@@ -338,7 +345,7 @@ NutritionDataAnalytics <- R6::R6Class(
         self$quality_issues_log <- result
 
         n_issues <- sum(result$status != "ok", na.rm = TRUE)
-        phr_message(phr_txt(glue::glue(
+        phrutils::phr_message(phr_txt(glue::glue(
           "quality_diagnose complete: {nrow(result)} check(s) reviewed ({nrow(anthro_result)} anthropometric, {nrow(iycf_result)} IYCF), {n_issues} issue(s) found for {self$dataset_name}."
         )))
 
@@ -364,7 +371,7 @@ NutritionDataAnalytics <- R6::R6Class(
         }
       }
 
-      df <- phr_try(
+      df <- phrutils::phr_try(
         readxl::read_xlsx(file),
         on_error = "warn",
         origin   = "NutritionDataAnalytics$default_quality_anthro_schema",
@@ -401,7 +408,7 @@ NutritionDataAnalytics <- R6::R6Class(
         }
       }
 
-      df <- phr_try(
+      df <- phrutils::phr_try(
         readxl::read_xlsx(file),
         on_error = "warn",
         origin   = "NutritionDataAnalytics$default_quality_iycf_schema",
@@ -464,7 +471,7 @@ NutritionDataAnalytics <- R6::R6Class(
     #'   the check results for that schema (invisibly)
     run_quality_checks = function() {
 
-      phr_try({
+      phrutils::phr_try({
 
         nested_results <- super$run_quality_checks()
 
@@ -479,7 +486,7 @@ NutritionDataAnalytics <- R6::R6Class(
         self$plausibility_results <- c(anthro_results, iycf_results)
         self$calculate_overall_score()
 
-        phr_message(
+        phrutils::phr_message(
           phr_txt(glue::glue("Ran {length(anthro_results)} anthropometric and {length(iycf_results)} IYCF quality checks for {self$dataset_name}."))
         )
 
@@ -505,7 +512,7 @@ NutritionDataAnalytics <- R6::R6Class(
         }
       }
 
-      schema_tbl <- phr_try(
+      schema_tbl <- phrutils::phr_try(
         readxl::read_xlsx(file),
         on_error = "warn",
         origin   = "NutritionDataAnalytics$default_analysis_schema",
@@ -536,7 +543,7 @@ NutritionDataAnalytics <- R6::R6Class(
         }
       }
 
-      df <- phr_try(
+      df <- phrutils::phr_try(
         readxl::read_xlsx(file),
         on_error = "warn",
         origin   = "NutritionDataAnalytics$default_outputs_schema",
@@ -578,7 +585,7 @@ NutritionDataAnalytics <- R6::R6Class(
       # Resolve the age-in-months column via variable_map
       age_col <- self$variable_map[["age_months"]]
       if (is.null(age_col) || !age_col %in% names(sd_vars)) {
-        phr_message(
+        phrutils::phr_message(
           origin,
           "No age_months column found in survey_design$variables; MUAC age-adjustment weights cannot be computed."
         )
@@ -595,7 +602,7 @@ NutritionDataAnalytics <- R6::R6Class(
       n_total <- n_0_23 + n_24_59
 
       if (n_total == 0) {
-        phr_message(
+        phrutils::phr_message(
           origin,
           "No children aged 0-59 months found; MUAC age-adjustment weights cannot be computed."
         )
@@ -616,7 +623,7 @@ NutritionDataAnalytics <- R6::R6Class(
         alt_weights[in_24_59] <- expected_prop_24_59 / sample_prop_24_59
       }
 
-      phr_message(
+      phrutils::phr_message(
         origin,
         glue::glue(
           "MUAC age-adjustment weights computed: {n_0_23} children 0-23 months ",
@@ -631,7 +638,9 @@ NutritionDataAnalytics <- R6::R6Class(
 
     # Build a temporary survey design using `weight_col` as the weight column.
     # Cluster, strata, and FPC are resolved from self$variable_map as usual.
-    # Returns NULL on failure.
+    # Any variable (including weight_col) that is absent from modified_data
+    # is silently omitted so that a simple random-sample design is always
+    # producible as a minimum.  Returns NULL on failure.
     .build_muac_survey_design = function(modified_data, weight_col) {
 
       origin <- paste0(self$dataset_name, "$post_run_analysis$.build_muac_survey_design")
@@ -652,12 +661,18 @@ NutritionDataAnalytics <- R6::R6Class(
       fpc_col <- self$variable_map[["fpc"]]
       if (is.null(fpc_col) || !fpc_col %in% names(modified_data)) fpc_col <- NULL
 
+      # weight_col is the composite weight created by post_run_analysis; treat
+      # it as optional so the design can always be built at minimum as an SRS.
+      if (is.null(weight_col) || !weight_col %in% names(modified_data)) {
+        weight_col <- NULL
+      }
+
       ids_sym    <- if (!is.null(cluster_col)) rlang::sym(cluster_col) else 1
       strata_sym <- if (!is.null(strata_col))  rlang::sym(strata_col)  else NULL
-      weight_sym <- rlang::sym(weight_col)
+      weight_sym <- if (!is.null(weight_col))  rlang::sym(weight_col)  else NULL
       fpc_sym    <- if (!is.null(fpc_col))     rlang::sym(fpc_col)     else NULL
 
-      design <- phr_try(
+      design <- phrutils::phr_try(
         srvyr::as_survey_design(
           .data   = modified_data,
           ids     = !!ids_sym,

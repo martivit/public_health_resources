@@ -62,9 +62,9 @@ create_survey_protocol <- function(
 validate_protocol <- function(protocol) {
   origin <- "validate_protocol"
 
-  phr_try(
+  phrutils::phr_try(
     {
-      phr_assert(
+      phrutils::phr_assert(
         inherits(protocol, "Protocol"),
         message = phr_txt("Object is not a Protocol instance."),
         origin = origin,
@@ -132,16 +132,16 @@ validate_strata_table <- function(sample_table) {
 save_protocol <- function(protocol, file) {
   origin <- "save_protocol"
 
-  phr_try(
+  phrutils::phr_try(
     {
-      phr_assert(
+      phrutils::phr_assert(
         inherits(protocol, "Protocol"),
         message = phr_txt("Object is not a Protocol instance."),
         origin = origin
       )
 
       saveRDS(protocol, file = file)
-      phr_message(phr_txt("Protocol saved to: {file}"), origin = origin)
+      phrutils::phr_message(phr_txt("Protocol saved to: {file}"), origin = origin)
     },
     on_error = "abort",
     origin = origin
@@ -159,9 +159,9 @@ save_protocol <- function(protocol, file) {
 load_protocol <- function(file) {
   origin <- "load_protocol"
 
-  phr_try(
+  phrutils::phr_try(
     {
-      phr_assert(
+      phrutils::phr_assert(
         file.exists(file),
         message = phr_txt("File does not exist: '{file}'"),
         origin = origin,
@@ -171,7 +171,7 @@ load_protocol <- function(file) {
       )
 
       protocol <- readRDS(file)
-      phr_message(phr_txt("Protocol loaded from: {file}"), origin = origin)
+      phrutils::phr_message(phr_txt("Protocol loaded from: {file}"), origin = origin)
       protocol
     },
     on_error = "abort",
@@ -193,9 +193,9 @@ load_protocol <- function(file) {
 restore_protocol <- function(protocol_data) {
   origin <- "restore_protocol"
 
-  phr_try(
+  phrutils::phr_try(
     {
-      phr_assert(
+      phrutils::phr_assert(
         is.list(protocol_data) && !is.null(protocol_data$metadata),
         message = phr_txt(
           "protocol_data must be a list with a 'metadata' element."
@@ -312,7 +312,7 @@ restore_protocol <- function(protocol_data) {
         protocol$sync_state()
       }
 
-      phr_message(phr_txt("Protocol restored successfully."), origin = origin)
+      phrutils::phr_message(phr_txt("Protocol restored successfully."), origin = origin)
       protocol
     },
     on_error = "abort",
@@ -341,9 +341,9 @@ generate_protocol_report <- function(
 ) {
   origin <- "generate_protocol_report"
 
-  phr_try(
+  phrutils::phr_try(
     {
-      phr_assert(
+      phrutils::phr_assert(
         inherits(protocol, "Protocol"),
         message = phr_txt(
           "Object is not a Protocol or SurveyProtocol instance."
@@ -373,9 +373,9 @@ generate_protocol_report <- function(
 print_protocol_summary <- function(protocol) {
   origin <- "print_protocol_summary"
 
-  phr_try(
+  phrutils::phr_try(
     {
-      phr_assert(
+      phrutils::phr_assert(
         inherits(protocol, "Protocol"),
         message = phr_txt("Object is not a Protocol instance."),
         origin = origin
@@ -383,7 +383,7 @@ print_protocol_summary <- function(protocol) {
 
       md <- protocol$metadata
 
-      phr_message(
+      phrutils::phr_message(
         phr_txt(
           "Protocol: {md$assessment_title %||% 'N/A'} | Country: {md$country_name %||% 'N/A'} | {md$month_year %||% 'N/A'}"
         ),
@@ -405,7 +405,7 @@ print_protocol_summary <- function(protocol) {
         0L
       }
 
-      phr_message(
+      phrutils::phr_message(
         phr_txt("Objectives: {n_objectives} | Tools: {n_tools}"),
         origin = origin
       )
@@ -413,13 +413,13 @@ print_protocol_summary <- function(protocol) {
       issues <- protocol$get_issues()
       if (length(issues) > 0) {
         for (issue_name in names(issues)) {
-          phr_warning(
+          phrutils::phr_warning(
             message = phr_txt("{issues[[issue_name]]}"),
             origin = origin
           )
         }
       } else {
-        phr_message(phr_txt("No issues detected."), origin = origin)
+        phrutils::phr_message(phr_txt("No issues detected."), origin = origin)
       }
     },
     on_error = "abort",

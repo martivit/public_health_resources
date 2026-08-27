@@ -43,6 +43,7 @@ Nutrition-specific quantitative analysis, including anthropometric data.
     \item \href{#method-NutritionDataAnalytics-quality_diagnose}{\code{NutritionDataAnalytics$quality_diagnose()}}
     \item \href{#method-NutritionDataAnalytics-default_quality_anthro_schema}{\code{NutritionDataAnalytics$default_quality_anthro_schema()}}
     \item \href{#method-NutritionDataAnalytics-default_quality_iycf_schema}{\code{NutritionDataAnalytics$default_quality_iycf_schema()}}
+    \item \href{#method-NutritionDataAnalytics-pre_run_quality_checks}{\code{NutritionDataAnalytics$pre_run_quality_checks()}}
     \item \href{#method-NutritionDataAnalytics-run_quality_checks}{\code{NutritionDataAnalytics$run_quality_checks()}}
     \item \href{#method-NutritionDataAnalytics-default_analysis_schema}{\code{NutritionDataAnalytics$default_analysis_schema()}}
     \item \href{#method-NutritionDataAnalytics-default_outputs_schema}{\code{NutritionDataAnalytics$default_outputs_schema()}}
@@ -53,6 +54,7 @@ Nutrition-specific quantitative analysis, including anthropometric data.
 <ul>
   <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id=".compute_results_by_group"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-.compute_results_by_group'><code>DataAnalytics$.compute_results_by_group()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id=".translate_canonical_to_actual_vars"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-.translate_canonical_to_actual_vars'><code>DataAnalytics$.translate_canonical_to_actual_vars()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="add_all_to_dap"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-add_all_to_dap'><code>DataAnalytics$add_all_to_dap()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="add_indicator_dap"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-add_indicator_dap'><code>DataAnalytics$add_indicator_dap()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="analysis_diagnose"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-analysis_diagnose'><code>DataAnalytics$analysis_diagnose()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="calculate_overall_score"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-calculate_overall_score'><code>DataAnalytics$calculate_overall_score()</code></a></span></li>
@@ -79,6 +81,9 @@ Nutrition-specific quantitative analysis, including anthropometric data.
   <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="import_schema_from_table"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-import_schema_from_table'><code>DataAnalytics$import_schema_from_table()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="load_state_object"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-load_state_object'><code>DataAnalytics$load_state_object()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="outputs_diagnose"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-outputs_diagnose'><code>DataAnalytics$outputs_diagnose()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="pre_add_all_to_dap"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-pre_add_all_to_dap'><code>DataAnalytics$pre_add_all_to_dap()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="pre_run_analysis"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-pre_run_analysis'><code>DataAnalytics$pre_run_analysis()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="pre_run_outputs"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-pre_run_outputs'><code>DataAnalytics$pre_run_outputs()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="remove_indicator_dap"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-remove_indicator_dap'><code>DataAnalytics$remove_indicator_dap()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="results_to_table"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-results_to_table'><code>DataAnalytics$results_to_table()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="phr" data-topic="DataAnalytics" data-id="run_analysis"><a href='../../phr/html/DataAnalytics.html#method-DataAnalytics-run_analysis'><code>DataAnalytics$run_analysis()</code></a></span></li>
@@ -239,17 +244,39 @@ Results are stored in \code{self$quality_issues_log}.
 }
 
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-NutritionDataAnalytics-pre_run_quality_checks"></a>}}
+\if{latex}{\out{\hypertarget{method-NutritionDataAnalytics-pre_run_quality_checks}{}}}
+\subsection{\code{NutritionDataAnalytics$pre_run_quality_checks()}}{
+  Pre-hook providing the input sets used by the inherited
+\code{run_quality_checks()}.
+
+Returns one input set per nutrition quality schema (both operating on
+the same data): \code{anthro} (using \code{quality_schema_anthro}) and
+\code{iycf} (using \code{quality_schema_iycf}). Penalty tables are
+stored under \code{tables$anthro$plausibility} and
+\code{tables$iycf$plausibility}.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{NutritionDataAnalytics$pre_run_quality_checks()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A named list of field sets.
+  }
+}
+
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-NutritionDataAnalytics-run_quality_checks"></a>}}
 \if{latex}{\out{\hypertarget{method-NutritionDataAnalytics-run_quality_checks}{}}}
 \subsection{\code{NutritionDataAnalytics$run_quality_checks()}}{
   Run quality checks for both anthropometric and IYCF schemas
 
-Executes all checks defined in `quality_schema_anthro` and
-`quality_schema_iycf` separately, storing results in
-`plausibility_results_anthro` and `plausibility_results_iycf`
-respectively. Combined results are also written to `plausibility_results`
-so that inherited helpers (e.g. `calculate_overall_score`,
-`results_to_table`) continue to work as expected.
+Uses the inherited \code{run_quality_checks()} with the input sets from
+\code{pre_run_quality_checks()}, then mirrors the per-schema results
+into `plausibility_results_anthro` and `plausibility_results_iycf`.
+Combined results are also written to `plausibility_results` so that
+inherited helpers (e.g. `calculate_overall_score`, `results_to_table`)
+continue to work as expected.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{NutritionDataAnalytics$run_quality_checks()}

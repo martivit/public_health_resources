@@ -89,10 +89,10 @@ quality_schema_to_table <- function(qc_schema) {
 #' @export
 quality_table_to_schema <- function(df) {
 
-  phr_validate_dataframe(df, origin = "quality_table_to_schema", soft = FALSE)
+  phrutils::phr_validate_dataframe(df, origin = "quality_table_to_schema", soft = FALSE)
   quality_validate_table_to_schema(df)
 
-  phr_validate_columns(
+  phrutils::phr_validate_columns(
     df,
     required_cols = c(
       "check_name",
@@ -193,9 +193,9 @@ quality_table_to_schema <- function(df) {
 #' @export
 quality_validate_table_to_schema <- function(df, data_obj = NULL) {
 
-  phr_try({
+  phrutils::phr_try({
 
-    phr_validate_dataframe(
+    phrutils::phr_validate_dataframe(
       df,
       origin = "quality_validate_table_to_schema",
       soft = FALSE
@@ -214,7 +214,7 @@ quality_validate_table_to_schema <- function(df, data_obj = NULL) {
 
     # Required column check (delegated)
 
-    phr_validate_columns(
+    phrutils::phr_validate_columns(
       df,
       required_cols = required_cols,
       origin = "quality_validate_table_to_schema",
@@ -225,7 +225,7 @@ quality_validate_table_to_schema <- function(df, data_obj = NULL) {
 
     # Required NA check (delegated)
 
-    phr_validate_required_na(
+    phrutils::phr_validate_required_na(
       df,
       required_cols = required_cols[required_cols != "test_params"],
       origin = "quality_validate_table_to_schema",
@@ -236,7 +236,7 @@ quality_validate_table_to_schema <- function(df, data_obj = NULL) {
 
     # Duplicate identical row check
 
-    phr_validate_no_duplicates(
+    phrutils::phr_validate_no_duplicates(
       df,
       origin = "quality_validate_table_to_schema",
       hint   = phr_txt("Each QC rule row must be unique."),
@@ -253,7 +253,7 @@ quality_validate_table_to_schema <- function(df, data_obj = NULL) {
 
       missing_vars <- setdiff(vars, names(data_obj$raw_data))
       if (length(missing_vars) > 0) {
-        phr_warning(
+        phrutils::phr_warning(
           "QC Schema",
           phr_txt(
             "QC schema references missing variables: {paste(missing_vars, collapse=', ')}"
@@ -286,7 +286,7 @@ quality_validate_table_to_schema <- function(df, data_obj = NULL) {
 #' @export
 quality_validate_schema_to_table <- function(qc_schema, origin = "quality_validate_schema_to_table") {
 
-  phr_try({
+  phrutils::phr_try({
 
     # 1. Top-level structure check
 

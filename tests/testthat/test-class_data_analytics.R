@@ -9,8 +9,10 @@ test_that("DataAnalytics initializes with valid data", {
   df <- tibble::tibble(id = 1:10, x = rnorm(10))
 
   # Suppress expected, non-consequential startup output (warnings/messages)
-  da <- suppressMessages(
-    DataAnalytics$new(data = df, dataset_name = "TestDA")
+  suppressWarnings(
+    da <- suppressMessages(
+      DataAnalytics$new(data = df, dataset_name = "TestDA")
+    )
   )
 
   expect_s3_class(da, "DataAnalytics")
@@ -76,13 +78,13 @@ test_that("DataAnalytics set_quality_schema works", {
 
   custom_schema <- list(
     test_check = list(
-      check_name       = "test_check",
-      check_label      = "Test Check",
+      check_name = "test_check",
+      check_label = "Test Check",
       statistical_test = "range_violation",
-      variables        = c("val"),
-      thresholds       = list(
+      variables = c("val"),
+      thresholds = list(
         list(expression = "test_statistic <= 5", penalty = 0),
-        list(expression = "test_statistic > 5",  penalty = 5)
+        list(expression = "test_statistic > 5", penalty = 5)
       ),
       test_params = list(min_value = 0, max_value = 10)
     )
@@ -132,8 +134,8 @@ test_that("DataAnalytics add_indicator_dap works", {
   suppressMessages(
     da$add_indicator_dap(
       indicator_name = "Test",
-      calculation    = "prop",
-      var_name       = "x"
+      calculation = "prop",
+      var_name = "x"
     )
   )
 
@@ -178,11 +180,11 @@ test_that("DataAnalytics validate_plan catches invalid calculation", {
 
   da$data_analysis_plan$log_df <- tibble::tibble(
     indicator_name = "Bad",
-    calculation    = "invalid_type",
-    var_name       = "x",
-    denom_var      = NA_character_,
+    calculation = "invalid_type",
+    var_name = "x",
+    denom_var = NA_character_,
     disaggregation = NA_character_,
-    multiplier     = 100,
+    multiplier = 100,
     indicator_unit = "%"
   )
 
@@ -216,10 +218,10 @@ test_that("DataAnalytics summary returns expected keys", {
   )
 
   s <- da$summary()
-  expect_true("dataset_name"  %in% names(s))
-  expect_true("n_records"     %in% names(s))
+  expect_true("dataset_name" %in% names(s))
+  expect_true("n_records" %in% names(s))
   expect_true("overall_score" %in% names(s))
-  expect_true("n_checks"      %in% names(s))
+  expect_true("n_checks" %in% names(s))
 })
 
 test_that("DataAnalytics analysis_results is separate from quality results", {
@@ -246,10 +248,10 @@ test_that("DataAnalytics export_state_object captures both result types", {
   )
 
   state <- da$export_state_object()
-  expect_true("plausibility_results" %in% names(state))  # quality results
-  expect_true("analysis_results" %in% names(state))       # analysis results
-  expect_true("quality_schema"   %in% names(state))
-  expect_true("analysis_schema"  %in% names(state))
+  expect_true("plausibility_results" %in% names(state)) # quality results
+  expect_true("analysis_results" %in% names(state)) # analysis results
+  expect_true("quality_schema" %in% names(state))
+  expect_true("analysis_schema" %in% names(state))
 })
 
 test_that("DataAnalytics load_state_object restores state", {
@@ -310,14 +312,14 @@ test_that("WASHDataAnalytics initializes correctly", {
 })
 
 test_that("WASHDataAnalytics stores linked containers data", {
-  df         <- tibble::tibble(id = 1:5)
+  df <- tibble::tibble(id = 1:5)
   containers <- tibble::tibble(hh_id = 1:3, volume = c(10, 20, 30))
 
   # Suppress expected, non-consequential initialization chatter (messages + warning)
   da <- suppressMessages(
     WASHDataAnalytics$new(
-      data                   = df,
-      dataset_name           = "WASHLinkedTest",
+      data = df,
+      dataset_name = "WASHLinkedTest",
       linked_containers_data = containers
     )
   )
@@ -350,8 +352,10 @@ test_that("MortalityDataAnalytics initializes correctly", {
   df <- tibble::tibble(id = 1:5)
 
   # Suppress expected, non-consequential initialization chatter (messages + warning)
-  da <- suppressMessages(
-    MortalityDataAnalytics$new(data = df, dataset_name = "MortTest")
+  suppressWarnings(
+    da <- suppressMessages(
+      MortalityDataAnalytics$new(data = df, dataset_name = "MortTest")
+    )
   )
 
   expect_s3_class(da, "MortalityDataAnalytics")
@@ -368,8 +372,10 @@ test_that("DemographicsDataAnalytics initializes correctly", {
   df <- tibble::tibble(id = 1:5)
 
   # Suppress expected, non-consequential initialization chatter (messages + warning)
-  da <- suppressMessages(
-    DemographicsDataAnalytics$new(data = df, dataset_name = "DemogTest")
+  suppressWarnings(
+    da <- suppressMessages(
+      DemographicsDataAnalytics$new(data = df, dataset_name = "DemogTest")
+    )
   )
 
   expect_s3_class(da, "DemographicsDataAnalytics")
@@ -384,8 +390,10 @@ test_that("GeneralDataAnalytics initializes correctly", {
   df <- tibble::tibble(id = 1:5)
 
   # Suppress expected, non-consequential initialization chatter (messages + warning)
-  da <- suppressMessages(
-    GeneralDataAnalytics$new(data = df, dataset_name = "GeneralTest")
+  suppressWarnings(
+    da <- suppressMessages(
+      GeneralDataAnalytics$new(data = df, dataset_name = "GeneralTest")
+    )
   )
 
   expect_s3_class(da, "GeneralDataAnalytics")
@@ -400,8 +408,10 @@ test_that("DataAnalytics initializes diagnose log fields as empty tibbles", {
   df <- tibble::tibble(id = 1:5, x = 1:5)
 
   # Suppress expected, non-consequential initialization chatter (messages + warnings)
-  da <- suppressMessages(
-    DataAnalytics$new(data = df, dataset_name = "DiagInit")
+  suppressWarnings(
+    da <- suppressMessages(
+      DataAnalytics$new(data = df, dataset_name = "DiagInit")
+    )
   )
 
   expect_true(tibble::is_tibble(da$quality_issues_log))
@@ -413,15 +423,19 @@ test_that("quality_diagnose returns empty tibble when no quality_schema", {
   df <- tibble::tibble(id = 1:5, x = 1:5)
 
   # Suppress expected, non-consequential initialization chatter (messages + warnings)
-  da <- suppressMessages(
-    DataAnalytics$new(data = df, dataset_name = "QDiagEmpty")
+  suppressWarnings(
+    da <- suppressMessages(
+      DataAnalytics$new(data = df, dataset_name = "QDiagEmpty")
+    )
   )
 
   # Ensure schema is empty
   da$quality_schema <- list()
 
-  result <- suppressMessages(
-    da$quality_diagnose()
+  suppressWarnings(
+    result <- suppressMessages(
+      da$quality_diagnose()
+    )
   )
   expect_true(tibble::is_tibble(result))
   expect_equal(nrow(result), 0)
@@ -432,34 +446,42 @@ test_that("quality_diagnose detects present and missing variables", {
   df <- tibble::tibble(id = 1:5, fcs_score = 1:5)
 
   # Suppress expected, non-consequential initialization chatter (messages + warnings)
-  da <- suppressMessages(
-    DataAnalytics$new(data = df, dataset_name = "QDiagVars")
+  suppressWarnings(
+    da <- suppressMessages(
+      DataAnalytics$new(data = df, dataset_name = "QDiagVars")
+    )
   )
 
   da$quality_schema <- list(
     check_ok = list(
-      check_name = "check_ok", check_label = "Present var",
+      check_name = "check_ok",
+      check_label = "Present var",
       statistical_test = "range_violation",
       variables = c("fcs_score"),
-      thresholds = list(), test_params = list()
+      thresholds = list(),
+      test_params = list()
     ),
     check_bad = list(
-      check_name = "check_bad", check_label = "Missing var",
+      check_name = "check_bad",
+      check_label = "Missing var",
       statistical_test = "range_violation",
       variables = c("nonexistent_col"),
-      thresholds = list(), test_params = list()
+      thresholds = list(),
+      test_params = list()
     )
   )
 
-  result <- suppressMessages(
-    da$quality_diagnose()
+  suppressWarnings(
+    result <- suppressMessages(
+      da$quality_diagnose()
+    )
   )
   expect_equal(nrow(result), 2)
-  expect_true("status"             %in% names(result))
-  expect_true("variables_in_data"  %in% names(result))
+  expect_true("status" %in% names(result))
+  expect_true("variables_in_data" %in% names(result))
   expect_true("function_available" %in% names(result))
 
-  ok_row  <- result[result$check_name == "check_ok", ]
+  ok_row <- result[result$check_name == "check_ok", ]
   bad_row <- result[result$check_name == "check_bad", ]
   expect_true(ok_row$variables_in_data)
   expect_false(bad_row$variables_in_data)
@@ -474,21 +496,27 @@ test_that("quality_diagnose flags unavailable test function", {
   df <- tibble::tibble(id = 1:5, val = 1:5)
 
   # Suppress expected, non-consequential initialization chatter (messages + warnings)
-  da <- suppressMessages(
-    DataAnalytics$new(data = df, dataset_name = "QDiagFunc")
+  suppressWarnings(
+    da <- suppressMessages(
+      DataAnalytics$new(data = df, dataset_name = "QDiagFunc")
+    )
   )
 
   da$quality_schema <- list(
     check_fake = list(
-      check_name = "check_fake", check_label = "Fake test",
+      check_name = "check_fake",
+      check_label = "Fake test",
       statistical_test = "this_function_does_not_exist_xyz",
       variables = c("val"),
-      thresholds = list(), test_params = list()
+      thresholds = list(),
+      test_params = list()
     )
   )
 
-  result <- suppressMessages(
-    da$quality_diagnose()
+  suppressWarnings(
+    result <- suppressMessages(
+      da$quality_diagnose()
+    )
   )
   expect_false(result$function_available[1])
   expect_false(result$status[1] == "ok")
@@ -498,19 +526,26 @@ test_that("analysis_diagnose returns empty tibble when no analysis schema", {
   df <- tibble::tibble(id = 1:5, x = 1:5)
 
   # Suppress expected, non-consequential initialization chatter (messages + warnings)
-  da <- suppressMessages(
-    DataAnalytics$new(data = df, dataset_name = "ADiagEmpty")
+  suppressWarnings(
+    da <- suppressMessages(
+      DataAnalytics$new(data = df, dataset_name = "ADiagEmpty")
+    )
   )
 
   da$analysis_schema <- tibble::tibble(
-    indicator_name = character(), calculation = character(),
-    var_name = character(), denom_var = character(),
-    disaggregation = character(), multiplier = numeric(),
+    indicator_name = character(),
+    calculation = character(),
+    var_name = character(),
+    denom_var = character(),
+    disaggregation = character(),
+    multiplier = numeric(),
     indicator_unit = character()
   )
 
-  result <- suppressMessages(
-    da$analysis_diagnose()
+  suppressWarnings(
+    result <- suppressMessages(
+      da$analysis_diagnose()
+    )
   )
   expect_true(tibble::is_tibble(result))
   expect_equal(nrow(result), 0)
@@ -524,27 +559,36 @@ test_that("analysis_diagnose correctly identifies valid and invalid indicators",
   )
 
   # Suppress expected, non-consequential initialization chatter (messages + warnings)
-  da <- suppressMessages(
-    DataAnalytics$new(data = df, dataset_name = "ADiagVars")
+  suppressWarnings(
+    da <- suppressMessages(
+      DataAnalytics$new(data = df, dataset_name = "ADiagVars")
+    )
   )
 
   da$analysis_schema <- tibble::tibble(
     indicator_name = c("Valid", "Bad var", "Bad calc", "Select Multiple"),
-    calculation    = c("mean", "mean", "invalid_type", "select_multiple_cat"),
-    var_name       = c("fcs_score", "nonexistent", "fcs_score", "fcs_score"),
-    denom_var      = c(NA_character_, NA_character_, NA_character_, NA_character_),
-    disaggregation = c(NA_character_, NA_character_, NA_character_, NA_character_),
-    multiplier     = c(1, 1, 1, 1),
+    calculation = c("mean", "mean", "invalid_type", "select_multiple_cat"),
+    var_name = c("fcs_score", "nonexistent", "fcs_score", "fcs_score"),
+    denom_var = c(NA_character_, NA_character_, NA_character_, NA_character_),
+    disaggregation = c(
+      NA_character_,
+      NA_character_,
+      NA_character_,
+      NA_character_
+    ),
+    multiplier = c(1, 1, 1, 1),
     indicator_unit = c("%", "%", "%", "%")
   )
 
-  result <- suppressMessages(
-    da$analysis_diagnose()
+  suppressWarnings(
+    result <- suppressMessages(
+      da$analysis_diagnose()
+    )
   )
   expect_equal(nrow(result), 4)
-  expect_true("var_name_in_data"  %in% names(result))
+  expect_true("var_name_in_data" %in% names(result))
   expect_true("calculation_valid" %in% names(result))
-  expect_true("status"            %in% names(result))
+  expect_true("status" %in% names(result))
 
   expect_equal(result$status[result$indicator_name == "Valid"], "ok")
   expect_false(result$status[result$indicator_name == "Bad var"] == "ok")
@@ -559,14 +603,18 @@ test_that("outputs_diagnose returns empty tibble when no schema", {
   df <- tibble::tibble(id = 1:5, x = 1:5)
 
   # Suppress expected, non-consequential initialization chatter (messages + warnings)
-  da <- suppressMessages(
-    DataAnalytics$new(data = df, dataset_name = "OQDiagEmpty")
+  suppressWarnings(
+    da <- suppressMessages(
+      DataAnalytics$new(data = df, dataset_name = "OQDiagEmpty")
+    )
   )
 
   da$outputs_schema <- list()
 
-  result <- suppressMessages(
-    da$outputs_diagnose()
+  suppressWarnings(
+    result <- suppressMessages(
+      da$outputs_diagnose()
+    )
   )
   expect_true(tibble::is_tibble(result))
   expect_equal(nrow(result), 0)
@@ -577,21 +625,28 @@ test_that("outputs_diagnose flags unavailable function", {
   df <- tibble::tibble(id = 1:5, val = 1:5)
 
   # Suppress expected, non-consequential initialization chatter (messages + warnings)
-  da <- suppressMessages(
-    DataAnalytics$new(data = df, dataset_name = "OQDiagFunc")
+  suppressWarnings(
+    da <- suppressMessages(
+      DataAnalytics$new(data = df, dataset_name = "OQDiagFunc")
+    )
   )
 
   da$outputs_schema <- list(
     out1 = list(
-      output_title = "out1", output_name = "Out 1",
+      output_title = "out1",
+      output_name = "Out 1",
       output_func_name = "this_func_does_not_exist_xyz",
       output_type = "visualization",
-      variables = c("val"), test_params = list(), outputs_group = NULL
+      variables = c("val"),
+      test_params = list(),
+      outputs_group = NULL
     )
   )
 
-  result <- suppressMessages(
-    da$outputs_diagnose()
+  suppressWarnings(
+    result <- suppressMessages(
+      da$outputs_diagnose()
+    )
   )
   expect_equal(nrow(result), 1)
   expect_false(result$function_available[1])
@@ -602,21 +657,28 @@ test_that("outputs_diagnose flags missing variable", {
   df <- tibble::tibble(id = 1:5, val = 1:5)
 
   # Suppress expected, non-consequential initialization chatter (messages + warnings)
-  da <- suppressMessages(
-    DataAnalytics$new(data = df, dataset_name = "OADiagVar")
+  suppressWarnings(
+    da <- suppressMessages(
+      DataAnalytics$new(data = df, dataset_name = "OADiagVar")
+    )
   )
 
   da$outputs_schema <- list(
     out_missing = list(
-      output_title = "out_missing", output_name = "Missing var output",
+      output_title = "out_missing",
+      output_name = "Missing var output",
       output_func_name = "plot_stacked_bar",
       output_type = "visualization",
-      variables = c("nonexistent_col"), test_params = list(), outputs_group = NULL
+      variables = c("nonexistent_col"),
+      test_params = list(),
+      outputs_group = NULL
     )
   )
 
-  result <- suppressMessages(
-    da$outputs_diagnose()
+  suppressWarnings(
+    result <- suppressMessages(
+      da$outputs_diagnose()
+    )
   )
   expect_equal(nrow(result), 1)
   expect_false(result$variables_in_data[1])
@@ -630,24 +692,28 @@ test_that("analysis_diagnose resolves canonical var names via variable_map", {
   df <- tibble::tibble(id = 1:5, actual_score = 1:5)
 
   # Suppress expected, non-consequential initialization chatter (messages + warnings)
-  da <- suppressMessages(
-    DataAnalytics$new(data = df, dataset_name = "ADiagVarMap")
+  suppressWarnings(
+    da <- suppressMessages(
+      DataAnalytics$new(data = df, dataset_name = "ADiagVarMap")
+    )
   )
 
   da$variable_map <- list(canonical_score = "actual_score")
 
   da$analysis_schema <- tibble::tibble(
     indicator_name = c("Mapped var"),
-    calculation    = c("mean"),
-    var_name       = c("canonical_score"),
-    denom_var      = c(NA_character_),
+    calculation = c("mean"),
+    var_name = c("canonical_score"),
+    denom_var = c(NA_character_),
     disaggregation = c(NA_character_),
-    multiplier     = c(1),
+    multiplier = c(1),
     indicator_unit = c("%")
   )
 
-  result <- suppressMessages(
-    da$analysis_diagnose()
+  suppressWarnings(
+    result <- suppressMessages(
+      da$analysis_diagnose()
+    )
   )
   expect_equal(nrow(result), 1)
   expect_true(result$var_name_in_data[1])
@@ -658,18 +724,23 @@ test_that("outputs_diagnose resolves canonical var names via variable_map", {
   df <- tibble::tibble(id = 1:5, actual_col = 1:5)
 
   # Suppress expected, non-consequential initialization chatter (messages + warnings)
-  da <- suppressMessages(
-    DataAnalytics$new(data = df, dataset_name = "ODiagVarMap")
+  suppressWarnings(
+    da <- suppressMessages(
+      DataAnalytics$new(data = df, dataset_name = "ODiagVarMap")
+    )
   )
 
   da$variable_map <- list(canonical_col = "actual_col")
 
   da$outputs_schema <- list(
     out_mapped = list(
-      output_title = "out_mapped", output_name = "Mapped var output",
+      output_title = "out_mapped",
+      output_name = "Mapped var output",
       output_func_name = "plot_stacked_bar",
       output_type = "visualization",
-      variables = c("canonical_col"), test_params = list(), outputs_group = NULL
+      variables = c("canonical_col"),
+      test_params = list(),
+      outputs_group = NULL
     )
   )
 
@@ -688,8 +759,10 @@ test_that("set_analysis_schema and get_analysis_schema work", {
   df <- tibble::tibble(id = 1:5)
 
   # Suppress expected, non-consequential initialization chatter (messages + warning)
-  da <- suppressMessages(
-    DataAnalytics$new(data = df, dataset_name = "SASchemaDA")
+  suppressWarnings(
+    da <- suppressMessages(
+      DataAnalytics$new(data = df, dataset_name = "SASchemaDA")
+    )
   )
 
   new_schema <- tibble::tibble(
@@ -716,8 +789,10 @@ test_that("set_outputs_schema and get_outputs_schema work", {
   df <- tibble::tibble(id = 1:5)
 
   # Suppress expected, non-consequential initialization chatter (messages + warning)
-  da <- suppressMessages(
-    DataAnalytics$new(data = df, dataset_name = "SAOSchemaDA")
+  suppressWarnings(
+    da <- suppressMessages(
+      DataAnalytics$new(data = df, dataset_name = "SAOSchemaDA")
+    )
   )
 
   new_schema <- list(
@@ -749,8 +824,10 @@ test_that("get_quality_schema returns current quality schema", {
   df <- tibble::tibble(id = 1:5)
 
   # Suppress expected, non-consequential initialization chatter (messages + warning)
-  da <- suppressMessages(
-    DataAnalytics$new(data = df, dataset_name = "GQSchemaDA")
+  suppressWarnings(
+    da <- suppressMessages(
+      DataAnalytics$new(data = df, dataset_name = "GQSchemaDA")
+    )
   )
 
   result <- da$get_quality_schema()
@@ -761,8 +838,10 @@ test_that("get_analysis_schema returns current analysis schema", {
   df <- tibble::tibble(id = 1:5)
 
   # Suppress expected, non-consequential initialization chatter (messages + warning)
-  da <- suppressMessages(
-    DataAnalytics$new(data = df, dataset_name = "GASchemaDA")
+  suppressWarnings(
+    da <- suppressMessages(
+      DataAnalytics$new(data = df, dataset_name = "GASchemaDA")
+    )
   )
 
   result <- da$get_analysis_schema()
@@ -778,8 +857,10 @@ test_that("WaterContainerDataAnalytics initializes correctly", {
   df <- tibble::tibble(id = 1:5)
 
   # Suppress expected, non-consequential initialization chatter (messages + warning)
-  da <- suppressMessages(
-    WaterContainerDataAnalytics$new(data = df, dataset_name = "WCTest")
+  suppressWarnings(
+    da <- suppressMessages(
+      WaterContainerDataAnalytics$new(data = df, dataset_name = "WCTest")
+    )
   )
 
   expect_s3_class(da, "WaterContainerDataAnalytics")
@@ -795,8 +876,10 @@ test_that("DataAnalytics plausibility_results field is initialized as empty list
   df <- tibble::tibble(id = 1:5)
 
   # Suppress expected, non-consequential initialization chatter (messages + warning)
-  da <- suppressMessages(
-    DataAnalytics$new(data = df, dataset_name = "PRInit")
+  suppressWarnings(
+    da <- suppressMessages(
+      DataAnalytics$new(data = df, dataset_name = "PRInit")
+    )
   )
 
   expect_true(is.list(da$plausibility_results))
@@ -807,8 +890,10 @@ test_that("export_state_object uses plausibility_results key", {
   df <- tibble::tibble(id = 1:5)
 
   # Suppress expected, non-consequential initialization chatter (messages + warning)
-  da <- suppressMessages(
-    DataAnalytics$new(data = df, dataset_name = "PRExport")
+  suppressWarnings(
+    da <- suppressMessages(
+      DataAnalytics$new(data = df, dataset_name = "PRExport")
+    )
   )
 
   state <- suppressMessages(
@@ -823,17 +908,19 @@ test_that("load_state_object restores plausibility_results", {
   df <- tibble::tibble(id = 1:5)
 
   # Suppress expected, non-consequential initialization chatter (messages + warnings)
-  da <- suppressMessages(
-    DataAnalytics$new(data = df, dataset_name = "PRLoad")
+  suppressWarnings(
+    da <- suppressMessages(
+      DataAnalytics$new(data = df, dataset_name = "PRLoad")
+    )
   )
 
   state <- suppressMessages(
     da$export_state_object()
   )
 
-  da2 <- suppressMessages(
+  da2 <- suppressWarnings(suppressMessages(
     DataAnalytics$new(data = df, dataset_name = "PRLoad2")
-  )
+  ))
 
   suppressMessages(
     da2$load_state_object(state)
@@ -854,37 +941,43 @@ test_that("NutritionDataAnalytics$quality_diagnose returns a tibble covering bot
   )
 
   # Suppress expected, non-consequential initialization chatter (messages + warning)
-  nut <- suppressMessages(
+  nut <- suppressWarnings(suppressMessages(
     NutritionDataAnalytics$new(data = df, dataset_name = "NutQDiag")
-  )
+  ))
 
   nut$quality_schema_anthro <- list(
     check_anthro = list(
-      check_name = "check_anthro", check_label = "Anthro check",
+      check_name = "check_anthro",
+      check_label = "Anthro check",
       statistical_test = "range_violation",
       variables = c("age_months"),
-      thresholds = list(), test_params = list()
+      thresholds = list(),
+      test_params = list()
     )
   )
   nut$quality_schema_iycf <- list(
     check_iycf = list(
-      check_name = "check_iycf", check_label = "IYCF check",
+      check_name = "check_iycf",
+      check_label = "IYCF check",
       statistical_test = "range_violation",
       variables = c("weight_kg"),
-      thresholds = list(), test_params = list()
+      thresholds = list(),
+      test_params = list()
     )
   )
 
   # quality_diagnose() messages; suppress if it does
-  result <- suppressMessages(
-    nut$quality_diagnose()
+  suppressWarnings(
+    result <- suppressMessages(
+      nut$quality_diagnose()
+    )
   )
 
   expect_true(tibble::is_tibble(result))
   expect_true(nrow(result) >= 2)
   expect_true("schema_type" %in% names(result))
   expect_true("anthropometric" %in% result$schema_type)
-  expect_true("iycf"           %in% result$schema_type)
+  expect_true("iycf" %in% result$schema_type)
   expect_true(tibble::is_tibble(nut$quality_issues_log))
 })
 
@@ -892,12 +985,12 @@ test_that("NutritionDataAnalytics$quality_diagnose does not error when schemas a
   df <- tibble::tibble(id = 1:5)
 
   # Suppress expected initialization chatter (messages + warnings)
-  nut <- suppressMessages(
+  nut <- suppressWarnings(suppressMessages(
     NutritionDataAnalytics$new(data = df, dataset_name = "NutQDiagEmpty")
-  )
+  ))
 
   nut$quality_schema_anthro <- list()
-  nut$quality_schema_iycf   <- list()
+  nut$quality_schema_iycf <- list()
 
   # Do NOT suppressWarnings() here, otherwise expect_warning can't observe them.
   expect_warning(
@@ -918,15 +1011,19 @@ test_that("NutritionDataAnalytics$quality_diagnose does not error when schemas a
 # ============================================================================
 
 test_that("NutritionDataAnalytics initializes without weights_muac_alt field", {
-  df <- tibble::tibble(id = 1:5, age_months = c(6, 12, 18, 30, 48), weight = rep(1, 5))
+  df <- tibble::tibble(
+    id = 1:5,
+    age_months = c(6, 12, 18, 30, 48),
+    weight = rep(1, 5)
+  )
 
-  nut <- suppressMessages(
+  nut <- suppressWarnings(suppressMessages(
     NutritionDataAnalytics$new(
-      data         = df,
+      data = df,
       dataset_name = "NoWeightFieldTest",
       variable_map = list(age_months = "age_months", weight = "weight")
     )
-  )
+  ))
 
   # weights_muac_alt should NOT be a public field any longer
   expect_false("weights_muac_alt" %in% names(nut))
@@ -936,31 +1033,31 @@ test_that("NutritionDataAnalytics initializes without weights_muac_alt field", {
 
 test_that("NutritionDataAnalytics$post_run_analysis no-ops when muac_age_weights = FALSE", {
   df <- tibble::tibble(
-    id           = 1:10,
-    age_months   = c(rep(12, 5), rep(36, 5)),
+    id = 1:10,
+    age_months = c(rep(12, 5), rep(36, 5)),
     nut_muac_cat = c(rep(0L, 7), rep(1L, 3)),
-    weight       = rep(1, 10)
+    weight = rep(1, 10)
   )
 
-  nut <- suppressMessages(
+  nut <- suppressWarnings(suppressMessages(
     NutritionDataAnalytics$new(
-      data         = df,
+      data = df,
       dataset_name = "PostAnalysisNoOpTest",
       variable_map = list(
-        age_months   = "age_months",
-        weight       = "weight",
+        age_months = "age_months",
+        weight = "weight",
         nut_muac_cat = "nut_muac_cat"
       )
     )
-  )
+  ))
 
   nut$data_analysis_plan$log_df <- tibble::tibble(
     indicator_name = "MUAC cat prop",
-    calculation    = "prop",
-    var_name       = "nut_muac_cat",
-    denom_var      = NA_character_,
+    calculation = "prop",
+    var_name = "nut_muac_cat",
+    denom_var = NA_character_,
     disaggregation = NA_character_,
-    multiplier     = 100,
+    multiplier = 100,
     indicator_unit = "%"
   )
 
@@ -973,27 +1070,29 @@ test_that("NutritionDataAnalytics$post_run_analysis no-ops when muac_age_weights
 
 test_that("NutritionDataAnalytics$post_run_analysis skips when no muac vars in plan", {
   df <- tibble::tibble(
-    id         = 1:10,
+    id = 1:10,
     age_months = c(rep(12, 5), rep(36, 5)),
-    other_var  = as.integer(c(rep(0L, 5), rep(1L, 5))),
-    weight     = rep(1, 10)
+    other_var = as.integer(c(rep(0L, 5), rep(1L, 5))),
+    weight = rep(1, 10)
   )
 
-  nut <- suppressMessages(
-    NutritionDataAnalytics$new(
-      data         = df,
-      dataset_name = "PostAnalysisNoMuacTest",
-      variable_map = list(age_months = "age_months", weight = "weight")
+  suppressWarnings(
+    nut <- suppressMessages(
+      NutritionDataAnalytics$new(
+        data = df,
+        dataset_name = "PostAnalysisNoMuacTest",
+        variable_map = list(age_months = "age_months", weight = "weight")
+      )
     )
   )
 
   nut$data_analysis_plan$log_df <- tibble::tibble(
     indicator_name = "Other prop",
-    calculation    = "prop",
-    var_name       = "other_var",
-    denom_var      = NA_character_,
+    calculation = "prop",
+    var_name = "other_var",
+    denom_var = NA_character_,
     disaggregation = NA_character_,
-    multiplier     = 100,
+    multiplier = 100,
     indicator_unit = "%"
   )
 
@@ -1009,32 +1108,34 @@ test_that("NutritionDataAnalytics$post_run_analysis stores muac_weighted results
   set.seed(1)
   n <- 90
   df <- tibble::tibble(
-    id           = seq_len(n),
-    age_months   = c(rep(12, 60), rep(36, 30)),
+    id = seq_len(n),
+    age_months = c(rep(12, 60), rep(36, 30)),
     nut_muac_cat = c(rep(0L, 60), rep(1L, 30)),
-    other_var    = as.integer(c(rep(0L, 45), rep(1L, 45))),
-    weight       = rep(1, n)
+    other_var = as.integer(c(rep(0L, 45), rep(1L, 45))),
+    weight = rep(1, n)
   )
 
-  nut <- suppressMessages(
-    NutritionDataAnalytics$new(
-      data         = df,
-      dataset_name = "PostAnalysisMuacTest",
-      variable_map = list(
-        age_months   = "age_months",
-        weight       = "weight",
-        nut_muac_cat = "nut_muac_cat"
+  suppressWarnings(
+    nut <- suppressMessages(
+      NutritionDataAnalytics$new(
+        data = df,
+        dataset_name = "PostAnalysisMuacTest",
+        variable_map = list(
+          age_months = "age_months",
+          weight = "weight",
+          nut_muac_cat = "nut_muac_cat"
+        )
       )
     )
   )
 
   nut$data_analysis_plan$log_df <- tibble::tibble(
     indicator_name = c("MUAC cat prop", "Other prop"),
-    calculation    = c("prop", "prop"),
-    var_name       = c("nut_muac_cat", "other_var"),
-    denom_var      = c(NA_character_, NA_character_),
+    calculation = c("prop", "prop"),
+    var_name = c("nut_muac_cat", "other_var"),
+    denom_var = c(NA_character_, NA_character_),
     disaggregation = c(NA_character_, NA_character_),
-    multiplier     = c(100, 100),
+    multiplier = c(100, 100),
     indicator_unit = c("%", "%")
   )
 
@@ -1061,31 +1162,33 @@ test_that("NutritionDataAnalytics$post_run_analysis uses 0-23 vs 24-59 age range
   # age = 59 -> in 24-59 group
   # age = 60 -> outside both groups (should get NA weight)
   df <- tibble::tibble(
-    id           = 1:6,
-    age_months   = c(0, 23, 24, 59, 60, NA_real_),
+    id = 1:6,
+    age_months = c(0, 23, 24, 59, 60, NA_real_),
     nut_muac_cat = c(0L, 0L, 1L, 1L, 0L, 0L),
-    weight       = rep(1, 6)
+    weight = rep(1, 6)
   )
 
-  nut <- suppressMessages(
-    NutritionDataAnalytics$new(
-      data         = df,
-      dataset_name = "AgeRangeBoundaryTest",
-      variable_map = list(
-        age_months   = "age_months",
-        weight       = "weight",
-        nut_muac_cat = "nut_muac_cat"
+  suppressWarnings(
+    nut <- suppressMessages(
+      NutritionDataAnalytics$new(
+        data = df,
+        dataset_name = "AgeRangeBoundaryTest",
+        variable_map = list(
+          age_months = "age_months",
+          weight = "weight",
+          nut_muac_cat = "nut_muac_cat"
+        )
       )
     )
   )
 
   nut$data_analysis_plan$log_df <- tibble::tibble(
     indicator_name = "MUAC cat prop",
-    calculation    = "prop",
-    var_name       = "nut_muac_cat",
-    denom_var      = NA_character_,
+    calculation = "prop",
+    var_name = "nut_muac_cat",
+    denom_var = NA_character_,
     disaggregation = NA_character_,
-    multiplier     = 100,
+    multiplier = 100,
     indicator_unit = "%"
   )
 
@@ -1100,14 +1203,14 @@ test_that("NutritionDataAnalytics$post_run_analysis uses 0-23 vs 24-59 age range
   expect_equal(length(wts), nrow(df))
   expect_true(all(abs(wts[df$age_months %in% c(0, 23)] - (2 / 3)) < 1e-10))
   expect_true(all(abs(wts[df$age_months %in% c(24, 59)] - (4 / 3)) < 1e-10))
-  expect_true(is.na(wts[df$age_months == 60]))
+  expect_true(all(is.na(wts[df$age_months == 60 & !is.na(df$age_months)])))
   expect_true(is.na(wts[is.na(df$age_months)]))
 
   # Also verify post_run_analysis stores results
   suppressMessages(nut$run_analysis())
-  suppressMessages(
+  suppressWarnings(suppressMessages(
     nut$post_run_analysis(muac_age_weights = TRUE)
-  )
+  ))
 
   expect_true(!is.null(nut$analysis_results[["muac_weighted"]]))
 })
@@ -1118,24 +1221,30 @@ test_that("NutritionDataAnalytics$post_run_analysis uses 0-23 vs 24-59 age range
 
 test_that("add_all_to_dap classifies columns and amends the plan", {
   df <- tibble::tibble(
-    hh_uuid     = sprintf("uuid-%030d", 1:30),               # skipped (>20 unique char)
+    hh_uuid = sprintf("uuid-%030d", 1:30), # skipped (>20 unique char)
     stratum_col = rep(c("north", "south", "east"), 10),
-    fcs_score   = seq(1, 30),                                # already in map + dap
-    wash_soap   = rep(c(0, 1), 15),                          # prop
-    edu_level   = rep(c("primary", "secondary", "none"), 10),# cat
-    water_src   = rep(c("piped tap", "well,spring", "river"), 10) # select_multiple_cat
+    fcs_score = seq(1, 30), # already in map + dap
+    wash_soap = rep(c(0, 1), 15), # prop
+    edu_level = rep(c("primary", "secondary", "none"), 10), # cat
+    water_src = rep(c("piped tap", "well,spring", "river"), 10) # select_multiple_cat
   )
 
-  da <- suppressMessages(DataAnalytics$new(
-    data = df, dataset_name = "AddAllDA",
-    variable_map = list(stratum = "stratum_col", fcs = "fcs_score")
-  ))
+  suppressWarnings(
+    da <- suppressMessages(DataAnalytics$new(
+      data = df,
+      dataset_name = "AddAllDA",
+      variable_map = list(stratum = "stratum_col", fcs = "fcs_score")
+    ))
+  )
   suppressMessages(da$add_indicator_dap(
-    indicator_name = "FCS mean", calculation = "mean", var_name = "fcs_score",
-    multiplier = 1, indicator_unit = "score"
+    indicator_name = "FCS mean",
+    calculation = "mean",
+    var_name = "fcs_score",
+    multiplier = 1,
+    indicator_unit = "score"
   ))
 
-  suppressMessages(da$add_all_to_dap())
+  suppressWarnings(suppressMessages(da$add_all_to_dap()))
   plan <- da$data_analysis_plan$log_df
 
   # Skipped high-cardinality character column
@@ -1153,10 +1262,15 @@ test_that("add_all_to_dap classifies columns and amends the plan", {
   expect_equal(da$variable_map[["wash_soap"]], "wash_soap")
   expect_equal(unique(plan$calculation[plan$var_name == "wash_soap"]), "prop")
   expect_equal(unique(plan$calculation[plan$var_name == "edu_level"]), "cat")
-  expect_equal(unique(plan$calculation[plan$var_name == "water_src"]), "select_multiple_cat")
+  expect_equal(
+    unique(plan$calculation[plan$var_name == "water_src"]),
+    "select_multiple_cat"
+  )
 
   # prop/cat/select_multiple_cat rows use multiplier 100 and unit %
-  new_rows <- plan[plan$var_name %in% c("wash_soap", "edu_level", "water_src"), ]
+  new_rows <- plan[
+    plan$var_name %in% c("wash_soap", "edu_level", "water_src"),
+  ]
   expect_true(all(new_rows$multiplier == 100))
   expect_true(all(new_rows$indicator_unit == "%"))
 
@@ -1170,26 +1284,35 @@ test_that("add_all_to_dap classifies columns and amends the plan", {
 
 test_that("add_all_to_dap keeps character columns with exactly 20 unique values", {
   df <- tibble::tibble(cat20 = paste0("opt", 1:20))
-  da <- suppressMessages(DataAnalytics$new(data = df, dataset_name = "Cat20DA"))
+  da <- suppressWarnings(suppressMessages(DataAnalytics$new(
+    data = df,
+    dataset_name = "Cat20DA"
+  )))
 
-  suppressMessages(da$add_all_to_dap())
+  suppressWarnings(suppressMessages(da$add_all_to_dap()))
   plan <- da$data_analysis_plan$log_df
 
   expect_equal(plan$calculation[plan$var_name == "cat20"], "cat")
 
   # One more unique value crosses the threshold and the column is skipped
   df21 <- tibble::tibble(cat21 = paste0("opt", 1:21))
-  da21 <- suppressMessages(DataAnalytics$new(data = df21, dataset_name = "Cat21DA"))
+  da21 <- suppressWarnings(suppressMessages(DataAnalytics$new(
+    data = df21,
+    dataset_name = "Cat21DA"
+  )))
 
-  suppressMessages(da21$add_all_to_dap())
+  suppressWarnings(suppressMessages(da21$add_all_to_dap()))
   expect_false("cat21" %in% da21$data_analysis_plan$log_df$var_name)
 })
 
 test_that("add_all_to_dap guesses mean for numeric columns beyond 0/1", {
   df <- tibble::tibble(score = c(0, 1, 2.5, 7))
-  da <- suppressMessages(DataAnalytics$new(data = df, dataset_name = "MeanDA"))
+  da <- suppressWarnings(suppressMessages(DataAnalytics$new(
+    data = df,
+    dataset_name = "MeanDA"
+  )))
 
-  suppressMessages(da$add_all_to_dap())
+  suppressWarnings(suppressMessages(da$add_all_to_dap()))
   plan <- da$data_analysis_plan$log_df
 
   expect_equal(plan$calculation[plan$var_name == "score"], "mean")
@@ -1208,11 +1331,13 @@ test_that("add_all_to_dap iterates over multiple field sets from the pre-hook", 
       pre_add_all_to_dap = function() {
         list(
           main = list(
-            data = "data", variable_map = "variable_map",
+            data = "data",
+            variable_map = "variable_map",
             data_analysis_plan = "data_analysis_plan"
           ),
           second = list(
-            data = "data2", variable_map = "variable_map2",
+            data = "data2",
+            variable_map = "variable_map2",
             data_analysis_plan = "data_analysis_plan2"
           )
         )
@@ -1220,13 +1345,16 @@ test_that("add_all_to_dap iterates over multiple field sets from the pre-hook", 
     )
   )
 
-  da <- suppressMessages(MultiDA$new(
-    data = tibble::tibble(a_bin = c(0, 1, 1, 0)), dataset_name = "MultiDA"
-  ))
+  suppressWarnings(
+    da <- suppressMessages(MultiDA$new(
+      data = tibble::tibble(a_bin = c(0, 1, 1, 0)),
+      dataset_name = "MultiDA"
+    ))
+  )
   da$data2 <- tibble::tibble(b_txt = c("x", "y", "x", "y"))
   da$variable_map2 <- list()
 
-  suppressMessages(da$add_all_to_dap())
+  suppressWarnings(suppressMessages(da$add_all_to_dap()))
 
   expect_equal(da$data_analysis_plan$log_df$var_name, "a_bin")
   expect_equal(da$data_analysis_plan$log_df$calculation, "prop")

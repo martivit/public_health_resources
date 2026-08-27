@@ -59,7 +59,7 @@ DemographicsDataAnalytics <- R6::R6Class(
         quality_schema = quality_schema
       )
 
-      phr_message(
+      phrutils::phr_message(
         phr_txt(glue::glue("{dataset_name} initialized as DemographicsDataAnalytics object."))
       )
     },
@@ -84,7 +84,7 @@ DemographicsDataAnalytics <- R6::R6Class(
       df <- tryCatch(
         readxl::read_xlsx(file),
         error = function(e) {
-          phr_warning(
+          phrutils::phr_warning(
             origin  = "DemographicsDataAnalytics$default_quality_schema",
             message = phr_txt(glue::glue("Failed to read quality_schema_data_quality_demographics_template.xlsx: {e$message}"))
           )
@@ -122,7 +122,7 @@ DemographicsDataAnalytics <- R6::R6Class(
         }
       }
 
-      df <- phr_try(
+      df <- phrutils::phr_try(
         readxl::read_xlsx(file),
         on_error = "warn",
         origin   = "DemographicsDataAnalytics$default_outputs_schema",
@@ -153,7 +153,7 @@ DemographicsDataAnalytics <- R6::R6Class(
         }
       }
 
-      schema_tbl <- phr_try(
+      schema_tbl <- phrutils::phr_try(
         readxl::read_xlsx(file),
         on_error = "warn",
         origin   = "DemographicsDataAnalytics$default_analysis_schema",

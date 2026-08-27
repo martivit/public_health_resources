@@ -6,7 +6,17 @@
 \usage{
 .tool_indicator_codes(tools, tool_names = NULL, prefer_revised = TRUE)
 }
+\arguments{
+\item{tools}{List of Tool objects.}
+
+\item{tool_names}{Character vector or \code{NULL}. If provided, only Tools
+with names in this vector are included (default = \code{NULL}, include all).}
+
+\item{prefer_revised}{Logical. Whether to prefer revised indicator codes
+when available (default = \code{TRUE}).}
+}
 \description{
 Standalone helpers for generating flextable objects used by schema-driven
 document handlers.
 }
+\keyword{internal}

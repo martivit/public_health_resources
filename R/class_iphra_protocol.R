@@ -20,11 +20,11 @@
 #'
 #' @section Key methods:
 #' \describe{
-#'   \item{`initialize()`}{Create a new IPHRA protocol with an ANA framework.}
-#'   \item{`add_tools()`}{Add a recognised IPHRA household, KII, or observation tool.}
-#'   \item{`get_allowable_tools()`}{Return all recognised IPHRA tool names.}
-#'   \item{`update_recall_date()`}{Update recall-date calculate rows in the household tool.}
-#'   \item{`get_quarto_params()`}{Return IPHRA-specific parameters for Quarto rendering.}
+#'   \item{\code{initialize()}}{Create a new IPHRA protocol with an ANA framework.}
+#'   \item{\code{add_tools()}}{Add a recognised IPHRA household, KII, or observation tool.}
+#'   \item{\code{get_allowable_tools()}}{Return all recognised IPHRA tool names.}
+#'   \item{\code{update_recall_date()}}{Update recall-date calculate rows in the household tool.}
+#'   \item{\code{get_quarto_params()}}{Return IPHRA-specific parameters for Quarto rendering.}
 #' }
 #'
 #' @section Active bindings:
@@ -32,6 +32,49 @@
 #' household indicator flags, tools/sample summary tables, pillar/sub-pillar
 #' tables, DAP tables, and the modified framework SVG path used in report
 #' generation.
+#' \describe{
+#'   \item{\code{.tool_household_iphra}}{Logical flag indicating if a household IPHRA tool is registered.}
+#'   \item{\code{.tool_community_kii}}{Logical flag indicating if a community KII tool is registered.}
+#'   \item{\code{.tool_fsl_provider_kii}}{Logical flag indicating if an FSL provider KII tool is registered.}
+#'   \item{\code{.tool_market_kii}}{Logical flag indicating if a market KII tool is registered.}
+#'   \item{\code{.tool_health_facility_kii}}{Logical flag indicating if a health facility KII tool is registered.}
+#'   \item{\code{.tool_nutrition_facility_kii}}{Logical flag indicating if a nutrition facility KII tool is registered.}
+#'   \item{\code{.tool_wash_provider_kii}}{Logical flag indicating if a WASH provider KII tool is registered.}
+#'   \item{\code{.tool_community_observation}}{Logical flag indicating if a community observation tool is registered.}
+#'   \item{\code{.tool_crops_livestock_observation}}{Logical flag indicating if a crops/livestock observation tool is registered.}
+#'   \item{\code{.tool_health_facility_observation}}{Logical flag indicating if a health facility observation tool is registered.}
+#'   \item{\code{.tool_latrine_observation}}{Logical flag indicating if a latrine observation tool is registered.}
+#'   \item{\code{.tool_water_point_observation}}{Logical flag indicating if a water point observation tool is registered.}
+#'   \item{\code{.ind_ecfies}}{Logical flag indicating if ECFIES indicator (10801) is included.}
+#'   \item{\code{.ind_iycfe}}{Logical flag indicating if IYCF-E indicator (10802) is included.}
+#'   \item{\code{.ind_measles_vaccination}}{Logical flag indicating if measles vaccination indicator (14304) is included.}
+#'   \item{\code{.ind_muac_children}}{Logical flag indicating if MUAC children indicator (10701) is included.}
+#'   \item{\code{.ind_muac_women}}{Logical flag indicating if MUAC women indicator (10702) is included.}
+#'   \item{\code{.ind_vitamin_a_coverage}}{Logical flag indicating if vitamin A coverage indicator (14305) is included.}
+#'   \item{\code{.ind_mortality}}{Logical flag indicating if mortality indicators (10501, 10502) are included.}
+#'   \item{\code{.ind_fcs}}{Logical flag indicating if FCS indicator (11205) is included.}
+#'   \item{\code{.ind_rcsi}}{Logical flag indicating if rCSI indicator (11202) is included.}
+#'   \item{\code{.ind_hhs}}{Logical flag indicating if HHS indicator (11201) is included.}
+#'   \item{\code{.ind_lcsi}}{Logical flag indicating if LCSI indicator (12301) is included.}
+#'   \item{\code{.ind_hwise}}{Logical flag indicating if HWISE indicator (11701) is included.}
+#'   \item{\code{.ind_lppd}}{Logical flag indicating if LPPD indicator (10901) is included.}
+#'   \item{\code{.tools_table_df}}{Data frame summarizing registered tools with sampling methods and sample sizes.}
+#'   \item{\code{.sample_table_df}}{Data frame of the nested sample table.}
+#'   \item{\code{.pillars_table_df}}{Data frame of framework pillars.}
+#'   \item{\code{.subpillars_table_df}}{Data frame of framework sub-pillars.}
+#'   \item{\code{.household_dap_df}}{Data frame containing the household data analysis plan.}
+#'   \item{\code{.community_kii_dap_df}}{Data frame containing the community KII data analysis plan.}
+#'   \item{\code{.fsl_provider_kii_dap_df}}{Data frame containing the FSL provider KII data analysis plan.}
+#'   \item{\code{.market_kii_dap_df}}{Data frame containing the market KII data analysis plan.}
+#'   \item{\code{.health_facility_kii_dap_df}}{Data frame containing the health facility KII data analysis plan.}
+#'   \item{\code{.nutrition_facility_kii_dap_df}}{Data frame containing the nutrition facility KII data analysis plan.}
+#'   \item{\code{.wash_provider_kii_dap_df}}{Data frame containing the WASH provider KII data analysis plan.}
+#'   \item{\code{.community_observation_dap_df}}{Data frame containing the community observation data analysis plan.}
+#'   \item{\code{.crops_livestock_observation_dap_df}}{Data frame containing the crops/livestock observation data analysis plan.}
+#'   \item{\code{.health_facility_observation_dap_df}}{Data frame containing the health facility observation data analysis plan.}
+#'   \item{\code{.water_point_observation_dap_df}}{Data frame containing the water point observation data analysis plan.}
+#'   \item{\code{.latrine_observation_dap_df}}{Data frame containing the latrine observation data analysis plan.}
+#' }
 #'
 #' @section Supported IPHRA tools:
 #' The class supports the bundled household tool, community KII, FSL provider
@@ -94,7 +137,7 @@ IPHRAProtocol <- R6::R6Class(
       self$metadata$month_year <- month_year
       self$metadata$framework_type <- "ana"
 
-      phr_message(
+      phrutils::phr_message(
         phr_txt("IPHRAProtocol initialized."),
         origin = "IPHRAProtocol$initialize"
       )
@@ -112,11 +155,11 @@ IPHRAProtocol <- R6::R6Class(
     #' @param tool_name Character. One of the recognised IPHRA tool names.
     #' @return Invisibly returns \code{self} for method chaining.
     add_tools = function(tool_name) {
-      phr_try(
+      phrutils::phr_try(
         {
           allowable <- private$..iphra_tools
 
-          phr_assert(
+          phrutils::phr_assert(
             is.character(tool_name) &&
               length(tool_name) == 1 &&
               nzchar(tool_name),
@@ -125,7 +168,7 @@ IPHRAProtocol <- R6::R6Class(
             ),
             origin = "IPHRAProtocol$add_tools"
           )
-          phr_assert(
+          phrutils::phr_assert(
             tool_name %in% names(allowable),
             message = phr_txt(
               "'{tool_name}' is not a recognised IPHRA tool. Allowable tools: {paste(names(allowable), collapse=', ')}."
@@ -153,7 +196,7 @@ IPHRAProtocol <- R6::R6Class(
               private$..load_tool_from_path(t, tool_path)
               t
             } else {
-              phr_warning(
+              phrutils::phr_warning(
                 message = phr_txt(
                   "XLSForm file not found for '{tool_name}': {xlsx_file}. Creating empty tool."
                 ),
@@ -171,7 +214,7 @@ IPHRAProtocol <- R6::R6Class(
               private$..load_tool_from_path(t, tool_path)
               t
             } else {
-              phr_warning(
+              phrutils::phr_warning(
                 message = phr_txt(
                   "XLSForm file not found for '{tool_name}': {xlsx_file}. Creating empty tool."
                 ),
@@ -190,7 +233,7 @@ IPHRAProtocol <- R6::R6Class(
               private$..load_tool_from_path(t, tool_path)
               t
             } else {
-              phr_warning(
+              phrutils::phr_warning(
                 message = phr_txt(
                   "XLSForm file not found for '{tool_name}': {xlsx_file}. Creating empty tool."
                 ),
@@ -205,7 +248,7 @@ IPHRAProtocol <- R6::R6Class(
           }
           self$tools[[tool_name]] <- tool
           private$..touch()
-          phr_message(
+          phrutils::phr_message(
             phr_txt("IPHRA tool '{tool_name}' added."),
             origin = "IPHRAProtocol$add_tools"
           )
@@ -239,9 +282,9 @@ IPHRAProtocol <- R6::R6Class(
       recall_date,
       tool_name = "tool_household_iphra_v2"
     ) {
-      phr_try(
+      phrutils::phr_try(
         {
-          phr_assert(
+          phrutils::phr_assert(
             !is.null(recall_date),
             message = phr_txt("recall_date must not be NULL."),
             origin = "IPHRAProtocol$update_recall_date"
@@ -264,7 +307,7 @@ IPHRAProtocol <- R6::R6Class(
           month_first <- format(date_obj, "%Y-%m-01")
           recall_event_str <- format(date_obj, "%d %B %Y")
 
-          phr_assert(
+          phrutils::phr_assert(
             !is.null(self$tools) && tool_name %in% names(self$tools),
             message = phr_txt(
               "Tool '{tool_name}' not found. Add it first with add_tools()."
@@ -313,7 +356,7 @@ IPHRAProtocol <- R6::R6Class(
           tool$revised_survey <- .update_recall_in_survey(tool$revised_survey)
 
           private$..touch()
-          phr_message(
+          phrutils::phr_message(
             phr_txt(
               "Recall date updated to '{date_str}' in tool '{tool_name}'."
             ),
@@ -335,7 +378,7 @@ IPHRAProtocol <- R6::R6Class(
         params,
         list(
           anf_framework_path = self$.modified_framework_svg,
-          tool_household_iphra = self$.tool_household_iphra,
+          tool_household = self$.tool_household_iphra,
           tool_community_kii = self$.tool_community_kii,
           tool_fsl_provider_kii = self$.tool_fsl_provider_kii,
           tool_market_kii = self$.tool_market_kii,
@@ -360,10 +403,10 @@ IPHRAProtocol <- R6::R6Class(
           tool_health_facility_observation = self$.tool_health_facility_observation,
           tool_latrine_observation = self$.tool_latrine_observation,
           tool_water_point_observation = self$.tool_water_point_observation,
-          tools_table_df = self$.tools_table_df,
-          household_pillars_table_df = self$.household_pillars_table_df,
-          kii_pillars_table_df = self$.kii_pillars_table_df,
-          observation_pillars_table_df = self$.observation_pillars_table_df,
+          tools_table_df = private$..sanitize_quarto_df(self$.tools_table_df),
+          household_pillars_table_df = private$..sanitize_quarto_df(self$.household_pillars_table_df),
+          kii_pillars_table_df = private$..sanitize_quarto_df(self$.kii_pillars_table_df),
+          observation_pillars_table_df = private$..sanitize_quarto_df(self$.observation_pillars_table_df),
           household_dap_df = private$..sanitize_quarto_df(
             self$.household_dap_df
           ),
@@ -406,6 +449,7 @@ IPHRAProtocol <- R6::R6Class(
   ),
 
   active = list(
+    #' @field .tool_household_iphra Logical flag indicating if a household IPHRA tool is registered.
     .tool_household_iphra = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
@@ -413,114 +457,133 @@ IPHRAProtocol <- R6::R6Class(
       private$..has_tool_role("household")
     },
 
+    #' @field .tool_community_kii Logical flag indicating if a community KII tool is registered.
     .tool_community_kii = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
       }
       private$..has_tool_role("kii_community")
     },
+    #' @field .tool_fsl_provider_kii Logical flag indicating if an FSL provider KII tool is registered.
     .tool_fsl_provider_kii = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
       }
       private$..has_tool_role("kii_fsl_service_provider")
     },
+    #' @field .tool_market_kii Logical flag indicating if a market KII tool is registered.
     .tool_market_kii = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
       }
       private$..has_tool_role("kii_markets")
     },
+    #' @field .tool_health_facility_kii Logical flag indicating if a health facility KII tool is registered.
     .tool_health_facility_kii = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
       }
       private$..has_tool_role("kii_health_service_provider")
     },
+    #' @field .tool_nutrition_facility_kii Logical flag indicating if a nutrition facility KII tool is registered.
     .tool_nutrition_facility_kii = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
       }
       private$..has_tool_role("kii_nutrition_service_provider")
     },
+    #' @field .tool_wash_provider_kii Logical flag indicating if a WASH provider KII tool is registered.
     .tool_wash_provider_kii = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
       }
       private$..has_tool_role("kii_wash_service_provider")
     },
+    #' @field .ind_ecfies Logical flag indicating if ECFIES indicator (10801) is included.
     .ind_ecfies = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
       }
       private$..household_has_any_indicator(c("10801"))
     },
+    #' @field .ind_iycfe Logical flag indicating if IYCF-E indicator (10802) is included.
     .ind_iycfe = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
       }
       private$..household_has_any_indicator(c("10802"))
     },
+    #' @field .ind_measles_vaccination Logical flag indicating if measles vaccination indicator (14304) is included.
     .ind_measles_vaccination = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
       }
       private$..household_has_any_indicator(c("14304"))
     },
+    #' @field .ind_muac_children Logical flag indicating if MUAC children indicator (10701) is included.
     .ind_muac_children = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
       }
       private$..household_has_any_indicator(c("10701"))
     },
+    #' @field .ind_muac_women Logical flag indicating if MUAC women indicator (10702) is included.
     .ind_muac_women = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
       }
       private$..household_has_any_indicator(c("10702"))
     },
+    #' @field .ind_vitamin_a_coverage Logical flag indicating if vitamin A coverage indicator (14305) is included.
     .ind_vitamin_a_coverage = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
       }
       private$..household_has_any_indicator(c("14305"))
     },
+    #' @field .ind_mortality Logical flag indicating if mortality indicators (10501, 10502) are included.
     .ind_mortality = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
       }
       private$..household_has_any_indicator(c("10501", "10502"))
     },
+    #' @field .ind_fcs Logical flag indicating if FCS indicator (11205) is included.
     .ind_fcs = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
       }
       private$..household_has_any_indicator(c("11205"))
     },
+    #' @field .ind_rcsi Logical flag indicating if rCSI indicator (11202) is included.
     .ind_rcsi = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
       }
       private$..household_has_any_indicator(c("11202"))
     },
+    #' @field .ind_hhs Logical flag indicating if HHS indicator (11201) is included.
     .ind_hhs = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
       }
       private$..household_has_any_indicator(c("11201"))
     },
+    #' @field .ind_lcsi Logical flag indicating if LCSI indicator (12301) is included.
     .ind_lcsi = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
       }
       private$..household_has_any_indicator(c("12301"))
     },
+    #' @field .ind_hwise Logical flag indicating if HWISE indicator (11701) is included.
     .ind_hwise = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
       }
       private$..household_has_any_indicator(c("11701"))
     },
+    #' @field .ind_lppd Logical flag indicating if LPPD indicator (10901) is included.
     .ind_lppd = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
@@ -528,30 +591,35 @@ IPHRAProtocol <- R6::R6Class(
       private$..household_has_any_indicator(c("10901"))
     },
 
+    #' @field .tool_community_observation Logical flag indicating if a community observation tool is registered.
     .tool_community_observation = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
       }
       private$..has_tool_role("obs_community")
     },
+    #' @field .tool_crops_livestock_observation Logical flag indicating if a crops/livestock observation tool is registered.
     .tool_crops_livestock_observation = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
       }
       private$..has_tool_role("obs_crop_livestock")
     },
+    #' @field .tool_health_facility_observation Logical flag indicating if a health facility observation tool is registered.
     .tool_health_facility_observation = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
       }
       private$..has_tool_role("obs_health_facility")
     },
+    #' @field .tool_latrine_observation Logical flag indicating if a latrine observation tool is registered.
     .tool_latrine_observation = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
       }
       private$..has_tool_role("obs_latrine")
     },
+    #' @field .tool_water_point_observation Logical flag indicating if a water point observation tool is registered.
     .tool_water_point_observation = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
@@ -559,13 +627,21 @@ IPHRAProtocol <- R6::R6Class(
       private$..has_tool_role("obs_water_point")
     },
 
+    #' @field .tools_table_df Data frame summarizing registered tools with sampling methods and sample sizes.
     .tools_table_df = function(value) {
       st <- private$..sample_table_from_nested()
 
       tool_names <- self$get_tool_names()
 
+      table_df <- data.frame(
+          Tool = character(0),
+          `Sampling Method` = character(0),
+          `Sample Size` = numeric(0),
+          check.names = FALSE
+        )
+
       if ("tool_household_iphra_v2" %in% tool_names) {
-        row <- data.frame(
+        table_df <- data.frame(
           Tool = "tool_household_iphra_v2",
 
           `Sampling Method` = if (
@@ -605,8 +681,8 @@ IPHRAProtocol <- R6::R6Class(
       }
 
       if ("tool_kii_community_iphra_v2" %in% tool_names) {
-        row <- rbind(
-          row,
+        table_df <- rbind(
+          table_df,
           data.frame(
             Tool = "tool_kii_community_iphra_v2",
             `Sampling Method` = "Purposive / Random Walk",
@@ -624,8 +700,8 @@ IPHRAProtocol <- R6::R6Class(
       }
 
       if ("tool_kii_fsl_service_provider_iphra_v2" %in% tool_names) {
-        row <- rbind(
-          row,
+        table_df <- rbind(
+          table_df,
           data.frame(
             Tool = "tool_kii_fsl_service_provider_iphra_v2",
             `Sampling Method` = "Purposive",
@@ -643,8 +719,8 @@ IPHRAProtocol <- R6::R6Class(
       }
 
       if ("tool_kii_health_service_provider_iphra_v2" %in% tool_names) {
-        row <- rbind(
-          row,
+        table_df <- rbind(
+          table_df,
           data.frame(
             Tool = "tool_kii_health_service_provider_iphra_v2",
             `Sampling Method` = "Purposive",
@@ -662,8 +738,8 @@ IPHRAProtocol <- R6::R6Class(
       }
 
       if ("tool_kii_nutrition_service_provider_iphra_v2" %in% tool_names) {
-        row <- rbind(
-          row,
+        table_df <- rbind(
+          table_df,
           data.frame(
             Tool = "tool_kii_nutrition_service_provider_iphra_v2",
             `Sampling Method` = "Purposive",
@@ -681,8 +757,8 @@ IPHRAProtocol <- R6::R6Class(
       }
 
       if ("tool_kii_wash_service_provider_iphra_v2" %in% tool_names) {
-        row <- rbind(
-          row,
+        table_df <- rbind(
+          table_df,
           data.frame(
             Tool = "tool_kii_wash_service_provider_iphra_v2",
             `Sampling Method` = "Purposive",
@@ -700,8 +776,8 @@ IPHRAProtocol <- R6::R6Class(
       }
 
       if ("tool_obs_community_iphra_v2" %in% tool_names) {
-        row <- rbind(
-          row,
+        table_df <- rbind(
+          table_df,
           data.frame(
             Tool = "tool_obs_community_iphra_v2",
             `Sampling Method` = "Transect Walk",
@@ -719,8 +795,8 @@ IPHRAProtocol <- R6::R6Class(
       }
 
       if ("tool_obs_crop_livestock_iphra_v1" %in% tool_names) {
-        row <- rbind(
-          row,
+        table_df <- rbind(
+          table_df,
           data.frame(
             Tool = "tool_obs_crop_livestock_iphra_v1",
             `Sampling Method` = "Transect Walk",
@@ -738,8 +814,8 @@ IPHRAProtocol <- R6::R6Class(
       }
 
       if ("tool_obs_health_facility_iphra_v2" %in% tool_names) {
-        row <- rbind(
-          row,
+        table_df <- rbind(
+          table_df,
           data.frame(
             Tool = "tool_obs_health_facility_iphra_v2",
             `Sampling Method` = "Purposive",
@@ -757,8 +833,8 @@ IPHRAProtocol <- R6::R6Class(
       }
 
       if ("tool_obs_latrine_iphra_v2" %in% tool_names) {
-        row <- rbind(
-          row,
+        table_df <- rbind(
+          table_df,
           data.frame(
             Tool = "tool_obs_latrine_iphra_v2",
             `Sampling Method` = "Purposive",
@@ -776,8 +852,8 @@ IPHRAProtocol <- R6::R6Class(
       }
 
       if ("tool_obs_water_point_iphra_v2" %in% tool_names) {
-        row <- rbind(
-          row,
+        table_df <- rbind(
+          table_df,
           data.frame(
             Tool = "tool_obs_water_point_iphra_v2",
             `Sampling Method` = "Purposive",
@@ -794,26 +870,25 @@ IPHRAProtocol <- R6::R6Class(
         )
       }
 
-      if (!exists("row")) {
-        table <- data.frame(
-          Tool = character(0),
-          `Sampling Method` = character(0),
-          `Sample Size` = numeric(0),
+      if(nrow(table_df) == 0) {
+        table_df <- data.frame(
+          Tool = NA_character_,
+          `Sampling Method` = NA_character_,
+          `Sample Size` = NA_real_,
           check.names = FALSE
         )
-      } else {
-        table <- row
       }
 
-      return(table)
+      return(table_df)
     },
 
+    #' @field .household_pillars_table_df Active binding.
     .household_pillars_table_df = function(value) {
       if (!private$..has_tool_role("household")) {
         table <- data.frame(
-          Pillar = character(0),
-          `Sub-Pillar` = character(0),
-          Indicator = character(0),
+          Pillar = NA_character_,
+          `Sub-Pillar` = NA_character_,
+          Indicator = NA_character_,
           check.names = FALSE,
           stringsAsFactors = FALSE
         )
@@ -863,9 +938,9 @@ IPHRAProtocol <- R6::R6Class(
 
       if (is.null(ob) || is.null(ib)) {
         table <- data.frame(
-          Pillar = character(0),
-          `Sub-Pillar` = character(0),
-          Indicator = character(0),
+          Pillar = NA_character_,
+          `Sub-Pillar` = NA_character_,
+          Indicator = NA_character_,
           check.names = FALSE,
           stringsAsFactors = FALSE
         )
@@ -902,6 +977,7 @@ IPHRAProtocol <- R6::R6Class(
 
       table
     },
+    #' @field .kii_pillars_table_df Active binding.
     .kii_pillars_table_df = function(value) {
       if (
         !private$..has_tool_role("kii_community") &&
@@ -1053,6 +1129,7 @@ IPHRAProtocol <- R6::R6Class(
 
       table
     },
+    #' @field .observation_pillars_table_df Active binding.
     .observation_pillars_table_df = function(value) {
       if (
         !private$..has_tool_role("obs_community") &&
@@ -1179,6 +1256,7 @@ IPHRAProtocol <- R6::R6Class(
 
       table
     },
+    #' @field .household_dap_df Data frame containing the household data analysis plan.
     .household_dap_df = function(value) {
       if (!missing(value)) {
         phr_abort(
@@ -1190,9 +1268,19 @@ IPHRAProtocol <- R6::R6Class(
       if (self$.tool_household_iphra) {
         self$get_dap_table("tool_household_iphra_v2")
       } else {
-        data.frame()
+        data.frame(
+          "Research Question" = NA_character_,
+          "Indicator / Variable" = NA_character_,
+          "Disaggregation" = NA_character_,
+          "Questionnaire Question" = NA_character_,
+          "Questionnaire Responses" = NA_character_,
+          "Data Collection Level" = NA_character_,
+          check.names = FALSE,
+          stringsAsFactors = FALSE
+        )
       }
     },
+    #' @field .community_kii_dap_df Data frame containing the community KII data analysis plan.
     .community_kii_dap_df = function(value) {
       if (!missing(value)) {
         phr_abort(
@@ -1203,9 +1291,19 @@ IPHRAProtocol <- R6::R6Class(
       if (self$.tool_community_kii) {
         self$get_dap_table("tool_kii_community_iphra_v2")
       } else {
-        return(data.frame())
+        return(data.frame(
+          "Research Question" = NA_character_,
+          "Indicator / Variable" = NA_character_,
+          "Disaggregation" = NA_character_,
+          "Questionnaire Question" = NA_character_,
+          "Questionnaire Responses" = NA_character_,
+          "Data Collection Level" = NA_character_,
+          check.names = FALSE,
+          stringsAsFactors = FALSE
+        ))
       }
     },
+    #' @field .community_observation_dap_df Data frame containing the community observation data analysis plan.
     .community_observation_dap_df = function(value) {
       if (!missing(value)) {
         phr_abort(
@@ -1216,9 +1314,19 @@ IPHRAProtocol <- R6::R6Class(
       if (self$.tool_community_observation) {
         self$get_dap_table("tool_obs_community_iphra_v2")
       } else {
-        return(data.frame())
+        return(data.frame(
+          "Research Question" = NA_character_,
+          "Indicator / Variable" = NA_character_,
+          "Disaggregation" = NA_character_,
+          "Questionnaire Question" = NA_character_,
+          "Questionnaire Responses" = NA_character_,
+          "Data Collection Level" = NA_character_,
+          check.names = FALSE,
+          stringsAsFactors = FALSE
+        ))
       }
     },
+    #' @field .health_facility_kii_dap_df Data frame containing the health facility KII data analysis plan.
     .health_facility_kii_dap_df = function(value) {
       if (!missing(value)) {
         phr_abort(
@@ -1229,9 +1337,19 @@ IPHRAProtocol <- R6::R6Class(
       if (self$.tool_health_facility_kii) {
         self$get_dap_table("tool_kii_health_service_provider_iphra_v2")
       } else {
-        return(data.frame())
+        return(data.frame(
+          "Research Question" = NA_character_,
+          "Indicator / Variable" = NA_character_,
+          "Disaggregation" = NA_character_,
+          "Questionnaire Question" = NA_character_,
+          "Questionnaire Responses" = NA_character_,
+          "Data Collection Level" = NA_character_,
+          check.names = FALSE,
+          stringsAsFactors = FALSE
+        ))
       }
     },
+    #' @field .health_facility_observation_dap_df Data frame containing the health facility observation data analysis plan.
     .health_facility_observation_dap_df = function(value) {
       if (!missing(value)) {
         phr_abort(
@@ -1244,9 +1362,19 @@ IPHRAProtocol <- R6::R6Class(
       if (self$.tool_health_facility_observation) {
         self$get_dap_table("tool_obs_health_facility_iphra_v2")
       } else {
-        return(data.frame())
+        return(data.frame(
+          "Research Question" = NA_character_,
+          "Indicator / Variable" = NA_character_,
+          "Disaggregation" = NA_character_,
+          "Questionnaire Question" = NA_character_,
+          "Questionnaire Responses" = NA_character_,
+          "Data Collection Level" = NA_character_,
+          check.names = FALSE,
+          stringsAsFactors = FALSE
+        ))
       }
     },
+    #' @field .nutrition_facility_kii_dap_df Data frame containing the nutrition facility KII data analysis plan.
     .nutrition_facility_kii_dap_df = function(value) {
       if (!missing(value)) {
         phr_abort(
@@ -1257,9 +1385,19 @@ IPHRAProtocol <- R6::R6Class(
       if (self$.tool_nutrition_facility_kii) {
         self$get_dap_table("tool_kii_nutrition_service_provider_iphra_v2")
       } else {
-        return(data.frame())
+        return(data.frame(
+          "Research Question" = NA_character_,
+          "Indicator / Variable" = NA_character_,
+          "Disaggregation" = NA_character_,
+          "Questionnaire Question" = NA_character_,
+          "Questionnaire Responses" = NA_character_,
+          "Data Collection Level" = NA_character_,
+          check.names = FALSE,
+          stringsAsFactors = FALSE
+        ))
       }
     },
+    #' @field .fsl_provider_kii_dap_df Data frame containing the FSL provider KII data analysis plan.
     .fsl_provider_kii_dap_df = function(value) {
       if (!missing(value)) {
         phr_abort(
@@ -1270,9 +1408,19 @@ IPHRAProtocol <- R6::R6Class(
       if (self$.tool_fsl_provider_kii) {
         self$get_dap_table("tool_kii_fsl_service_provider_iphra_v2")
       } else {
-        return(data.frame())
+        return(data.frame(
+          "Research Question" = NA_character_,
+          "Indicator / Variable" = NA_character_,
+          "Disaggregation" = NA_character_,
+          "Questionnaire Question" = NA_character_,
+          "Questionnaire Responses" = NA_character_,
+          "Data Collection Level" = NA_character_,
+          check.names = FALSE,
+          stringsAsFactors = FALSE
+        ))
       }
     },
+    #' @field .market_kii_dap_df Data frame containing the market KII data analysis plan.
     .market_kii_dap_df = function(value) {
       if (!missing(value)) {
         phr_abort(
@@ -1283,9 +1431,19 @@ IPHRAProtocol <- R6::R6Class(
       if (self$.tool_market_kii) {
         self$get_dap_table("tool_kii_markets_iphra_v2")
       } else {
-        return(data.frame())
+        return(data.frame(
+          "Research Question" = NA_character_,
+          "Indicator / Variable" = NA_character_,
+          "Disaggregation" = NA_character_,
+          "Questionnaire Question" = NA_character_,
+          "Questionnaire Responses" = NA_character_,
+          "Data Collection Level" = NA_character_,
+          check.names = FALSE,
+          stringsAsFactors = FALSE
+        ))
       }
     },
+    #' @field .crop_livstock_observation_dap_df Active binding.
     .crop_livstock_observation_dap_df = function(value) {
       if (!missing(value)) {
         phr_abort(
@@ -1298,9 +1456,19 @@ IPHRAProtocol <- R6::R6Class(
       if (self$.tool_crops_livestock_observation) {
         self$get_dap_table("tool_obs_crop_livestock_iphra_v1")
       } else {
-        return(data.frame())
+        return(data.frame(
+          "Research Question" = NA_character_,
+          "Indicator / Variable" = NA_character_,
+          "Disaggregation" = NA_character_,
+          "Questionnaire Question" = NA_character_,
+          "Questionnaire Responses" = NA_character_,
+          "Data Collection Level" = NA_character_,
+          check.names = FALSE,
+          stringsAsFactors = FALSE
+        ))
       }
     },
+    #' @field .wash_provider_kii_dap_df Data frame containing the WASH provider KII data analysis plan.
     .wash_provider_kii_dap_df = function(value) {
       if (!missing(value)) {
         phr_abort(
@@ -1311,9 +1479,19 @@ IPHRAProtocol <- R6::R6Class(
       if (self$.tool_wash_provider_kii) {
         self$get_dap_table("tool_kii_wash_service_provider_iphra_v2")
       } else {
-        return(data.frame())
+        return(data.frame(
+          "Research Question" = NA_character_,
+          "Indicator / Variable" = NA_character_,
+          "Disaggregation" = NA_character_,
+          "Questionnaire Question" = NA_character_,
+          "Questionnaire Responses" = NA_character_,
+          "Data Collection Level" = NA_character_,
+          check.names = FALSE,
+          stringsAsFactors = FALSE
+        ))
       }
     },
+    #' @field .water_point_observation_dap_df Data frame containing the water point observation data analysis plan.
     .water_point_observation_dap_df = function(value) {
       if (!missing(value)) {
         phr_abort(
@@ -1324,9 +1502,19 @@ IPHRAProtocol <- R6::R6Class(
       if (self$.tool_water_point_observation) {
         self$get_dap_table("tool_obs_water_point_iphra_v2")
       } else {
-        return(data.frame())
+        return(data.frame(
+          "Research Question" = NA_character_,
+          "Indicator / Variable" = NA_character_,
+          "Disaggregation" = NA_character_,
+          "Questionnaire Question" = NA_character_,
+          "Questionnaire Responses" = NA_character_,
+          "Data Collection Level" = NA_character_,
+          check.names = FALSE,
+          stringsAsFactors = FALSE
+        ))
       }
     },
+    #' @field .latrine_observation_dap_df Data frame containing the latrine observation data analysis plan.
     .latrine_observation_dap_df = function(value) {
       if (!missing(value)) {
         phr_abort(
@@ -1337,7 +1525,16 @@ IPHRAProtocol <- R6::R6Class(
       if (self$.tool_latrine_observation) {
         self$get_dap_table("tool_obs_latrine_iphra_v2")
       } else {
-        return(data.frame())
+        return(data.frame(
+          "Research Question" = NA_character_,
+          "Indicator / Variable" = NA_character_,
+          "Disaggregation" = NA_character_,
+          "Questionnaire Question" = NA_character_,
+          "Questionnaire Responses" = NA_character_,
+          "Data Collection Level" = NA_character_,
+          check.names = FALSE,
+          stringsAsFactors = FALSE
+        ))
       }
     }
   ),

@@ -144,13 +144,13 @@ construction.}
   Set the tool name.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{Tool$set_name(name)}
+    \preformatted{Tool$set_name(new_name)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{name}}{Character string for the tool name.}
+      \item{\code{new_name}}{Character string for the tool name.}
     }
     \if{html}{\out{</div>}}
   }

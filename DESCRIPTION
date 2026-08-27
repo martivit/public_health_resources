@@ -21,10 +21,9 @@ Imports:
     flextable,
     ggplot2,
     glue,
-    lubridate,
+    lme4,
     officer,
     openxlsx,
-    phrindicators,
     phrutils,
     pps,
     purrr,
@@ -35,10 +34,8 @@ Imports:
     scales,
     srvyr,
     survey,
-    xml2,
     tibble,
-    tidyr,
-    zscorer
+    tidyr
 Suggests:
     GGally,
     ggalluvial,
@@ -97,11 +94,8 @@ Collate:
     'class_tool.R'
     'globals.R'
     'phr-package.R'
-    'utils_color_palettes.R'
     'utils_data_class.R'
     'utils_data_quality.R'
-    'utils_data_water_container.R'
-    'utils_demographics_analysis.R'
     'utils_doc_schema_handlers_iphra.R'
     'utils_flextable_themes.R'
     'utils_formatting.R'
@@ -119,4 +113,4 @@ Collate:
     'utils_sampling_frame.R'
     'utils_tool_selection.R'
     'utils_tools_validation.R'
-Config/roxygen2/version: 8.0.0
+Config/roxygen2/version: 8.1.0

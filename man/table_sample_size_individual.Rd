@@ -8,8 +8,6 @@ table_sample_size_individual(sample_table)
 }
 \arguments{
 \item{sample_table}{Sample table data frame.}
-
-\item{indicator_codes}{Included indicator codes from tools.}
 }
 \value{
 A flextable object, or \code{NULL} when unavailable.

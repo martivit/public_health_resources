@@ -59,7 +59,7 @@ FSLDataAnalytics <- R6::R6Class(
         quality_schema = quality_schema
       )
 
-      phr_message(
+      phrutils::phr_message(
         phr_txt(glue::glue("{dataset_name} initialized as FSLDataAnalytics object."))
       )
     },
@@ -84,7 +84,7 @@ FSLDataAnalytics <- R6::R6Class(
       df <- tryCatch(
         readxl::read_xlsx(file),
         error = function(e) {
-          phr_warning(
+          phrutils::phr_warning(
             origin  = "FSLDataAnalytics$default_quality_schema",
             message = phr_txt(glue::glue("Failed to read quality_schema_data_quality_fsl_template.xlsx: {e$message}"))
           )
@@ -122,7 +122,7 @@ FSLDataAnalytics <- R6::R6Class(
         }
       }
 
-      df <- phr_try(
+      df <- phrutils::phr_try(
         readxl::read_xlsx(file),
         on_error = "warn",
         origin   = "FSLDataAnalytics$default_outputs_schema",
@@ -153,7 +153,7 @@ FSLDataAnalytics <- R6::R6Class(
         }
       }
 
-      schema_tbl <- phr_try(
+      schema_tbl <- phrutils::phr_try(
         readxl::read_xlsx(file),
         on_error = "warn",
         origin   = "FSLDataAnalytics$default_analysis_schema",

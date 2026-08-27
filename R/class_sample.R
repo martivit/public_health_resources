@@ -31,7 +31,7 @@ Sample <- R6::R6Class(
       if (is.null(sample_table)) {
         self$sample_table <- NULL
       } else {
-        phr_validate_dataframe(
+        phrutils::phr_validate_dataframe(
           sample_table,
           origin = "Sample$initialize",
           soft = FALSE
@@ -47,7 +47,7 @@ Sample <- R6::R6Class(
     #' @description Replace the current sample table.
     #' @param sample_table Data frame.
     set_sample_table = function(sample_table) {
-      phr_validate_dataframe(
+      phrutils::phr_validate_dataframe(
         sample_table,
         origin = "Sample$set_sample_table",
         soft = FALSE
@@ -177,7 +177,7 @@ Sample <- R6::R6Class(
         pop_precision <- precision
       }
 
-      phr_assert(
+      phrutils::phr_assert(
         !is.null(sampling_method_site),
         message = phr_txt("sampling_method_site is required."),
         origin = "Sample$add_stratum"
@@ -190,7 +190,7 @@ Sample <- R6::R6Class(
         "systematic",
         "purposive"
       )
-      phr_assert(
+      phrutils::phr_assert(
         sampling_method_site %in% site_selection_methods,
         message = phr_txt(
           "sampling_method_site must be one of: {paste(site_selection_methods, collapse=', ')}."
@@ -198,14 +198,19 @@ Sample <- R6::R6Class(
         origin = "Sample$add_stratum"
       )
 
-      if (sampling_method_site %in% site_selection_methods) {
-        phr_assert(
-          !is.null(n_sites) && !is.na(n_sites),
-          message = phr_txt(
-            "n_sites is required for sampling_method '{sampling_method_site}'."
-          ),
-          origin = "Sample$add_stratum"
-        )
+      # if (sampling_method_site %in% site_selection_methods) {
+      #   phrutils::phr_assert(
+      #     !is.null(n_sites) && !is.na(n_sites),
+      #     message = phr_txt(
+      #       "n_sites is required for sampling_method '{sampling_method_site}'."
+      #     ),
+      #     origin = "Sample$add_stratum"
+      #   )
+      # }
+
+      # Default household sampling method if NULL or missing
+      if (is.null(sampling_method_hh) || is.na(sampling_method_hh)) {
+        sampling_method_hh <- "simple_random"
       }
 
       if (
@@ -221,6 +226,21 @@ Sample <- R6::R6Class(
         sampling_method_hh
       } else {
         "simple_random"
+      }
+      # Warn early if stratum_id already exists and will be overwritten
+      if (
+        !is.null(self$sample_table) &&
+          stratum_id %in% self$sample_table$stratum_id
+      ) {
+        phrutils::phr_warning(
+          message = phr_txt(
+            "Stratum ID '{stratum_id}' already exists and will be overwritten."
+          ),
+          origin = "Sample$add_stratum",
+          hint = phr_txt(
+            "The existing row for '{stratum_id}' will be replaced with new values."
+          )
+        )
       }
 
       new_row <- data.frame(
@@ -279,7 +299,7 @@ Sample <- R6::R6Class(
         self$sample_table <- new_row
       } else {
         if (stratum_id %in% self$sample_table$stratum_id) {
-          phr_warning(
+          phrutils::phr_warning(
             message = phr_txt(
               "Stratum ID '{stratum_id}' already exists and will be overwritten."
             ),
@@ -304,7 +324,7 @@ Sample <- R6::R6Class(
     #' @description Remove a stratum row by strata name.
     #' @param strata_name Character scalar naming the stratum to remove.
     remove_stratum = function(strata_name) {
-      phr_assert(
+      phrutils::phr_assert(
         is.character(strata_name) &&
           length(strata_name) == 1L &&
           nzchar(strata_name),
@@ -320,7 +340,7 @@ Sample <- R6::R6Class(
       }
 
       stratum_col <- private$..resolve_stratum_name_col(st)
-      phr_assert(
+      phrutils::phr_assert(
         !is.null(stratum_col),
         message = phr_txt(
           "sample_table does not contain a stratum name column."
@@ -345,7 +365,7 @@ Sample <- R6::R6Class(
 
     #' @description Calculate sample sizes for all strata rows.
     calculate_sample_sizes = function() {
-      phr_assert(
+      phrutils::phr_assert(
         !is.null(self$sample_table) && nrow(self$sample_table) > 0,
         message = phr_txt("sample_table is empty. Call add_stratum() first."),
         origin = "Sample$calculate_sample_sizes"
@@ -354,8 +374,6 @@ Sample <- R6::R6Class(
       private$..touch()
       invisible(self)
     },
-
-    #' @description Return unique sampling methods in the sample table.
 
     #' @description Return unique sampling methods in the sample table.
     #' @param type Character specifying method type: "site" or "household" (default: "site").
@@ -398,20 +416,18 @@ Sample <- R6::R6Class(
     }
   ),
   private = list(
-    #' @description Update modified timestamp.
-    #' @return Invisibly returns NULL.
-    #' @keywords internal
-    #' @noRd
+    # @description Update modified timestamp.
+    # @return Invisibly returns NULL.
+    # @keywords internal
     ..touch = function() {
       self$metadata$modified_datetime <- Sys.time()
       invisible(NULL)
     },
 
-    #' @description Resolve the stratum name column from a sample table.
-    #' @param st Data frame sample table.
-    #' @return Character scalar naming the column, or NULL if not found.
-    #' @keywords internal
-    #' @noRd
+    # @description Resolve the stratum name column from a sample table.
+    # @param st Data frame sample table.
+    # @return Character scalar naming the column, or NULL if not found.
+    # @keywords internal
     ..resolve_stratum_name_col = function(st) {
       if ("stratum_name" %in% names(st)) {
         "stratum_name"

@@ -58,7 +58,7 @@ WaterContainerDataAnalytics <- R6::R6Class(
         quality_schema = quality_schema
       )
 
-      phr_message(
+      phrutils::phr_message(
         phr_txt(glue::glue("{dataset_name} initialized as WaterContainerDataAnalytics object."))
       )
     },
@@ -83,7 +83,7 @@ WaterContainerDataAnalytics <- R6::R6Class(
       df <- tryCatch(
         readxl::read_xlsx(file),
         error = function(e) {
-          phr_warning(
+          phrutils::phr_warning(
             origin  = "WaterContainerDataAnalytics$default_quality_schema",
             message = phr_txt(glue::glue("Failed to read quality_schema_data_quality_water_container_template.xlsx: {e$message}"))
           )
@@ -121,7 +121,7 @@ WaterContainerDataAnalytics <- R6::R6Class(
         }
       }
 
-      df <- phr_try(
+      df <- phrutils::phr_try(
         readxl::read_xlsx(file),
         on_error = "warn",
         origin   = "WaterContainerDataAnalytics$default_outputs_schema",

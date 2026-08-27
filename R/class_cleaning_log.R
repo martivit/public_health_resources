@@ -29,7 +29,6 @@ CleaningLog <- R6::R6Class(
   inherit = Log,
 
   public = list(
-
     #' @description
     #' Creates a new CleaningLog with default schema and required columns
     #'
@@ -43,39 +42,42 @@ CleaningLog <- R6::R6Class(
     #' @details
     #' Sets up default schema with all character types and "changed" restricted to "yes"/"no".
     #' Calls parent Log$initialize() to complete setup.
-    initialize = function(log_df = NULL,
-                          log_name = "Cleaning Log",
-                          required_columns = NULL,
-                          schema = NULL) {
-
-      required_columns <- required_columns %||% c(
-        "uuid",
-        "enum_id",
-        "device_id",
-        "question.name",
-        "issue",
-        "feedback",
-        "changed",
-        "old.value",
-        "new.value"
-      )
-
-      schema <- schema %||% list(
-        types = list(
-          uuid = "character",
-          enum_id = "character",
-          device_id = "character",
-          question.name = "character",
-          issue = "character",
-          feedback = "character",
-          changed = "character",
-          old.value = "character",
-          new.value = "character"
-        ),
-        allowed_values = list(
-          changed = c("yes", "no")
+    initialize = function(
+      log_df = NULL,
+      log_name = "Cleaning Log",
+      required_columns = NULL,
+      schema = NULL
+    ) {
+      required_columns <- required_columns %||%
+        c(
+          "uuid",
+          "enum_id",
+          "device_id",
+          "question.name",
+          "issue",
+          "feedback",
+          "changed",
+          "old.value",
+          "new.value"
         )
-      )
+
+      schema <- schema %||%
+        list(
+          types = list(
+            uuid = "character",
+            enum_id = "character",
+            device_id = "character",
+            question.name = "character",
+            issue = "character",
+            feedback = "character",
+            changed = "character",
+            old.value = "character",
+            new.value = "character"
+          ),
+          allowed_values = list(
+            changed = c("yes", "no")
+          )
+        )
 
       super$initialize(
         log_df = log_df,
@@ -84,8 +86,6 @@ CleaningLog <- R6::R6Class(
         schema = schema
       )
     },
-
-
 
     #' Validate Cleaning Log
     #'
@@ -110,75 +110,79 @@ CleaningLog <- R6::R6Class(
     #'
     #' Sets self$validated and self$issues based on results.
     validate = function(data_obj = NULL, stage = "clean") {
+      phrutils::phr_try(
+        {
+          # 1. Start with super validation
 
-      phr_try({
+          super_issues <- super$validate()
+          if (is.null(super_issues)) {
+            super_issues <- list()
+          }
 
+          df <- self$log_df
 
-        # 1. Start with super validation
+          # 2. Cleaning-log specific completeness
+          #    Always require uuid, question.name, and changed to be present.
+          #    Require old.value only for rows where changed == "yes" — we need to
+          #    know the current value to apply a correction.
+          #    Do NOT require new.value: it is legitimately blank/NA at log-generation
+          #    time while awaiting human review.
 
-        super_issues <- super$validate()
-        if (is.null(super_issues)) super_issues <- list()
+          required_always <- c("uuid", "question.name", "changed")
 
-        df <- self$log_df
-
-
-        # 2. Cleaning-log specific completeness
-        #    Always require uuid, question.name, and changed to be present.
-        #    Require old.value only for rows where changed == "yes" \u2014 we need to
-        #    know the current value to apply a correction.
-        #    Do NOT require new.value: it is legitimately blank/NA at log-generation
-        #    time while awaiting human review.
-
-        required_always <- c("uuid", "question.name", "changed")
-
-        incomplete_always <- vapply(
-          required_always,
-          function(col) any(is.na(df[[col]]) | trimws(df[[col]]) == ""),
-          logical(1)
-        )
-
-        bad_cols <- required_always[incomplete_always]
-
-        # For old.value, only flag rows where changed == "yes"
-        changed_yes <- !is.na(df$changed) & df$changed == "yes"
-        if (any(changed_yes) && any(is.na(df$old.value[changed_yes]) | trimws(df$old.value[changed_yes]) == "")) {
-          bad_cols <- c(bad_cols, "old.value")
-        }
-
-        if (length(bad_cols) > 0) {
-          super_issues$missing_or_empty <- bad_cols
-
-          phr_warning(
-            self$log_name,
-            phr_txt(glue::glue("Cleaning log contains missing/empty values in: {paste(bad_cols, collapse=', ')}."))
+          incomplete_always <- vapply(
+            required_always,
+            function(col) any(is.na(df[[col]]) | trimws(df[[col]]) == ""),
+            logical(1)
           )
-        }
 
+          bad_cols <- required_always[incomplete_always]
 
-        # 3. POST VALIDATE (dataset alignment)
+          # For old.value, only flag rows where changed == "yes"
+          changed_yes <- !is.na(df$changed) & df$changed == "yes"
+          if (
+            any(changed_yes) &&
+              any(
+                is.na(df$old.value[changed_yes]) |
+                  trimws(df$old.value[changed_yes]) == ""
+              )
+          ) {
+            bad_cols <- c(bad_cols, "old.value")
+          }
 
-        post_issues <- list()
+          if (length(bad_cols) > 0) {
+            super_issues$missing_or_empty <- bad_cols
 
-        if (!is.null(data_obj)) {
+            phrutils::phr_warning(
+              self$log_name,
+              phr_txt(glue::glue(
+                "Cleaning log contains missing/empty values in: {paste(bad_cols, collapse=', ')}."
+              ))
+            )
+          }
 
-          # try-safe block: collect issues instead of stopping
-          post_issues <- self$post_validate(data_obj, stage = stage)
-          if (is.null(post_issues)) post_issues <- list()
-        }
+          # 3. POST VALIDATE (dataset alignment)
 
+          post_issues <- list()
 
-        # 4. Merge issues and update state
+          if (!is.null(data_obj)) {
+            # try-safe block: collect issues instead of stopping
+            post_issues <- self$post_validate(data_obj, stage = stage)
+            if (is.null(post_issues)) post_issues <- list()
+          }
 
-        all_issues <- c(super_issues, post_issues)
-        self$issues <- all_issues
-        self$validated <- length(self$issues) == 0
+          # 4. Merge issues and update state
 
-        invisible(self$issues)
+          all_issues <- c(super_issues, post_issues)
+          self$issues <- all_issues
+          self$validated <- length(self$issues) == 0
 
-      }, on_error = "abort", origin = "CleaningLog$validate")
+          invisible(self$issues)
+        },
+        on_error = "abort",
+        origin = "CleaningLog$validate"
+      )
     },
-
-
 
     #' Post-Validate Against Dataset
     #'
@@ -199,10 +203,9 @@ CleaningLog <- R6::R6Class(
     #'
     #' All issues are returned as warnings, not errors, to allow inspection.
     post_validate = function(data_obj, stage = "clean") {
-
       # If log is empty, nothing to validate
       if (nrow(self$log_df) == 0) {
-        return(list())   # no issues
+        return(list()) # no issues
       }
 
       issues <- list()
@@ -212,19 +215,18 @@ CleaningLog <- R6::R6Class(
 
       # catastrophic error only
       if (is.null(df)) {
-        phr_error(
-          "Dataset is NULL \u2014 cannot validate CleaningLog against dataset.",
+        phrutils::phr_error(
+          "Dataset is NULL — cannot validate CleaningLog against dataset.",
           origin = "CleaningLog$post_validate"
         )
       }
-
 
       # UUID checks
 
       uuid_col <- data_obj$uuid
 
       if (!uuid_col %in% names(df)) {
-        phr_error(
+        phrutils::phr_error(
           message = paste0("Dataset missing UUID column '", uuid_col, "'."),
           origin = "CleaningLog$post_validate"
         )
@@ -233,12 +235,13 @@ CleaningLog <- R6::R6Class(
       missing_uuid <- setdiff(df_log$uuid, as.character(df[[uuid_col]]))
       if (length(missing_uuid) > 0) {
         issues$uuid_not_found <- missing_uuid
-        phr_warning(
+        phrutils::phr_warning(
           self$log_name,
-          phr_txt(glue::glue("Unknown UUID(s) in cleaning log: {paste(missing_uuid, collapse=', ')}"))
+          phr_txt(glue::glue(
+            "Unknown UUID(s) in cleaning log: {paste(missing_uuid, collapse=', ')}"
+          ))
         )
       }
-
 
       # enum_id checks (if mapped)
 
@@ -250,35 +253,36 @@ CleaningLog <- R6::R6Class(
 
           if (length(missing_enum) > 0) {
             issues$enum_id_not_found <- missing_enum
-            phr_warning(
+            phrutils::phr_warning(
               self$log_name,
-              phr_txt(glue::glue("Unknown enum_id(s): {paste(missing_enum, collapse=', ')}"))
+              phr_txt(glue::glue(
+                "Unknown enum_id(s): {paste(missing_enum, collapse=', ')}"
+              ))
             )
           }
         }
       }
-
 
       # question.name exists?
 
       missing_q <- setdiff(df_log$`question.name`, names(df))
       if (length(missing_q) > 0) {
         issues$unknown_question_names <- missing_q
-        phr_warning(
+        phrutils::phr_warning(
           self$log_name,
-          phr_txt(glue::glue("Unknown question.name columns: {paste(missing_q, collapse=', ')}"))
+          phr_txt(glue::glue(
+            "Unknown question.name columns: {paste(missing_q, collapse=', ')}"
+          ))
         )
       }
-
 
       # old.value matches data before change
 
       for (i in seq_len(nrow(df_log))) {
-
         row <- df_log[i, ]
         col_name <- row$`question.name`
         uuid_val <- row$uuid
-        old_val  <- as.character(row$`old.value`)
+        old_val <- as.character(row$`old.value`)
 
         # Skip validation if column doesn't exist in dataset
         if (!col_name %in% names(df)) {
@@ -296,7 +300,7 @@ CleaningLog <- R6::R6Class(
               paste0("uuid=", uuid_val, ", col=", col_name)
             )
 
-            phr_warning(
+            phrutils::phr_warning(
               self$log_name,
               phr_txt(
                 "old.value mismatch for uuid {uuid_val}, column {col_name}: expected '{old_val}', found '{actual}'."
@@ -308,7 +312,6 @@ CleaningLog <- R6::R6Class(
 
       return(issues)
     },
-
 
     #' Add Change Entry
     #'
@@ -330,31 +333,30 @@ CleaningLog <- R6::R6Class(
     #' @details
     #' Coerces all inputs to character and calls append_entry() to add to log.
     #' Normalizes 'changed' to lowercase for consistency.
-    add_change = function(uuid,
-                          enum_id,
-                          device_id,
-                          question.name,
-                          issue,
-                          feedback,
-                          changed,
-                          old.value,
-                          new.value) {
-
+    add_change = function(
+      uuid,
+      enum_id,
+      device_id,
+      question.name,
+      issue,
+      feedback,
+      changed,
+      old.value,
+      new.value
+    ) {
       entry <- list(
-        uuid          = as.character(uuid),
-        enum_id       = as.character(enum_id),
-        device_id     = as.character(device_id),
+        uuid = as.character(uuid),
+        enum_id = as.character(enum_id),
+        device_id = as.character(device_id),
         question.name = as.character(question.name),
-        issue         = as.character(issue),
-        feedback      = as.character(feedback),
-        changed       = tolower(as.character(changed)),
-        old.value     = as.character(old.value),
-        new.value     = as.character(new.value)
+        issue = as.character(issue),
+        feedback = as.character(feedback),
+        changed = tolower(as.character(changed)),
+        old.value = as.character(old.value),
+        new.value = as.character(new.value)
       )
 
       self$append_entry(entry)
     }
   )
 )
-
-

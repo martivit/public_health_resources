@@ -89,10 +89,10 @@ outputs_schema_to_table <- function(outputs_schema) {
 #' @export
 outputs_table_to_schema <- function(df) {
 
-  phr_validate_dataframe(df, origin = "outputs_table_to_schema", soft = FALSE)
+  phrutils::phr_validate_dataframe(df, origin = "outputs_table_to_schema", soft = FALSE)
   outputs_validate_table_to_schema(df)
 
-  phr_validate_columns(
+  phrutils::phr_validate_columns(
     df,
     required_cols = c(
       "output_title",
@@ -210,9 +210,9 @@ outputs_table_to_schema <- function(df) {
 #' @export
 outputs_validate_table_to_schema <- function(df) {
 
-  phr_try({
+  phrutils::phr_try({
 
-    phr_validate_dataframe(
+    phrutils::phr_validate_dataframe(
       df,
       origin = "outputs_validate_table_to_schema",
       soft = FALSE
@@ -229,7 +229,7 @@ outputs_validate_table_to_schema <- function(df) {
       "output_type"
     )
 
-    phr_validate_columns(
+    phrutils::phr_validate_columns(
       df,
       required_cols = required_cols,
       origin = "outputs_validate_table_to_schema",
@@ -269,7 +269,7 @@ outputs_validate_table_to_schema <- function(df) {
 #' @export
 outputs_validate_schema_to_table <- function(outputs_schema, origin = "outputs_validate_schema_to_table") {
 
-  phr_try({
+  phrutils::phr_try({
 
     if (is.null(outputs_schema) || !is.list(outputs_schema)) {
       phr_error(

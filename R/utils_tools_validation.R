@@ -16,7 +16,6 @@
 # row is NA_integer_.
 # ---------------------------------------------------------------
 
-
 # ---- 1. Extract values from a cell (general extract helper) ----
 
 #' @title Extract Matched Values from a Single Cell String
@@ -27,8 +26,8 @@
 #' of the **first capture group** for every match.  When the pattern
 #' contains no capture group the full match is returned instead.
 #'
-#' By default the pattern targets XLSForm `${}` variable references
-#' (e.g. `${my_var}`), so the function extracts the variable name
+#' By default the pattern targets XLSForm `$\{\}` variable references
+#' (e.g. `$\{my_var\}`), so the function extracts the variable name
 #' inside the braces.  Pass a different `pattern` to extract other
 #' structured tokens.
 #'
@@ -52,23 +51,33 @@
 #'
 #' @export
 xlsform_extract_variables <- function(cell, pattern = "\\$\\{([^}]+)\\}") {
-
   if (!is.character(cell) || length(cell) != 1L || is.na(cell)) {
     return(character(0))
   }
 
   pos <- gregexpr(pattern, cell, perl = TRUE)[[1L]]
-  if (pos[1L] == -1L) return(character(0))
+  if (pos[1L] == -1L) {
+    return(character(0))
+  }
 
-  cap_start  <- attr(pos, "capture.start")
+  cap_start <- attr(pos, "capture.start")
   cap_length <- attr(pos, "capture.length")
 
-  if (!is.null(cap_start) && ncol(cap_start) >= 1L && nrow(cap_start) > 0L && all(cap_start[, 1L] != -1L)) {
+  if (
+    !is.null(cap_start) &&
+      ncol(cap_start) >= 1L &&
+      nrow(cap_start) > 0L &&
+      all(cap_start[, 1L] != -1L)
+  ) {
     # Capture group 1 content
     substring(cell, cap_start[, 1L], cap_start[, 1L] + cap_length[, 1L] - 1L)
   } else {
     # No capture groups: return full matches
-    substring(cell, as.integer(pos), as.integer(pos) + attr(pos, "match.length") - 1L)
+    substring(
+      cell,
+      as.integer(pos),
+      as.integer(pos) + attr(pos, "match.length") - 1L
+    )
   }
 }
 
@@ -110,12 +119,20 @@ xlsform_extract_variables <- function(cell, pattern = "\\$\\{([^}]+)\\}") {
 #' # Returns: c("age", "consent")
 #'
 #' @export
-xlsform_collect_variables <- function(df, col, only_unique = TRUE,
-                                       pattern = "\\$\\{([^}]+)\\}") {
+xlsform_collect_variables <- function(
+  df,
+  col,
+  only_unique = TRUE,
+  pattern = "\\$\\{([^}]+)\\}"
+) {
   origin <- "xlsform_collect_variables"
 
-  phr_assert(is.data.frame(df), "Argument `df` must be a data frame.", origin = origin)
-  phr_assert(
+  phrutils::phr_assert(
+    is.data.frame(df),
+    "Argument `df` must be a data frame.",
+    origin = origin
+  )
+  phrutils::phr_assert(
     is.character(col) && length(col) == 1L && col %in% names(df),
     paste0("Column '", col, "' not found in `df`."),
     origin = origin,
@@ -171,13 +188,19 @@ xlsform_collect_variables <- function(df, col, only_unique = TRUE,
 #'
 #' @export
 xlsform_is_valid_varname <- function(varname) {
-
-  if (!is.character(varname) || length(varname) != 1L ||
-      is.na(varname) || nchar(varname) == 0L) {
+  if (
+    !is.character(varname) ||
+      length(varname) != 1L ||
+      is.na(varname) ||
+      nchar(varname) == 0L
+  ) {
     msg <- "Variable name is missing, empty, or not a character string."
     return(list(
-      valid  = FALSE,
-      issues = list(list(row = NA_integer_, message = phr_txt(msg, default = msg)))
+      valid = FALSE,
+      issues = list(list(
+        row = NA_integer_,
+        message = phr_txt(msg, default = msg)
+      ))
     ))
   }
 
@@ -186,13 +209,17 @@ xlsform_is_valid_varname <- function(varname) {
   }
 
   msg <- paste0(
-    "Variable name '", varname,
+    "Variable name '",
+    varname,
     "' is invalid: use only letters, digits, and underscores, ",
     "starting with a letter or underscore."
   )
   list(
-    valid  = FALSE,
-    issues = list(list(row = NA_integer_, message = phr_txt(msg, default = msg)))
+    valid = FALSE,
+    issues = list(list(
+      row = NA_integer_,
+      message = phr_txt(msg, default = msg)
+    ))
   )
 }
 
@@ -228,14 +255,17 @@ xlsform_varname_in_survey <- function(varname, name_vector) {
 
   if (!is.character(varname) || length(varname) != 1L || is.na(varname)) {
     msg <- "Argument `varname` must be a single non-NA character string."
-    phr_warning(msg, origin = origin)
+    phrutils::phr_warning(msg, origin = origin)
     return(list(
-      valid  = FALSE,
-      issues = list(list(row = NA_integer_, message = phr_txt(msg, default = msg)))
+      valid = FALSE,
+      issues = list(list(
+        row = NA_integer_,
+        message = phr_txt(msg, default = msg)
+      ))
     ))
   }
 
-  phr_assert(
+  phrutils::phr_assert(
     is.character(name_vector),
     "Argument `name_vector` must be a character vector.",
     origin = origin,
@@ -246,10 +276,17 @@ xlsform_varname_in_survey <- function(varname, name_vector) {
     return(list(valid = TRUE, issues = list()))
   }
 
-  msg <- paste0("Variable '", varname, "' is not declared in the survey name column.")
+  msg <- paste0(
+    "Variable '",
+    varname,
+    "' is not declared in the survey name column."
+  )
   list(
-    valid  = FALSE,
-    issues = list(list(row = NA_integer_, message = phr_txt(msg, default = msg)))
+    valid = FALSE,
+    issues = list(list(
+      row = NA_integer_,
+      message = phr_txt(msg, default = msg)
+    ))
   )
 }
 
@@ -284,17 +321,21 @@ xlsform_varname_in_survey <- function(varname, name_vector) {
 #'
 #' @export
 xlsform_check_brackets <- function(cell) {
-
-  if (!is.character(cell) || length(cell) != 1L || is.na(cell) || nchar(cell) == 0L) {
+  if (
+    !is.character(cell) ||
+      length(cell) != 1L ||
+      is.na(cell) ||
+      nchar(cell) == 0L
+  ) {
     return(list(valid = TRUE, issues = list()))
   }
 
   chars <- strsplit(cell, "", fixed = TRUE)[[1]]
 
-  paren_depth   <- 0L
+  paren_depth <- 0L
   bracket_depth <- 0L
-  paren_ok      <- TRUE
-  bracket_ok    <- TRUE
+  paren_ok <- TRUE
+  bracket_ok <- TRUE
 
   for (ch in chars) {
     if (ch == "(") {
@@ -316,19 +357,25 @@ xlsform_check_brackets <- function(cell) {
     }
   }
 
-  paren_ok   <- paren_ok   && paren_depth == 0L
+  paren_ok <- paren_ok && paren_depth == 0L
   bracket_ok <- bracket_ok && bracket_depth == 0L
 
   issues <- list()
 
   if (!paren_ok) {
     msg <- "Parentheses are not balanced."
-    issues <- c(issues, list(list(row = NA_integer_, message = phr_txt(msg, default = msg))))
+    issues <- c(
+      issues,
+      list(list(row = NA_integer_, message = phr_txt(msg, default = msg)))
+    )
   }
 
   if (!bracket_ok) {
     msg <- "Square brackets are not balanced."
-    issues <- c(issues, list(list(row = NA_integer_, message = phr_txt(msg, default = msg))))
+    issues <- c(
+      issues,
+      list(list(row = NA_integer_, message = phr_txt(msg, default = msg)))
+    )
   }
 
   list(valid = length(issues) == 0L, issues = issues)
@@ -337,21 +384,19 @@ xlsform_check_brackets <- function(cell) {
 
 # ---- 6. Detect orphaned square brackets (no preceding $) -------
 
-#' @title Detect Square Brackets Not Preceded by a Dollar Sign
+#' @title Detect orphan curly brackets
 #'
 #' @description
-#' In XLSForm logic, square brackets are only valid inside the `${}` variable
-#' reference syntax. A `[` that appears on its own (not immediately after `$`)
-#' is invalid coding and will cause evaluation errors.
-#'
-#' This helper strips all `${}` variable blocks (using the extract helper
-#' pattern) from the cell and then checks for any remaining `[` characters.
+#' Checks an XLSForm cell for orphaned curly brackets. A cell is considered
+#' valid when all `\{` and `\}` are properly paired (no unmatched opening or
+#' closing brace) and no closing brace appears before a corresponding opening
+#' brace. Square brackets `[` and `]` are ignored.
 #'
 #' @param cell A single character string (one XLSForm cell value).
 #'
 #' @return A list with two elements:
 #' \describe{
-#'   \item{`valid`}{`TRUE` if no orphaned square brackets are found.}
+#'   \item{`valid`}{`TRUE` if no orphaned curly brackets are found.}
 #'   \item{`issues`}{A list of issue items (each with `row` and `message`).
 #'     Empty when `valid` is `TRUE`.}
 #' }
@@ -359,28 +404,58 @@ xlsform_check_brackets <- function(cell) {
 #' an empty string.
 #'
 #' @examples
-#' xlsform_orphan_square_brackets("${var}")$valid   # TRUE
-#' xlsform_orphan_square_brackets("[1]")$valid      # FALSE
+#' xlsform_orphan_square_brackets("${var}")$valid        # TRUE
+#' xlsform_orphan_square_brackets("\\{1\\}")$valid       # FALSE (orphan curly)
+#' xlsform_orphan_square_brackets("\\}1\\{")$valid       # FALSE (closing before opening)
+#' xlsform_orphan_square_brackets("\\{a\\} + \\{b\\}")$valid # TRUE (properly paired)
 #'
 #' @export
 xlsform_orphan_square_brackets <- function(cell) {
-
-  if (!is.character(cell) || length(cell) != 1L || is.na(cell) || nchar(cell) == 0L) {
+  if (
+    !is.character(cell) ||
+      length(cell) != 1L ||
+      is.na(cell) ||
+      nchar(cell) == 0L
+  ) {
     return(list(valid = TRUE, issues = list()))
   }
 
-  # Strip all ${...} variable reference blocks so that brackets inside them
-  # are not flagged, then check for any remaining [.
-  stripped <- gsub("\\$\\{[^}]*\\}", "VARREF", cell, perl = TRUE)
+  # Extract all characters
+  chars <- strsplit(cell, "", fixed = TRUE)[[1]]
 
-  if (!grepl("\\[", stripped, fixed = TRUE)) {
+  # If no curly braces at all → valid
+  if (!any(chars %in% c("{", "}"))) {
     return(list(valid = TRUE, issues = list()))
   }
 
-  msg <- "Cell contains a '[' outside of a '${...}' variable reference."
+  # Minimal pairing check
+  depth <- 0L
+  orphan <- FALSE
+
+  for (ch in chars) {
+    if (ch == "{") {
+      depth <- depth + 1L
+    } else if (ch == "}") {
+      depth <- depth - 1L
+      if (depth < 0L) {
+        orphan <- TRUE
+        break
+      }
+    }
+  }
+
+  # Properly paired if depth ends at zero and never went negative
+  if (!orphan && depth == 0L) {
+    return(list(valid = TRUE, issues = list()))
+  }
+
+  msg <- "Cell contains an orphaned '{' or '}' (unbalanced curly brackets)."
   list(
-    valid  = FALSE,
-    issues = list(list(row = NA_integer_, message = phr_txt(msg, default = msg)))
+    valid = FALSE,
+    issues = list(list(
+      row = NA_integer_,
+      message = phr_txt(msg, default = msg)
+    ))
   )
 }
 
@@ -421,43 +496,58 @@ xlsform_orphan_square_brackets <- function(cell) {
 xlsform_check_group_repeats <- function(df, type_col = "type") {
   origin <- "xlsform_check_group_repeats"
 
-  phr_assert(is.data.frame(df), "Argument `df` must be a data frame.", origin = origin)
-  phr_assert(
+  phrutils::phr_assert(
+    is.data.frame(df),
+    "Argument `df` must be a data frame.",
+    origin = origin
+  )
+  phrutils::phr_assert(
     is.character(type_col) && length(type_col) == 1L && type_col %in% names(df),
     paste0("Column '", type_col, "' not found in `df`."),
     origin = origin,
     hint = "Ensure the data frame contains a 'type' column or pass the correct column name."
   )
 
-  types  <- df[[type_col]]
+  types <- df[[type_col]]
   issues <- list()
 
   # Separate stacks for groups and repeats
-  group_stack  <- integer(0)   # row indices of unmatched begin_group
-  repeat_stack <- integer(0)   # row indices of unmatched begin_repeat
+  group_stack <- integer(0) # row indices of unmatched begin_group
+  repeat_stack <- integer(0) # row indices of unmatched begin_repeat
 
   for (i in seq_along(types)) {
-    raw_type  <- trimws(as.character(types[[i]]))
+    raw_type <- trimws(as.character(types[[i]]))
     norm_type <- tolower(gsub("[[:space:]]+", "_", raw_type))
 
     if (norm_type == "begin_group") {
       group_stack <- c(group_stack, i)
-
     } else if (norm_type == "end_group") {
       if (length(group_stack) == 0L) {
-        msg <- paste0("'end_group' at row ", i, " has no matching 'begin_group'.")
-        issues <- c(issues, list(list(row = as.integer(i), message = phr_txt(msg, default = msg))))
+        msg <- paste0(
+          "'end_group' at row ",
+          i,
+          " has no matching 'begin_group'."
+        )
+        issues <- c(
+          issues,
+          list(list(row = as.integer(i), message = phr_txt(msg, default = msg)))
+        )
       } else {
         group_stack <- group_stack[-length(group_stack)]
       }
-
     } else if (norm_type == "begin_repeat") {
       repeat_stack <- c(repeat_stack, i)
-
     } else if (norm_type == "end_repeat") {
       if (length(repeat_stack) == 0L) {
-        msg <- paste0("'end_repeat' at row ", i, " has no matching 'begin_repeat'.")
-        issues <- c(issues, list(list(row = as.integer(i), message = phr_txt(msg, default = msg))))
+        msg <- paste0(
+          "'end_repeat' at row ",
+          i,
+          " has no matching 'begin_repeat'."
+        )
+        issues <- c(
+          issues,
+          list(list(row = as.integer(i), message = phr_txt(msg, default = msg)))
+        )
       } else {
         repeat_stack <- repeat_stack[-length(repeat_stack)]
       }
@@ -465,13 +555,27 @@ xlsform_check_group_repeats <- function(df, type_col = "type") {
   }
 
   for (row_i in group_stack) {
-    msg <- paste0("'begin_group' at row ", row_i, " has no matching 'end_group'.")
-    issues <- c(issues, list(list(row = as.integer(row_i), message = phr_txt(msg, default = msg))))
+    msg <- paste0(
+      "'begin_group' at row ",
+      row_i,
+      " has no matching 'end_group'."
+    )
+    issues <- c(
+      issues,
+      list(list(row = as.integer(row_i), message = phr_txt(msg, default = msg)))
+    )
   }
 
   for (row_i in repeat_stack) {
-    msg <- paste0("'begin_repeat' at row ", row_i, " has no matching 'end_repeat'.")
-    issues <- c(issues, list(list(row = as.integer(row_i), message = phr_txt(msg, default = msg))))
+    msg <- paste0(
+      "'begin_repeat' at row ",
+      row_i,
+      " has no matching 'end_repeat'."
+    )
+    issues <- c(
+      issues,
+      list(list(row = as.integer(row_i), message = phr_txt(msg, default = msg)))
+    )
   }
 
   list(valid = length(issues) == 0L, issues = issues)
@@ -514,15 +618,21 @@ xlsform_check_group_repeats <- function(df, type_col = "type") {
 #' # TRUE
 #'
 #' @export
-xlsform_check_required_sheet_cols <- function(df,
-                                               sheet = c("survey", "choices", "settings"),
-                                               required_cols = NULL) {
+xlsform_check_required_sheet_cols <- function(
+  df,
+  sheet = c("survey", "choices", "settings"),
+  required_cols = NULL
+) {
   origin <- "xlsform_check_required_sheet_cols"
 
-  phr_assert(is.data.frame(df), "Argument `df` must be a data frame.", origin = origin)
+  phrutils::phr_assert(
+    is.data.frame(df),
+    "Argument `df` must be a data frame.",
+    origin = origin
+  )
 
   if (!is.null(required_cols)) {
-    phr_assert(
+    phrutils::phr_assert(
       is.character(required_cols) && length(required_cols) >= 1L,
       "Argument `required_cols` must be a non-empty character vector.",
       origin = origin
@@ -532,8 +642,8 @@ xlsform_check_required_sheet_cols <- function(df,
     sheet <- match.arg(sheet)
     cols_needed <- switch(
       sheet,
-      survey   = c("type", "name", "label"),
-      choices  = c("list_name", "name", "label"),
+      survey = c("type", "name", "label"),
+      choices = c("list_name", "name", "label"),
       settings = c("form_title", "form_id")
     )
   }
@@ -589,11 +699,19 @@ xlsform_check_required_sheet_cols <- function(df,
 #' # FALSE
 #'
 #' @export
-xlsform_check_duplicate_names <- function(df, name_col = "name", type_col = "type") {
+xlsform_check_duplicate_names <- function(
+  df,
+  name_col = "name",
+  type_col = "type"
+) {
   origin <- "xlsform_check_duplicate_names"
 
-  phr_assert(is.data.frame(df), "Argument `df` must be a data frame.", origin = origin)
-  phr_assert(
+  phrutils::phr_assert(
+    is.data.frame(df),
+    "Argument `df` must be a data frame.",
+    origin = origin
+  )
+  phrutils::phr_assert(
     is.character(name_col) && length(name_col) == 1L && name_col %in% names(df),
     paste0("Column '", name_col, "' not found in `df`."),
     origin = origin,
@@ -601,12 +719,18 @@ xlsform_check_duplicate_names <- function(df, name_col = "name", type_col = "typ
   )
 
   structural_types <- c(
-    "begin_group", "end_group", "begin_repeat", "end_repeat",
-    "begin group", "end group", "begin repeat", "end repeat"
+    "begin_group",
+    "end_group",
+    "begin_repeat",
+    "end_repeat",
+    "begin group",
+    "end group",
+    "begin repeat",
+    "end repeat"
   )
 
   if (type_col %in% names(df)) {
-    norm_types    <- tolower(trimws(as.character(df[[type_col]])))
+    norm_types <- tolower(trimws(as.character(df[[type_col]])))
     is_structural <- norm_types %in% structural_types
   } else {
     is_structural <- rep(FALSE, nrow(df))
@@ -614,10 +738,12 @@ xlsform_check_duplicate_names <- function(df, name_col = "name", type_col = "typ
 
   # Build a character vector of names for non-structural, non-NA rows
   names_vec <- as.character(df[[name_col]])
-  non_empty <- !is_structural & !is.na(names_vec) & nchar(trimws(names_vec)) > 0L
+  non_empty <- !is_structural &
+    !is.na(names_vec) &
+    nchar(trimws(names_vec)) > 0L
 
   name_counts <- table(names_vec[non_empty])
-  dup_names   <- names(name_counts[name_counts > 1L])
+  dup_names <- names(name_counts[name_counts > 1L])
 
   if (length(dup_names) == 0L) {
     return(list(valid = TRUE, issues = list()))
@@ -629,7 +755,10 @@ xlsform_check_duplicate_names <- function(df, name_col = "name", type_col = "typ
     dup_rows <- which(names_vec == nm & non_empty)
     for (r in dup_rows) {
       msg <- paste0("Variable name '", nm, "' is duplicated (row ", r, ").")
-      issues <- c(issues, list(list(row = as.integer(r), message = phr_txt(msg, default = msg))))
+      issues <- c(
+        issues,
+        list(list(row = as.integer(r), message = phr_txt(msg, default = msg)))
+      )
     }
   }
 
@@ -663,13 +792,19 @@ xlsform_check_duplicate_names <- function(df, name_col = "name", type_col = "typ
 #'
 #' @export
 xlsform_is_valid_type <- function(type_str) {
-
-  if (!is.character(type_str) || length(type_str) != 1L ||
-      is.na(type_str) || nchar(trimws(type_str)) == 0L) {
+  if (
+    !is.character(type_str) ||
+      length(type_str) != 1L ||
+      is.na(type_str) ||
+      nchar(trimws(type_str)) == 0L
+  ) {
     msg <- "Type value is missing or not a character string."
     return(list(
-      valid  = FALSE,
-      issues = list(list(row = NA_integer_, message = phr_txt(msg, default = msg)))
+      valid = FALSE,
+      issues = list(list(
+        row = NA_integer_,
+        message = phr_txt(msg, default = msg)
+      ))
     ))
   }
 
@@ -681,22 +816,47 @@ xlsform_is_valid_type <- function(type_str) {
   }
 
   valid_types <- c(
-    "text", "integer", "decimal", "range",
-    "date", "time", "datetime",
-    "begin group", "end group", "begin repeat", "end repeat",
-    "file", "image", "audio", "video", "barcode",
-    "note", "calculate", "acknowledge", "hidden", "xml-external",
-    "geopoint", "geotrace", "geoshape"
+    "text",
+    "integer",
+    "decimal",
+    "range",
+    "date",
+    "time",
+    "datetime",
+    "begin group",
+    "end group",
+    "begin repeat",
+    "end repeat",
+    "file",
+    "image",
+    "audio",
+    "video",
+    "barcode",
+    "note",
+    "calculate",
+    "acknowledge",
+    "hidden",
+    "xml-external",
+    "geopoint",
+    "geotrace",
+    "geoshape"
   )
 
   if (norm %in% valid_types) {
     return(list(valid = TRUE, issues = list()))
   }
 
-  msg <- paste0("Type '", type_str, "' is not a recognized XLSForm question type.")
+  msg <- paste0(
+    "Type '",
+    type_str,
+    "' is not a recognized XLSForm question type."
+  )
   list(
-    valid  = FALSE,
-    issues = list(list(row = NA_integer_, message = phr_txt(msg, default = msg)))
+    valid = FALSE,
+    issues = list(list(
+      row = NA_integer_,
+      message = phr_txt(msg, default = msg)
+    ))
   )
 }
 
@@ -734,32 +894,40 @@ xlsform_is_valid_type <- function(type_str) {
 #' # TRUE
 #'
 #' @export
-xlsform_check_choice_references <- function(survey_df, choices_df,
-                                             type_col      = "type",
-                                             list_name_col = "list_name") {
+xlsform_check_choice_references <- function(
+  survey_df,
+  choices_df,
+  type_col = "type",
+  list_name_col = "list_name"
+) {
   origin <- "xlsform_check_choice_references"
 
-  phr_assert(is.data.frame(survey_df),  "Argument `survey_df` must be a data frame.",  origin = origin)
-  phr_assert(is.data.frame(choices_df), "Argument `choices_df` must be a data frame.", origin = origin)
-  phr_assert(
+  phrutils::phr_assert(
+    is.data.frame(survey_df),
+    "Argument `survey_df` must be a data frame.",
+    origin = origin
+  )
+  phrutils::phr_assert(
+    is.data.frame(choices_df),
+    "Argument `choices_df` must be a data frame.",
+    origin = origin
+  )
+  phrutils::phr_assert(
     type_col %in% names(survey_df),
     paste0("Column '", type_col, "' not found in `survey_df`."),
     origin = origin,
     hint = "Pass the correct column name via `type_col`."
   )
-  phr_assert(
+  phrutils::phr_assert(
     list_name_col %in% names(choices_df),
     paste0("Column '", list_name_col, "' not found in `choices_df`."),
     origin = origin,
     hint = "Pass the correct column name via `list_name_col`."
   )
 
-  # Normalise: lower-case, collapse spaces, underscore → space
-  types <- trimws(tolower(
-    gsub("[[:space:]]+", " ", gsub("_", " ", as.character(survey_df[[type_col]])))
-  ))
-
-  select_mask <- grepl("^select (one|multiple)\\s+\\S", types, perl = TRUE)
+  # Detect select_one / select_multiple using the raw type column
+  raw_types <- as.character(survey_df[[type_col]])
+  select_mask <- grepl("^select_(one|multiple)\\s+\\S", raw_types, perl = TRUE)
 
   available_lists <- unique(as.character(choices_df[[list_name_col]]))
   available_lists <- available_lists[!is.na(available_lists)]
@@ -767,15 +935,26 @@ xlsform_check_choice_references <- function(survey_df, choices_df,
   issues <- list()
 
   for (i in which(select_mask)) {
-    tokens  <- strsplit(types[i], "[[:space:]]+")[[1]]
-    list_nm <- if (length(tokens) >= 3L) tokens[3L] else NA_character_
+    raw_type <- raw_types[i]
+
+    # Split raw type cell on whitespace
+    raw_tokens <- strsplit(raw_type, "[[:space:]]+")[[1]]
+
+    # List name is the second token (preserve underscores, case, everything)
+    list_nm <- if (length(raw_tokens) >= 2L) raw_tokens[2L] else NA_character_
 
     if (!is.na(list_nm) && !list_nm %in% available_lists) {
       msg <- paste0(
-        "Row ", i, ": select question references list '", list_nm,
+        "Row ",
+        i,
+        ": select question references list '",
+        list_nm,
         "' which is not defined in the choices sheet."
       )
-      issues <- c(issues, list(list(row = as.integer(i), message = phr_txt(msg, default = msg))))
+      issues <- c(
+        issues,
+        list(list(row = as.integer(i), message = phr_txt(msg, default = msg)))
+      )
     }
   }
 
@@ -819,35 +998,53 @@ xlsform_check_choice_references <- function(survey_df, choices_df,
 #' # FALSE
 #'
 #' @export
-xlsform_check_label_presence <- function(df,
-                                          type_col  = "type",
-                                          label_col = "label",
-                                          name_col  = "name") {
+xlsform_check_label_presence <- function(
+  df,
+  type_col = "type",
+  label_col = "label",
+  name_col = "name"
+) {
   origin <- "xlsform_check_label_presence"
 
-  phr_assert(is.data.frame(df), "Argument `df` must be a data frame.", origin = origin)
-  phr_assert(
+  phrutils::phr_assert(
+    is.data.frame(df),
+    "Argument `df` must be a data frame.",
+    origin = origin
+  )
+  phrutils::phr_assert(
     type_col %in% names(df),
     paste0("Column '", type_col, "' not found in `df`."),
     origin = origin
   )
 
   no_label_types <- c(
-    "begin_group", "end_group", "begin_repeat", "end_repeat",
-    "begin group", "end group", "begin repeat", "end repeat",
-    "calculate", "hidden", "note"
+    "begin_group",
+    "end_group",
+    "begin_repeat",
+    "end_repeat",
+    "begin group",
+    "end group",
+    "begin repeat",
+    "end repeat",
+    "calculate",
+    "hidden",
+    "note"
   )
 
-  types      <- trimws(tolower(as.character(df[[type_col]])))
-  base_types <- vapply(types, function(t) strsplit(t, "[[:space:]]+")[[1]][1], character(1L))
+  types <- trimws(tolower(as.character(df[[type_col]])))
+  base_types <- vapply(
+    types,
+    function(t) strsplit(t, "[[:space:]]+")[[1]][1],
+    character(1L)
+  )
   needs_label <- !base_types %in% no_label_types
 
   if (!label_col %in% names(df)) {
     unlabelled <- which(needs_label)
   } else {
-    labels        <- df[[label_col]]
+    labels <- df[[label_col]]
     label_missing <- is.na(labels) | trimws(as.character(labels)) == ""
-    unlabelled    <- which(needs_label & label_missing)
+    unlabelled <- which(needs_label & label_missing)
   }
 
   if (length(unlabelled) == 0L) {
@@ -855,7 +1052,11 @@ xlsform_check_label_presence <- function(df,
   }
 
   issues <- lapply(as.integer(unlabelled), function(i) {
-    nm  <- if (name_col %in% names(df)) as.character(df[[name_col]][i]) else NA_character_
+    nm <- if (name_col %in% names(df)) {
+      as.character(df[[name_col]][i])
+    } else {
+      NA_character_
+    }
     msg <- if (!is.na(nm) && nchar(trimws(nm)) > 0L) {
       paste0("Question '", nm, "' at row ", i, " is missing a label.")
     } else {
@@ -903,20 +1104,26 @@ xlsform_check_label_presence <- function(df,
 #' # FALSE
 #'
 #' @export
-xlsform_check_calculate_expression <- function(df,
-                                                type_col        = "type",
-                                                calculation_col = "calculation",
-                                                name_col        = "name") {
+xlsform_check_calculate_expression <- function(
+  df,
+  type_col = "type",
+  calculation_col = "calculation",
+  name_col = "name"
+) {
   origin <- "xlsform_check_calculate_expression"
 
-  phr_assert(is.data.frame(df), "Argument `df` must be a data frame.", origin = origin)
-  phr_assert(
+  phrutils::phr_assert(
+    is.data.frame(df),
+    "Argument `df` must be a data frame.",
+    origin = origin
+  )
+  phrutils::phr_assert(
     type_col %in% names(df),
     paste0("Column '", type_col, "' not found in `df`."),
     origin = origin
   )
 
-  types     <- trimws(tolower(as.character(df[[type_col]])))
+  types <- trimws(tolower(as.character(df[[type_col]])))
   calc_rows <- which(types == "calculate")
 
   if (length(calc_rows) == 0L) {
@@ -927,8 +1134,8 @@ xlsform_check_calculate_expression <- function(df,
     empty_rows <- calc_rows
   } else {
     calculations <- df[[calculation_col]]
-    is_empty     <- is.na(calculations) | trimws(as.character(calculations)) == ""
-    empty_rows   <- calc_rows[is_empty[calc_rows]]
+    is_empty <- is.na(calculations) | trimws(as.character(calculations)) == ""
+    empty_rows <- calc_rows[is_empty[calc_rows]]
   }
 
   if (length(empty_rows) == 0L) {
@@ -936,9 +1143,19 @@ xlsform_check_calculate_expression <- function(df,
   }
 
   issues <- lapply(as.integer(empty_rows), function(i) {
-    nm  <- if (name_col %in% names(df)) as.character(df[[name_col]][i]) else NA_character_
+    nm <- if (name_col %in% names(df)) {
+      as.character(df[[name_col]][i])
+    } else {
+      NA_character_
+    }
     msg <- if (!is.na(nm) && nchar(trimws(nm)) > 0L) {
-      paste0("Calculate variable '", nm, "' at row ", i, " has no calculation expression.")
+      paste0(
+        "Calculate variable '",
+        nm,
+        "' at row ",
+        i,
+        " has no calculation expression."
+      )
     } else {
       paste0("Row ", i, ": calculate row has no calculation expression.")
     }
@@ -989,13 +1206,19 @@ xlsform_check_calculate_expression <- function(df,
 #' # FALSE – 'height' is not declared
 #'
 #' @export
-xlsform_check_undefined_references <- function(df,
-                                                name_col   = "name",
-                                                check_cols = c("relevant", "constraint", "calculation")) {
+xlsform_check_undefined_references <- function(
+  df,
+  name_col = "name",
+  check_cols = c("relevant", "constraint", "calculation")
+) {
   origin <- "xlsform_check_undefined_references"
 
-  phr_assert(is.data.frame(df), "Argument `df` must be a data frame.", origin = origin)
-  phr_assert(
+  phrutils::phr_assert(
+    is.data.frame(df),
+    "Argument `df` must be a data frame.",
+    origin = origin
+  )
+  phrutils::phr_assert(
     is.character(name_col) && length(name_col) == 1L && name_col %in% names(df),
     paste0("Column '", name_col, "' not found in `df`."),
     origin = origin,
@@ -1003,7 +1226,9 @@ xlsform_check_undefined_references <- function(df,
   )
 
   declared_names <- as.character(df[[name_col]])
-  declared_names <- declared_names[!is.na(declared_names) & nchar(trimws(declared_names)) > 0L]
+  declared_names <- declared_names[
+    !is.na(declared_names) & nchar(trimws(declared_names)) > 0L
+  ]
 
   existing_check_cols <- intersect(check_cols, names(df))
 
@@ -1012,15 +1237,25 @@ xlsform_check_undefined_references <- function(df,
   for (col in existing_check_cols) {
     for (i in seq_len(nrow(df))) {
       # Use the general extract helper to find all ${...} variable names
-      refs      <- xlsform_extract_variables(df[[col]][i])
+      refs <- xlsform_extract_variables(df[[col]][i])
       undefined <- refs[!refs %in% declared_names]
 
       for (ref in undefined) {
         msg <- paste0(
-          "Row ", i, " ('", col, "' column): variable '${", ref,
-          "}' is not declared in the '", name_col, "' column."
+          "Row ",
+          i,
+          " ('",
+          col,
+          "' column): variable '${",
+          ref,
+          "}' is not declared in the '",
+          name_col,
+          "' column."
         )
-        issues <- c(issues, list(list(row = as.integer(i), message = phr_txt(msg, default = msg))))
+        issues <- c(
+          issues,
+          list(list(row = as.integer(i), message = msg, default = msg))
+        )
       }
     }
   }

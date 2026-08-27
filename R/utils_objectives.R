@@ -6,6 +6,10 @@
 #' \code{sector → pillar → sub_pillar → data_source}, where \code{data_source}
 #' captures whether the objective is "primary" or "secondary" (or any other
 #' value from the objective schema).
+#'
+#' @param data_source Character or \code{NULL}. Data source designation
+#'   (e.g. "primary" or "secondary"); \code{NULL} or \code{NA} defaults to "primary".
+#' @keywords internal
 
 # Internal helper: normalise a data_source value (NULL / NA → "primary").
 .normalize_data_source <- function(data_source) {
@@ -35,12 +39,12 @@ create_objectives_from_df <- function(objectives_df) {
 
   origin <- "create_objectives_from_df"
 
-  phr_try({
+  phrutils::phr_try({
 
-    phr_validate_dataframe(objectives_df, origin = origin, soft = FALSE)
+    phrutils::phr_validate_dataframe(objectives_df, origin = origin, soft = FALSE)
 
     required_cols <- c("sector", "pillar", "sub_pillar", "short_objective", "text_objective")
-    phr_validate_columns(objectives_df, required_cols, origin = origin, soft = FALSE)
+    phrutils::phr_validate_columns(objectives_df, required_cols, origin = origin, soft = FALSE)
 
     objectives_list <- list()
 
@@ -114,8 +118,8 @@ flatten_objectives <- function(objectives) {
 #' @export
 nest_objectives <- function(objectives_flat) {
   origin <- "nest_objectives"
-  phr_try({
-    phr_assert(is.list(objectives_flat),
+  phrutils::phr_try({
+    phrutils::phr_assert(is.list(objectives_flat),
                message = phr_txt("objectives_flat must be a list."), origin = origin)
     if (length(objectives_flat) == 0) return(list())
 
@@ -124,7 +128,7 @@ nest_objectives <- function(objectives_flat) {
       required <- c("sector", "pillar", "sub_pillar", "data_source", "short_objective")
       missing  <- setdiff(required, names(obj))
       if (length(missing) > 0) {
-        phr_warning(
+        phrutils::phr_warning(
           message = phr_txt("Skipping objective missing fields: {paste(missing, collapse=', ')}."),
           origin  = origin
         )
@@ -171,9 +175,9 @@ validate_objectives <- function(objectives) {
 
   origin <- "validate_objectives"
 
-  phr_try({
+  phrutils::phr_try({
 
-    phr_assert(
+    phrutils::phr_assert(
       is.list(objectives) && length(objectives) > 0,
       message = phr_txt("Objectives must be a non-empty list."),
       origin  = origin
@@ -181,7 +185,7 @@ validate_objectives <- function(objectives) {
 
     flat <- flatten_objectives(objectives)
 
-    phr_assert(
+    phrutils::phr_assert(
       length(flat) > 0,
       message = phr_txt("No objectives found after flattening nested structure."),
       origin  = origin
@@ -195,7 +199,7 @@ validate_objectives <- function(objectives) {
     short_objs <- sapply(flat, function(x) x$short_objective)
     if (any(duplicated(short_objs))) {
       issues$duplicate_short_objectives <- short_objs[duplicated(short_objs)]
-      phr_warning(
+      phrutils::phr_warning(
         message = phr_txt("Duplicate short_objective labels found: {paste(issues$duplicate_short_objectives, collapse=', ')}"),
         origin  = origin,
         hint    = phr_txt("Each objective should have a unique short_objective label.")
@@ -217,7 +221,7 @@ validate_objectives <- function(objectives) {
       obj <- flat[[i]]
       if (!is.null(obj$text_objective) && nchar(obj$text_objective) < 20) {
         issues$vague_objectives <- c(issues$vague_objectives, obj$short_objective)
-        phr_warning(
+        phrutils::phr_warning(
           message = phr_txt("Objective '{obj$short_objective}' has a very short text_objective (< 20 characters)."),
           origin  = origin,
           hint    = phr_txt("Consider expanding the text_objective for clarity.")
@@ -273,9 +277,9 @@ objectives_to_df <- function(objectives) {
 
   origin <- "objectives_to_df"
 
-  phr_try({
+  phrutils::phr_try({
 
-    phr_assert(
+    phrutils::phr_assert(
       is.list(objectives),
       message = phr_txt("objectives must be a list."),
       origin  = origin
@@ -319,20 +323,20 @@ print_objectives_summary <- function(objectives) {
   flat <- flatten_objectives(objectives)
 
   if (length(flat) == 0) {
-    phr_message(phr_txt("No objectives defined."), origin = origin)
+    phrutils::phr_message(phr_txt("No objectives defined."), origin = origin)
     return(invisible(NULL))
   }
 
   sectors      <- unique(sapply(flat, function(x) x$sector))
   data_sources <- unique(sapply(flat, function(x) x$data_source %||% "unknown"))
 
-  phr_message(
+  phrutils::phr_message(
     phr_txt("Objectives Summary — {length(flat)} total objective(s). Sectors: {paste(sectors, collapse=', ')}. Data sources: {paste(data_sources, collapse=', ')}."),
     origin = origin
   )
 
   for (sector in sectors) {
     sector_objs <- get_objectives_by_sector(flat, sector)
-    phr_message(phr_txt("{sector}: {length(sector_objs)} objective(s)"), origin = origin)
+    phrutils::phr_message(phr_txt("{sector}: {length(sector_objs)} objective(s)"), origin = origin)
   }
 }

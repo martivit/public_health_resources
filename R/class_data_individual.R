@@ -56,7 +56,7 @@ IndividualData <- R6::R6Class(
                           metadata = NULL,
                           variable_map = NULL) {
 
-      phr_try({
+      phrutils::phr_try({
         # Default mapping for individual-level data
         default_map <- list(
           uuid        = "person_id"        # unique individual ID
@@ -111,7 +111,7 @@ IndividualData <- R6::R6Class(
         default_ind_schema <- self$default_indicator_schema()
         if (length(default_ind_schema) > 0) {
           self$set_indicator_schema(default_ind_schema)
-          phr_message(
+          phrutils::phr_message(
             phr_txt("Loaded default indicator schema with {length(default_ind_schema)} indicator(s).")
           )
         }
@@ -120,12 +120,12 @@ IndividualData <- R6::R6Class(
         default_dep_schema <- self$default_dependency_schema()
         if (length(default_dep_schema$dependencies) > 0) {
           self$set_dependency_schema(default_dep_schema)
-          phr_message(
+          phrutils::phr_message(
             phr_txt("Loaded default dependency schema with {length(default_dep_schema$dependencies)} dependency/ies.")
           )
         }
 
-        phr_message(phr_txt("{dataset_name} initialized as IndividualData object."))
+        phrutils::phr_message(phr_txt("{dataset_name} initialized as IndividualData object."))
 
       }, on_error = "abort", origin = "IndividualData$initialize")
     },
@@ -194,7 +194,7 @@ IndividualData <- R6::R6Class(
       )
 
       if (!file.exists(file)) {
-        phr_warning(
+        phrutils::phr_warning(
           origin  = "IndividualData$default_indicator_schema",
           message = phr_txt("indicator_schema_data_individual_roster_template.xlsx not found in package resources. Continuing without default indicator schema.")
         )
@@ -205,7 +205,7 @@ IndividualData <- R6::R6Class(
       df <- tryCatch(
         readxl::read_xlsx(file),
         error = function(e) {
-          phr_warning(
+          phrutils::phr_warning(
             origin  = "IndividualData$default_indicator_schema",
             message = phr_txt("Failed to read indicator_schema_data_individual_roster_template.xlsx: {e$message}")
           )
@@ -240,7 +240,7 @@ IndividualData <- R6::R6Class(
       )
 
       if (!file.exists(file)) {
-        phr_warning(
+        phrutils::phr_warning(
           origin  = "IndividualData$default_dependency_schema",
           message = phr_txt("dependency_schema_data_individual_roster_template.xlsx not found in package resources. Continuing without default dependency schema.")
         )
@@ -251,7 +251,7 @@ IndividualData <- R6::R6Class(
       df <- tryCatch(
         readxl::read_xlsx(file),
         error = function(e) {
-          phr_warning(
+          phrutils::phr_warning(
             origin  = "IndividualData$default_dependency_schema",
             message = phr_txt("Failed to read dependency_schema_data_individual_roster_template.xlsx: {e$message}")
           )
@@ -288,7 +288,7 @@ IndividualData <- R6::R6Class(
       # Track whether any issues occurred
       had_issues <- FALSE
 
-      phr_try({
+      phrutils::phr_try({
 
         if (is.null(df)) df <- self$get_data("raw")
 
@@ -297,7 +297,7 @@ IndividualData <- R6::R6Class(
         if (!is.null(hh_uuid_col) && hh_uuid_col %in% names(df)) {
           dup_hh <- df[[hh_uuid_col]][duplicated(df[[hh_uuid_col]])]
           if (length(dup_hh) > 0) {
-            phr_message(nm, phr_txt(
+            phrutils::phr_message(nm, phr_txt(
               "Duplicate household linkages detected (expected for multi-member households)."
             ))
           }
@@ -307,17 +307,17 @@ IndividualData <- R6::R6Class(
         age_col <- self$variable_map$age
         if (!is.null(age_col) && age_col %in% names(df)) {
           if (any(df[[age_col]] < 0, na.rm = TRUE)) {
-            phr_warning(nm, phr_txt("Negative ages detected."))
+            phrutils::phr_warning(nm, phr_txt("Negative ages detected."))
             had_issues <- TRUE
           }
         }
 
         # Optional link integrity check
         if (!is.null(self$household_link)) {
-          phr_message(phr_txt("Validating linked HouseholdData (placeholder)."))
+          phrutils::phr_message(phr_txt("Validating linked HouseholdData (placeholder)."))
         }
 
-        phr_message(phr_txt(glue::glue("Post-validation for {nm} complete.")))
+        phrutils::phr_message(phr_txt(glue::glue("Post-validation for {nm} complete.")))
 
       }, on_error = "warn", origin = paste0(self$dataset_name, "$post_validate"))
 
@@ -341,12 +341,12 @@ IndividualData <- R6::R6Class(
       stage <- match.arg(stage)
       type  <- match.arg(type)
 
-      phr_try({
+      phrutils::phr_try({
 
         df <- self$get_data(stage)
 
         if (is.null(df)) {
-          phr_warning(
+          phrutils::phr_warning(
             self$dataset_name,
             phr_txt("No {stage} data available for DataAnalytics generation.")
           )
@@ -377,7 +377,7 @@ IndividualData <- R6::R6Class(
           )
         )
 
-        phr_message(
+        phrutils::phr_message(
           phr_txt("Generated {type} DataAnalytics object for {self$dataset_name}.")
         )
 

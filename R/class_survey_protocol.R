@@ -38,16 +38,16 @@
 #'
 #' @section Key methods:
 #' \describe{
-#'   \item{`initialize()`}{Create a new survey protocol.}
-#'   \item{`set_sampling_frame()`}{Validate and store a sampling frame.}
-#'   \item{`validate_strata_table()`}{Validate the nested sample table.}
-#'   \item{`get_sample_table()`}{Return the sample table from the nested `Sample` object.}
-#'   \item{`get_sampling_methods()`}{Return unique sampling methods.}
-#'   \item{`get_strata_names()`}{Return stratum names from the sample table.}
-#'   \item{`get_frame_column()`}{Extract a column from the sampling frame.}
-#'   \item{`diagnose_coherence()`}{Run protocol coherence checks plus strata consistency checks.}
-#'   \item{`post_sync_state()`}{Synchronize sampling and sampling-frame state after nested updates.}
-#'   \item{`get_quarto_params()`}{Return survey-specific parameters for Quarto rendering.}
+#'   \item{\code{initialize()}}{Create a new survey protocol.}
+#'   \item{\code{set_sampling_frame()}}{Validate and store a sampling frame.}
+#'   \item{\code{validate_strata_table()}}{Validate the nested sample table.}
+#'   \item{\code{get_sample_table()}}{Return the sample table from the nested \code{Sample} object.}
+#'   \item{\code{get_sampling_methods()}}{Return unique sampling methods.}
+#'   \item{\code{get_strata_names()}}{Return stratum names from the sample table.}
+#'   \item{\code{get_frame_column()}}{Extract a column from the sampling frame.}
+#'   \item{\code{diagnose_coherence()}}{Run protocol coherence checks plus strata consistency checks.}
+#'   \item{\code{post_sync_state()}}{Synchronize sampling and sampling-frame state after nested updates.}
+#'   \item{\code{get_quarto_params()}}{Return survey-specific parameters for Quarto rendering.}
 #' }
 #'
 #' @section Active bindings:
@@ -166,15 +166,15 @@ SurveyProtocol <- R6::R6Class(
     #'   A \code{stratum} column enables stratified sampling.
     #' @return Invisibly returns \code{self} for method chaining.
     set_sampling_frame = function(frame) {
-      phr_try(
+      phrutils::phr_try(
         {
           # 1. Confirm it is a data frame and not empty
-          phr_validate_dataframe(
+          phrutils::phr_validate_dataframe(
             frame,
             origin = "SurveyProtocol$set_sampling_frame",
             soft = FALSE
           )
-          phr_assert(
+          phrutils::phr_assert(
             nrow(frame) > 0,
             message = phr_txt("Sampling frame is empty."),
             origin = "SurveyProtocol$set_sampling_frame",
@@ -204,7 +204,7 @@ SurveyProtocol <- R6::R6Class(
           # 3. Add inclusion column (all TRUE) if absent
           if (!"inclusion" %in% names(frame)) {
             frame$inclusion <- TRUE
-            phr_message(
+            phrutils::phr_message(
               phr_txt(
                 "'inclusion' column not found — defaulting all PSUs to TRUE."
               ),
@@ -220,7 +220,7 @@ SurveyProtocol <- R6::R6Class(
           private$..sync_state()
           private$..touch()
           self$diagnose_coherence()
-          phr_message(
+          phrutils::phr_message(
             phr_txt("Sampling frame set with {nrow(frame)} PSUs."),
             origin = "SurveyProtocol$set_sampling_frame"
           )
@@ -257,7 +257,7 @@ SurveyProtocol <- R6::R6Class(
       self$sample_object$get_sample_table()
     },
 
-    # ── Sampling helpers ────────────────────────────────────────────────────
+    # 25002500 Sampling helpers 2500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500
 
     #' @description Return the unique sampling methods used across all strata.
     #'
@@ -472,6 +472,7 @@ SurveyProtocol <- R6::R6Class(
   ),
 
   active = list(
+    #' @field .rate_survey Active binding.
     .rate_survey = function(value) {
       st <- private$..sample_table_from_nested()
       if (!missing(value)) {
@@ -487,6 +488,7 @@ SurveyProtocol <- R6::R6Class(
       }
       return(FALSE)
     },
+    #' @field .individual_survey Active binding.
     .individual_survey = function(value) {
       st <- private$..sample_table_from_nested()
       if (!missing(value)) {
@@ -502,6 +504,7 @@ SurveyProtocol <- R6::R6Class(
       }
       return(FALSE)
     },
+    #' @field .general_survey Active binding.
     .general_survey = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
@@ -512,6 +515,7 @@ SurveyProtocol <- R6::R6Class(
           !self$.individual_survey
       )
     },
+    #' @field .ind_indicator Active binding.
     .ind_indicator = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
@@ -527,6 +531,7 @@ SurveyProtocol <- R6::R6Class(
       }
       paste(unique(vals), collapse = " ")
     },
+    #' @field .rate_indicator Active binding.
     .rate_indicator = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
@@ -542,6 +547,7 @@ SurveyProtocol <- R6::R6Class(
       }
       paste(unique(vals), collapse = " ")
     },
+    #' @field .site_selection_srs Active binding.
     .site_selection_srs = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
@@ -549,6 +555,7 @@ SurveyProtocol <- R6::R6Class(
       private$..sample_has_any_method_site("simple_random")
     },
 
+    #' @field .site_selection_systematic Active binding.
     .site_selection_systematic = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
@@ -556,6 +563,7 @@ SurveyProtocol <- R6::R6Class(
       private$..sample_has_any_method_site("systematic")
     },
 
+    #' @field .site_selection_exhaustive Active binding.
     .site_selection_exhaustive = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
@@ -563,6 +571,7 @@ SurveyProtocol <- R6::R6Class(
       private$..sample_has_any_method_site("proportional")
     },
 
+    #' @field .site_selection_cluster Active binding.
     .site_selection_cluster = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
@@ -570,6 +579,7 @@ SurveyProtocol <- R6::R6Class(
       private$..sample_has_any_method_site("cluster")
     },
 
+    #' @field .site_selection_purposive Active binding.
     .site_selection_purposive = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
@@ -577,6 +587,7 @@ SurveyProtocol <- R6::R6Class(
       private$..sample_has_any_method_site("purposive")
     },
 
+    #' @field .hh_selection_srs Active binding.
     .hh_selection_srs = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
@@ -584,6 +595,7 @@ SurveyProtocol <- R6::R6Class(
       private$..sample_has_any_method_household("simple_random")
     },
 
+    #' @field .hh_selection_systematic Active binding.
     .hh_selection_systematic = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
@@ -591,6 +603,7 @@ SurveyProtocol <- R6::R6Class(
       private$..sample_has_any_method_household("systematic")
     },
 
+    #' @field .hh_selection_rlc Active binding.
     .hh_selection_rlc = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
@@ -598,6 +611,7 @@ SurveyProtocol <- R6::R6Class(
       private$..sample_has_any_method_household("rlc")
     },
 
+    #' @field .multiple_methods Active binding.
     .multiple_methods = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
@@ -613,6 +627,7 @@ SurveyProtocol <- R6::R6Class(
       FALSE
     },
 
+    #' @field .multiple_strata Active binding.
     .multiple_strata = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
@@ -621,8 +636,26 @@ SurveyProtocol <- R6::R6Class(
       is.data.frame(st) && nrow(st) > 1L
     },
 
-    .fpc = function(value) {},
+    #' @field .fpc Active binding.
+    .fpc = function(value) {
+      if (!missing(value)) {
+        return(invisible(FALSE))
+      }
+      st <- private$..sample_table_from_nested()
 
+      if(is.data.frame(st) && nrow(st) >= 1L) {
+        if(any(st$pop_fpc == TRUE) || any(st$ind_fpc) || any(st$rate_fpc)) {
+          return(TRUE)
+        } else {
+          return(FALSE)
+        }
+      } else {
+        return(FALSE)
+      }
+
+    },
+
+    #' @field .total_population_size Active binding.
     .total_population_size = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
@@ -649,6 +682,7 @@ SurveyProtocol <- R6::R6Class(
       NULL
     },
 
+    #' @field .total_population_size_included Active binding.
     .total_population_size_included = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
@@ -672,6 +706,7 @@ SurveyProtocol <- R6::R6Class(
       NULL
     },
 
+    #' @field .total_population_size_excluded Active binding.
     .total_population_size_excluded = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
@@ -695,6 +730,7 @@ SurveyProtocol <- R6::R6Class(
       NULL
     },
 
+    #' @field .total_population_per_strata_included Active binding.
     .total_population_per_strata_included = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
@@ -711,6 +747,7 @@ SurveyProtocol <- R6::R6Class(
       paste(parts, collapse = ", ")
     },
 
+    #' @field .num_geographic_units Active binding.
     .num_geographic_units = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
@@ -724,16 +761,18 @@ SurveyProtocol <- R6::R6Class(
       }
       nrow(st)
     },
+    #' @field .num_strata_units Active binding.
     .num_strata_units = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
       }
       st <- tryCatch(self$get_sample_table(), error = function(e) NULL)
       if (is.null(st) || !is.data.frame(st) || nrow(st) == 0L) {
-        return(NULL)
+        return(0L)
       }
       nrow(st)
     },
+    #' @field .num_other_units Active binding.
     .num_other_units = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
@@ -745,7 +784,7 @@ SurveyProtocol <- R6::R6Class(
       nrow(st)
     },
 
-    # ── Stratified strata names active bindings ─────────────────────────────
+    # 25002500 Stratified strata names active bindings 25002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500
     # Helper: return TRUE if any strata row has site_method AND hh_method
     # The sample table's sampling_method encodes the combined site+hh method.
     # IPHRA mapping:
@@ -759,6 +798,7 @@ SurveyProtocol <- R6::R6Class(
     #   pps_rlc               -> site=cluster, hh=rlc
     #   purposive             -> site=purposive, hh=srs (default)
 
+    #' @field .stratified_strata_names_srs_srs Active binding.
     .stratified_strata_names_srs_srs = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
@@ -768,6 +808,7 @@ SurveyProtocol <- R6::R6Class(
         method_hh = "simple_random"
       )
     },
+    #' @field .stratified_strata_names_srs_systematic Active binding.
     .stratified_strata_names_srs_systematic = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
@@ -777,6 +818,7 @@ SurveyProtocol <- R6::R6Class(
         method_hh = "systematic"
       )
     },
+    #' @field .stratified_strata_names_srs_rlc Active binding.
     .stratified_strata_names_srs_rlc = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
@@ -786,6 +828,7 @@ SurveyProtocol <- R6::R6Class(
         method_hh = "rlc"
       )
     },
+    #' @field .stratified_strata_names_systematic_srs Active binding.
     .stratified_strata_names_systematic_srs = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
@@ -795,6 +838,7 @@ SurveyProtocol <- R6::R6Class(
         method_hh = "simple_random"
       )
     },
+    #' @field .stratified_strata_names_systematic_systematic Active binding.
     .stratified_strata_names_systematic_systematic = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
@@ -804,6 +848,7 @@ SurveyProtocol <- R6::R6Class(
         method_hh = "systematic"
       )
     },
+    #' @field .stratified_strata_names_systematic_rlc Active binding.
     .stratified_strata_names_systematic_rlc = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
@@ -813,6 +858,7 @@ SurveyProtocol <- R6::R6Class(
         method_hh = "rlc"
       )
     },
+    #' @field .stratified_strata_names_proportional_srs Active binding.
     .stratified_strata_names_proportional_srs = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
@@ -822,6 +868,7 @@ SurveyProtocol <- R6::R6Class(
         method_hh = "simple_random"
       )
     },
+    #' @field .stratified_strata_names_proportional_systematic Active binding.
     .stratified_strata_names_proportional_systematic = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
@@ -831,6 +878,7 @@ SurveyProtocol <- R6::R6Class(
         method_hh = "systematic"
       )
     },
+    #' @field .stratified_strata_names_proportional_rlc Active binding.
     .stratified_strata_names_proportional_rlc = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
@@ -840,6 +888,7 @@ SurveyProtocol <- R6::R6Class(
         method_hh = "rlc"
       )
     },
+    #' @field .stratified_strata_names_cluster_srs Active binding.
     .stratified_strata_names_cluster_srs = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
@@ -849,6 +898,7 @@ SurveyProtocol <- R6::R6Class(
         method_hh = "simple_random"
       )
     },
+    #' @field .stratified_strata_names_cluster_systematic Active binding.
     .stratified_strata_names_cluster_systematic = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
@@ -858,6 +908,7 @@ SurveyProtocol <- R6::R6Class(
         method_hh = "systematic"
       )
     },
+    #' @field .stratified_strata_names_cluster_rlc Active binding.
     .stratified_strata_names_cluster_rlc = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
@@ -867,6 +918,7 @@ SurveyProtocol <- R6::R6Class(
         method_hh = "rlc"
       )
     },
+    #' @field .stratified_strata_names_purposive_srs Active binding.
     .stratified_strata_names_purposive_srs = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
@@ -876,6 +928,7 @@ SurveyProtocol <- R6::R6Class(
         method_hh = "simple_random"
       )
     },
+    #' @field .stratified_strata_names_purposive_systematic Active binding.
     .stratified_strata_names_purposive_systematic = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
@@ -885,6 +938,7 @@ SurveyProtocol <- R6::R6Class(
         method_hh = "systematic"
       )
     },
+    #' @field .stratified_strata_names_purposive_rlc Active binding.
     .stratified_strata_names_purposive_rlc = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
@@ -894,54 +948,63 @@ SurveyProtocol <- R6::R6Class(
         method_hh = "rlc"
       )
     },
+    #' @field .stratified_strata_names_site_srs Active binding.
     .stratified_strata_names_site_srs = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
       }
       private$..strata_names_for_method(method_site = "simple_random")
     },
+    #' @field .stratified_strata_names_site_systematic Active binding.
     .stratified_strata_names_site_systematic = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
       }
       private$..strata_names_for_method(method_site = "systematic")
     },
+    #' @field .stratified_strata_names_site_exhaustive Active binding.
     .stratified_strata_names_site_exhaustive = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
       }
       private$..strata_names_for_method(method_site = "proportional")
     },
+    #' @field .stratified_strata_names_site_cluster Active binding.
     .stratified_strata_names_site_cluster = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
       }
       private$..strata_names_for_method(method_site = "cluster")
     },
+    #' @field .stratified_strata_names_site_purposive Active binding.
     .stratified_strata_names_site_purposive = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
       }
       private$..strata_names_for_method(method_site = "purposive")
     },
+    #' @field .stratified_strata_names_hh_srs Active binding.
     .stratified_strata_names_hh_srs = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
       }
       private$..strata_names_for_method(method_hh = "simple_random")
     },
+    #' @field .stratified_strata_names_hh_systematic Active binding.
     .stratified_strata_names_hh_systematic = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
       }
       private$..strata_names_for_method(method_hh = "systematic")
     },
+    #' @field .stratified_strata_names_hh_rlc Active binding.
     .stratified_strata_names_hh_rlc = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
       }
       private$..strata_names_for_method(method_hh = "rlc")
     },
+    #' @field .sample_size_general_households Active binding.
     .sample_size_general_households = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
@@ -952,6 +1015,7 @@ SurveyProtocol <- R6::R6Class(
       }
       sum(as.numeric(st$General_HH_Sample_Size), na.rm = TRUE)
     },
+    #' @field .sample_size_ind_persons Active binding.
     .sample_size_ind_persons = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
@@ -962,6 +1026,7 @@ SurveyProtocol <- R6::R6Class(
       }
       sum(as.numeric(st$Ind_Sample_Size), na.rm = TRUE)
     },
+    #' @field .sample_size_ind_hh Active binding.
     .sample_size_ind_hh = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
@@ -972,6 +1037,7 @@ SurveyProtocol <- R6::R6Class(
       }
       sum(as.numeric(st$Ind_HH_Sample_Size), na.rm = TRUE)
     },
+    #' @field .sample_size_rate_persons Active binding.
     .sample_size_rate_persons = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
@@ -982,6 +1048,7 @@ SurveyProtocol <- R6::R6Class(
       }
       sum(as.numeric(st$Rate_Ind_Sample_Size), na.rm = TRUE)
     },
+    #' @field .sample_size_rate_persontime Active binding.
     .sample_size_rate_persontime = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
@@ -992,6 +1059,7 @@ SurveyProtocol <- R6::R6Class(
       }
       sum(as.numeric(st$Rate_PT_Sample_Size), na.rm = TRUE)
     },
+    #' @field .sample_size_rate_hh Active binding.
     .sample_size_rate_hh = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
@@ -1002,6 +1070,7 @@ SurveyProtocol <- R6::R6Class(
       }
       sum(as.numeric(st$Rate_HH_Sample_Size), na.rm = TRUE)
     },
+    #' @field .sample_size_hh_final Active binding.
     .sample_size_hh_final = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
@@ -1012,6 +1081,7 @@ SurveyProtocol <- R6::R6Class(
       }
       sum(as.numeric(st$Final_HH_Sample_Size), na.rm = TRUE)
     },
+    #' @field .sample_size_general_table_df Active binding.
     .sample_size_general_table_df = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
@@ -1020,6 +1090,7 @@ SurveyProtocol <- R6::R6Class(
       table <- table_sample_size_general(st)
       return(table)
     },
+    #' @field .sample_size_ind_table_df Active binding.
     .sample_size_ind_table_df = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
@@ -1028,6 +1099,7 @@ SurveyProtocol <- R6::R6Class(
       table <- table_sample_size_individual(st)
       return(table)
     },
+    #' @field .sample_size_rate_table_df Active binding.
     .sample_size_rate_table_df = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
@@ -1036,6 +1108,7 @@ SurveyProtocol <- R6::R6Class(
       table <- table_sample_size_rate(st)
       return(table)
     },
+    #' @field .n_sites Active binding.
     .n_sites = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
@@ -1051,6 +1124,7 @@ SurveyProtocol <- R6::R6Class(
       }
       sum(vals)
     },
+    #' @field .cluster_size Active binding.
     .cluster_size = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
@@ -1066,6 +1140,7 @@ SurveyProtocol <- R6::R6Class(
       }
       max(vals)
     },
+    #' @field .num_enumerators_per_team Active binding.
     .num_enumerators_per_team = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
@@ -1081,6 +1156,7 @@ SurveyProtocol <- R6::R6Class(
       }
       max(vals)
     },
+    #' @field .num_days_data_collection Active binding.
     .num_days_data_collection = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
@@ -1096,6 +1172,7 @@ SurveyProtocol <- R6::R6Class(
       }
       max(vals)
     },
+    #' @field .strata_names Active binding.
     .strata_names = function(value) {
       if (!missing(value)) {
         return(invisible(FALSE))
@@ -1124,15 +1201,14 @@ SurveyProtocol <- R6::R6Class(
   ),
 
   private = list(
-    #' @description Extract the sample table from the nested Sample object.
-    #'
-    #' Safely accesses the sample table via \code{access_nested()}, returning
-    #' \code{NULL} on error.
-    #'
-    #' @return Data frame containing the sample table, or \code{NULL} if
-    #'   unavailable or on error.
-    #' @keywords internal
-    #' @noRd
+    # @description Extract the sample table from the nested Sample object.
+    #
+    # Safely accesses the sample table via \code{access_nested()}, returning
+    # \code{NULL} on error.
+    #
+    # @return Data frame containing the sample table, or \code{NULL} if
+    #   unavailable or on error.
+    # @keywords internal
     ..sample_table_from_nested = function() {
       tryCatch(
         self$access_nested(
@@ -1143,16 +1219,15 @@ SurveyProtocol <- R6::R6Class(
       )
     },
 
-    #' @description Get unique sampling methods used across all strata.
-    #'
-    #' Extracts the \code{sampling_method_site} column from the sample table,
-    #' trims whitespace, converts to lowercase, and returns unique non-empty
-    #' values.
-    #'
-    #' @return Character vector of unique sampling methods in lowercase.
-    #'   Empty character vector if no sample table exists or no methods found.
-    #' @keywords internal
-    #' @noRd
+    # @description Get unique sampling methods used across all strata.
+    #
+    # Extracts the \code{sampling_method_site} column from the sample table,
+    # trims whitespace, converts to lowercase, and returns unique non-empty
+    # values.
+    #
+    # @return Character vector of unique sampling methods in lowercase.
+    #   Empty character vector if no sample table exists or no methods found.
+    # @keywords internal
     ..sample_methods_site_used = function() {
       st <- private$..sample_table_from_nested()
       if (!is.data.frame(st) || !"sampling_method_site" %in% names(st)) {
@@ -1163,16 +1238,15 @@ SurveyProtocol <- R6::R6Class(
       unique(methods)
     },
 
-    #' @description Get unique sampling methods used across all strata.
-    #'
-    #' Extracts the \code{sampling_method_hh} column from the sample table,
-    #' trims whitespace, converts to lowercase, and returns unique non-empty
-    #' values.
-    #'
-    #' @return Character vector of unique sampling methods in lowercase.
-    #'   Empty character vector if no sample table exists or no methods found.
-    #' @keywords internal
-    #' @noRd
+    # @description Get unique sampling methods used across all strata.
+    #
+    # Extracts the \code{sampling_method_hh} column from the sample table,
+    # trims whitespace, converts to lowercase, and returns unique non-empty
+    # values.
+    #
+    # @return Character vector of unique sampling methods in lowercase.
+    #   Empty character vector if no sample table exists or no methods found.
+    # @keywords internal
     ..sample_methods_household_used = function() {
       st <- private$..sample_table_from_nested()
       if (!is.data.frame(st) || !"sampling_method_hh" %in% names(st)) {
@@ -1183,56 +1257,53 @@ SurveyProtocol <- R6::R6Class(
       unique(methods)
     },
 
-    #' @description Check if any of the specified sampling methods are used.
-    #'
-    #' Compares the provided methods against those currently in use across
-    #' all strata.
-    #'
-    #' @param methods Character vector of sampling method names to check.
-    #' @return \code{TRUE} if any provided method matches a method in use,
-    #'   \code{FALSE} otherwise.
-    #' @keywords internal
-    #' @noRd
+    # @description Check if any of the specified sampling methods are used.
+    #
+    # Compares the provided methods against those currently in use across
+    # all strata.
+    #
+    # @param methods Character vector of sampling method names to check.
+    # @return \code{TRUE} if any provided method matches a method in use,
+    #   \code{FALSE} otherwise.
+    # @keywords internal
     ..sample_has_any_method_site = function(methods) {
       methods_used <- private$..sample_methods_site_used()
       length(intersect(methods_used, tolower(as.character(methods)))) > 0L
     },
 
-    #' @description Check if any of the specified sampling methods are used.
-    #'
-    #' Compares the provided methods against those currently in use across
-    #' all strata.
-    #'
-    #' @param methods Character vector of sampling method names to check.
-    #' @return \code{TRUE} if any provided method matches a method in use,
-    #'   \code{FALSE} otherwise.
-    #' @keywords internal
-    #' @noRd
+    # @description Check if any of the specified sampling methods are used.
+    #
+    # Compares the provided methods against those currently in use across
+    # all strata.
+    #
+    # @param methods Character vector of sampling method names to check.
+    # @return \code{TRUE} if any provided method matches a method in use,
+    #   \code{FALSE} otherwise.
+    # @keywords internal
     ..sample_has_any_method_household = function(methods) {
       methods_used <- private$..sample_methods_household_used()
       length(intersect(methods_used, tolower(as.character(methods)))) > 0L
     },
 
-    #' @description Return strata names for a given sampling method.
-    #'
-    #' Checks if any strata rows in the sample table match the specified
-    #' site-level and/or household-level sampling methods.
-    #'
-    #' @param method_site Character. Site-level sampling method to filter on.
-    #'   When \code{NULL} (default), no site-level filtering is applied.
-    #' @param method_hh Character. Household-level sampling method to filter on.
-    #'   When \code{NULL} (default), no household-level filtering is applied.
-    #' @return Character vector of strata names matching the specified method(s).
-    #'   Returns an empty character vector if no matches found or sample table
-    #'   unavailable.
-    #'
-    #' @details
-    #' If both \code{method_site} and \code{method_hh} are provided, returns
-    #' strata names where both conditions are met. If only one is provided,
-    #' filters by that criterion alone.
-    #'
-    #' @keywords internal
-    #' @noRd
+    # @description Return strata names for a given sampling method.
+    #
+    # Checks if any strata rows in the sample table match the specified
+    # site-level and/or household-level sampling methods.
+    #
+    # @param method_site Character. Site-level sampling method to filter on.
+    #   When \code{NULL} (default), no site-level filtering is applied.
+    # @param method_hh Character. Household-level sampling method to filter on.
+    #   When \code{NULL} (default), no household-level filtering is applied.
+    # @return Character vector of strata names matching the specified method(s).
+    #   Returns an empty character vector if no matches found or sample table
+    #   unavailable.
+    #
+    # @details
+    # If both \code{method_site} and \code{method_hh} are provided, returns
+    # strata names where both conditions are met. If only one is provided,
+    # filters by that criterion alone.
+    #
+    # @keywords internal
     ..strata_names_for_method = function(method_site = NULL, method_hh = NULL) {
       st <- private$..sample_table_from_nested()
       if (!is.data.frame(st) || nrow(st) == 0L) {
@@ -1274,16 +1345,15 @@ SurveyProtocol <- R6::R6Class(
       strata
     },
 
-    #' @description Check if any household indicators are present.
-    #'
-    #' Verifies that a household tool role exists and contains at least one
-    #' of the specified indicator codes.
-    #'
-    #' @param indicator_codes Character vector of indicator codes to check.
-    #' @return \code{TRUE} if the household tool role exists and any indicator
-    #'   codes match, \code{FALSE} otherwise.
-    #' @keywords internal
-    #' @noRd
+    # @description Check if any household indicators are present.
+    #
+    # Verifies that a household tool role exists and contains at least one
+    # of the specified indicator codes.
+    #
+    # @param indicator_codes Character vector of indicator codes to check.
+    # @return \code{TRUE} if the household tool role exists and any indicator
+    #   codes match, \code{FALSE} otherwise.
+    # @keywords internal
     ..household_has_any_indicator = function(indicator_codes) {
       if (!private$..has_tool_role("household")) {
         return(FALSE)
@@ -1301,28 +1371,25 @@ SurveyProtocol <- R6::R6Class(
       length(intersect(hh_codes, as.character(indicator_codes))) > 0L
     },
 
-    #' @description Guard to prevent recursive calls during state synchronization.
-    #' @keywords internal
-    #' @noRd
+    # Guard to prevent recursive calls during state synchronization.
     ..post_sync_guard = FALSE,
 
-    #' @description Synchronize sampling-related state fields.
-    #'
-    #' Extracts sampling metadata from the nested \code{Sample} object and
-    #' updates public fields including \code{sample_table}, \code{strata_names},
-    #' \code{sampling_methods}, \code{drawn_sample}, and related metadata.
-    #'
-    #' Populates the \code{metadata} list with:
-    #' \itemize{
-    #'   \item \code{sampling_strata_names}: Character vector of strata names
-    #'   \item \code{sampling_method_flags}: Named logical list indicating
-    #'     presence of known sampling methods
-    #'   \item \code{target_strata}: Named list mapping stratum IDs to names
-    #' }
-    #'
-    #' @return Invisibly returns \code{NULL}.
-    #' @keywords internal
-    #' @noRd
+    # @description Synchronize sampling-related state fields.
+    #
+    # Extracts sampling metadata from the nested \code{Sample} object and
+    # updates public fields including \code{sample_table}, \code{strata_names},
+    # \code{sampling_methods}, \code{drawn_sample}, and related metadata.
+    #
+    # Populates the \code{metadata} list with:
+    # \itemize{
+    #   \item \code{sampling_strata_names}: Character vector of strata names
+    #   \item \code{sampling_method_flags}: Named logical list indicating
+    #     presence of known sampling methods
+    #   \item \code{target_strata}: Named list mapping stratum IDs to names
+    # }
+    #
+    # @return Invisibly returns \code{NULL}.
+    # @keywords internal
     ..sync_sampling_state = function() {
       st <- tryCatch(
         self$access_nested(
@@ -1406,16 +1473,15 @@ SurveyProtocol <- R6::R6Class(
       invisible(NULL)
     },
 
-    #' @description Synchronize sampling frame state fields.
-    #'
-    #' Extracts strata information from the \code{SamplingFrame} object and
-    #' updates \code{sampling_frame_strata_names} and
-    #' \code{sampling_frame_strata_population}. Aggregates population sizes
-    #' by stratum when available.
-    #'
-    #' @return Invisibly returns \code{NULL}.
-    #' @keywords internal
-    #' @noRd
+    # @description Synchronize sampling frame state fields.
+    #
+    # Extracts strata information from the \code{SamplingFrame} object and
+    # updates \code{sampling_frame_strata_names} and
+    # \code{sampling_frame_strata_population}. Aggregates population sizes
+    # by stratum when available.
+    #
+    # @return Invisibly returns \code{NULL}.
+    # @keywords internal
     ..sync_sample_frame_state = function() {
       sf <- tryCatch(
         self$access_nested(field = "sampling_frame", member = "log_df"),

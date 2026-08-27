@@ -10,8 +10,9 @@ quality_test_index_dispersion(survey_design, variables)
 \item{survey_design}{A srvyr survey design object (e.g., created with
 \code{srvyr::as_survey_design()}).}
 
-\item{variables}{A character vector of length 1 giving the column name
-containing event counts for each cluster or site.}
+\item{variables}{A character vector of length 2. The first element must be
+the column containing record-level event counts (non-negative numeric),
+and the second must be the column containing cluster or site identifiers.}
 }
 \value{
 A list with two numeric elements:
@@ -30,24 +31,35 @@ there is evidence of over-dispersion (clustering) or under-dispersion
 (uniformity).
 }
 \details{
-The function aggregates the event counts across all clusters/sites in the
-survey design and returns only two values:
+The function accepts record-level survey data containing an event-count
+column and a cluster-identifier column. Event counts are aggregated to the
+cluster level, and the dispersion test is applied to the resulting
+cluster-level totals. The function returns:
 \itemize{
   \item \code{test_statistic}: the chi-square statistic
   \item \code{p_value}: the p-value for the dispersion test
 }
 
 
-The Index of Dispersion (ID) is defined as:
-\deqn{ID = \frac{\mathrm{Var}(X)}{\mathrm{Mean}(X)}}
+Event counts are first aggregated by cluster. Let \eqn{X_i} denote the total
+number of events in cluster \eqn{i}. The Index of Dispersion (ID) is defined as:
 
-Under the null hypothesis that counts follow a Poisson distribution,
-the statistic:
+\deqn{ID = \frac{\mathrm{Var}(X_i)}{\mathrm{Mean}(X_i)}}
+
+Under the null hypothesis that cluster-level counts follow a Poisson
+distribution, the statistic:
+
 \deqn{X^2 = (n - 1) \times ID}
-approximately follows a chi-square distribution with \code{n - 1}
-degrees of freedom, where \code{n} is the number of clusters/sites.
+
+approximately follows a chi-square distribution with \eqn{n - 1} degrees of
+freedom, where \eqn{n} is the number of clusters.
 
 A small p-value indicates significant over-dispersion (clustering) or
-under-dispersion (uniformity), suggesting potential spatial bias or
-data quality issues.
+under-dispersion (uniformity), suggesting potential spatial bias or data
+quality issues.
+
+Records with missing event counts or missing cluster identifiers are
+excluded. Negative event counts trigger a warning and result in \code{NA}
+outputs. If fewer than two clusters contain valid data, the function returns
+\code{NA} for both outputs.
 }

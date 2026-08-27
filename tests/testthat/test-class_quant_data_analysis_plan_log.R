@@ -13,9 +13,9 @@ test_that("QuantDataAnalysisPlanLog initializes with required columns", {
 
   log <- QuantDataAnalysisPlanLog$new()
 
-  expect_true(is.data.frame(log$log_df))
+  expect_true(is.data.frame(log$get("log_df")))
   expect_setequal(
-    names(log$log_df),
+    names(log$get("log_df")),
     c(
       "indicator_name", "calculation", "var_name", "denom_var",
       "disaggregation", "multiplier", "indicator_unit"
@@ -33,13 +33,13 @@ test_that("QuantDataAnalysisPlanLog fills missing required columns when provided
   expect_s3_class(log, "QuantDataAnalysisPlanLog")
 
   # Required columns should all exist
-  expect_true(all(log$required_columns %in% names(log$log_df)))
+  expect_true(all(log$required_columns %in% names(log$get("log_df"))))
 
   # Columns not supplied should be filled with NA
   missing_cols <- setdiff(log$required_columns, names(df))
 
   for (col in missing_cols) {
-    expect_true(all(is.na(log$log_df[[col]])))
+    expect_true(all(is.na(log$get("log_df")[[col]])))
   }
 })
 
@@ -47,12 +47,12 @@ test_that("QuantDataAnalysisPlanLog attaches schema correctly", {
 
   log <- QuantDataAnalysisPlanLog$new()
 
-  expect_true("types" %in% names(log$schema))
-  expect_equal(log$schema$types$indicator_name, "character")
-  expect_equal(log$schema$types$calculation, "character")
-  expect_equal(log$schema$types$multiplier, "numeric")
-  expect_equal(log$schema$allowed_values$calculation,
-               c("prop", "mean", "median", "ratio", "categorical", "select_multiple_cat"))
+  expect_true("types" %in% names(log$get("schema")))
+  expect_equal(log$get("schema")$types$indicator_name, "character")
+  expect_equal(log$get("schema")$types$calculation, "character")
+  expect_equal(log$get("schema")$types$multiplier, "numeric")
+  expect_equal(log$get("schema")$allowed_values$calculation,
+               c("prop", "mean", "median", "ratio", "cat", "categorical", "select_multiple_cat"))
 })
 
 test_that("QuantDataAnalysisPlanLog initializes from CSV template structure", {
@@ -71,8 +71,8 @@ test_that("QuantDataAnalysisPlanLog initializes from CSV template structure", {
   log <- QuantDataAnalysisPlanLog$new(log_df = df)
   
   expect_s3_class(log, "QuantDataAnalysisPlanLog")
-  expect_equal(nrow(log$log_df), 0)
-  expect_equal(ncol(log$log_df), 7)
+  expect_equal(nrow(log$get("log_df")), 0)
+  expect_equal(ncol(log$get("log_df")), 7)
 })
 
 
@@ -192,10 +192,10 @@ test_that("QuantDataAnalysisPlanLog add_indicator adds entry correctly", {
     indicator_unit = "%"
   )
 
-  expect_equal(nrow(log$log_df), 1)
-  expect_equal(log$log_df$indicator_name[1], "Test Indicator")
-  expect_equal(log$log_df$calculation[1], "prop")
-  expect_equal(log$log_df$multiplier[1], 100)
+  expect_equal(nrow(log$get("log_df")), 1)
+  expect_equal(log$get("log_df")$indicator_name[1], "Test Indicator")
+  expect_equal(log$get("log_df")$calculation[1], "prop")
+  expect_equal(log$get("log_df")$multiplier[1], 100)
 })
 
 test_that("QuantDataAnalysisPlanLog add_indicator handles multiple entries", {
@@ -214,8 +214,8 @@ test_that("QuantDataAnalysisPlanLog add_indicator handles multiple entries", {
     var_name = "var2"
   )
 
-  expect_equal(nrow(log$log_df), 2)
-  expect_equal(log$log_df$indicator_name, c("Indicator 1", "Indicator 2"))
+  expect_equal(nrow(log$get("log_df")), 2)
+  expect_equal(log$get("log_df")$indicator_name, c("Indicator 1", "Indicator 2"))
 })
 
 test_that("QuantDataAnalysisPlanLog add_indicator uses defaults correctly", {
@@ -228,10 +228,10 @@ test_that("QuantDataAnalysisPlanLog add_indicator uses defaults correctly", {
     var_name = "var1"
   )
 
-  expect_equal(log$log_df$multiplier[1], 100)
-  expect_equal(log$log_df$indicator_unit[1], "%")
-  expect_true(is.na(log$log_df$denom_var[1]))
-  expect_true(is.na(log$log_df$disaggregation[1]))
+  expect_equal(log$get("log_df")$multiplier[1], 100)
+  expect_equal(log$get("log_df")$indicator_unit[1], "%")
+  expect_true(is.na(log$get("log_df")$denom_var[1]))
+  expect_true(is.na(log$get("log_df")$disaggregation[1]))
 })
 
 
@@ -278,11 +278,11 @@ test_that("QuantDataAnalysisPlanLog clear() removes all entries", {
   )
   
   log <- QuantDataAnalysisPlanLog$new(df)
-  expect_equal(nrow(log$log_df), 2)
+  expect_equal(nrow(log$get("log_df")), 2)
   
   log$clear()
-  expect_equal(nrow(log$log_df), 0)
-  expect_equal(ncol(log$log_df), 7)  # Columns preserved
+  expect_equal(nrow(log$get("log_df")), 0)
+  expect_equal(ncol(log$get("log_df")), 7)  # Columns preserved
 })
 
 test_that("QuantDataAnalysisPlanLog summary() returns correct info", {

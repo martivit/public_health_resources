@@ -21,7 +21,7 @@ quality_test_correlation <- function(
   variables,
   method = "pearson"
 ) {
-  phr_try(
+  phrutils::phr_try(
     {
       data <- phr_get_data_from_design(survey_design)
 
@@ -36,7 +36,7 @@ quality_test_correlation <- function(
       var2 <- variables[2]
 
       if (!var1 %in% names(data) || !var2 %in% names(data)) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_correlation",
           message = "One or both variables not found in data"
         )
@@ -49,7 +49,7 @@ quality_test_correlation <- function(
       # Remove pairs with missing values
       complete_cases <- complete.cases(x, y)
       if (sum(complete_cases) < 3) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_correlation",
           message = "Insufficient complete cases for correlation"
         )
@@ -89,7 +89,7 @@ quality_test_ttest <- function(
   mu = 0,
   paired = FALSE
 ) {
-  phr_try(
+  phrutils::phr_try(
     {
       data <- phr_get_data_from_design(survey_design)
 
@@ -103,7 +103,7 @@ quality_test_ttest <- function(
       var1 <- variables[1]
 
       if (!var1 %in% names(data)) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_ttest",
           message = "Variable not found in data"
         )
@@ -114,7 +114,7 @@ quality_test_ttest <- function(
       x <- x[!is.na(x)]
 
       if (length(x) < 2) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_ttest",
           message = "Insufficient data for t-test"
         )
@@ -128,7 +128,7 @@ quality_test_ttest <- function(
         # Two-sample t-test
         var2 <- variables[2]
         if (!var2 %in% names(data)) {
-          phr_warning(
+          phrutils::phr_warning(
             origin = "quality_test_ttest",
             message = "Second variable not found in data"
           )
@@ -139,7 +139,7 @@ quality_test_ttest <- function(
         y <- y[!is.na(y)]
 
         if (length(y) < 2) {
-          phr_warning(
+          phrutils::phr_warning(
             origin = "quality_test_ttest",
             message = "Insufficient data in second variable"
           )
@@ -168,7 +168,7 @@ quality_test_ttest <- function(
 #' @return List with statistic (chi-squared value) and p-value
 #' @export
 quality_test_chisq <- function(survey_design, variables) {
-  phr_try(
+  phrutils::phr_try(
     {
       data <- phr_get_data_from_design(survey_design)
 
@@ -183,7 +183,7 @@ quality_test_chisq <- function(survey_design, variables) {
       var2 <- variables[2]
 
       if (!var1 %in% names(data) || !var2 %in% names(data)) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_chisq",
           message = "One or both variables not found in data"
         )
@@ -199,7 +199,7 @@ quality_test_chisq <- function(survey_design, variables) {
       y <- y[complete_cases]
 
       if (length(x) < 5) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_chisq",
           message = "Insufficient data for chi-squared test"
         )
@@ -211,7 +211,7 @@ quality_test_chisq <- function(survey_design, variables) {
 
       # Check if table has sufficient cells
       if (any(dim(cont_table) < 2)) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_chisq",
           message = "Contingency table too small for chi-squared test"
         )
@@ -244,7 +244,7 @@ quality_test_flag_percentage <- function(
   variables,
   flag_value = TRUE
 ) {
-  phr_try(
+  phrutils::phr_try(
     {
       data <- phr_get_data_from_design(survey_design)
 
@@ -258,7 +258,7 @@ quality_test_flag_percentage <- function(
       var <- variables[1]
 
       if (!var %in% names(data)) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_flag_percentage",
           message = "Variable not found in data"
         )
@@ -269,7 +269,7 @@ quality_test_flag_percentage <- function(
       x <- x[!is.na(x)]
 
       if (length(x) == 0) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_flag_percentage",
           message = "No non-missing values found"
         )
@@ -299,7 +299,7 @@ quality_test_flag_percentage <- function(
 #' @return List with statistic (percentage 0-100) and p_value (NA)
 #' @export
 quality_test_missing_percentage <- function(survey_design, variables) {
-  phr_try(
+  phrutils::phr_try(
     {
       data <- phr_get_data_from_design(survey_design)
 
@@ -314,7 +314,7 @@ quality_test_missing_percentage <- function(survey_design, variables) {
       existing_vars <- intersect(variables, names(data))
 
       if (length(existing_vars) == 0) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_missing_percentage",
           message = "No specified variables found in data"
         )
@@ -361,7 +361,7 @@ quality_test_outlier_percentage <- function(
   variables,
   z_threshold = 3
 ) {
-  phr_try(
+  phrutils::phr_try(
     {
       data <- phr_get_data_from_design(survey_design)
 
@@ -399,7 +399,7 @@ quality_test_outlier_percentage <- function(
       var <- variables[1]
 
       if (!var %in% names(data)) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_outlier_percentage",
           message = "Variable not found in data"
         )
@@ -407,7 +407,7 @@ quality_test_outlier_percentage <- function(
       }
 
       # Validate that the variable is numeric
-      is_valid <- phr_validate_numeric(
+      is_valid <- phrutils::phr_validate_numeric(
         data[[var]],
         origin = "quality_test_outlier_percentage",
         hint = phr_txt(
@@ -425,7 +425,7 @@ quality_test_outlier_percentage <- function(
       x <- x[!is.na(x)]
 
       if (length(x) < 3) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_outlier_percentage",
           message = "Insufficient data for outlier detection (need at least 3 non-missing values)"
         )
@@ -434,7 +434,7 @@ quality_test_outlier_percentage <- function(
 
       # Check for zero variance (all values identical)
       if (sd(x) == 0) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_outlier_percentage",
           message = "Variable has zero variance (all values are identical)"
         )
@@ -446,7 +446,7 @@ quality_test_outlier_percentage <- function(
 
       # Additional safety check for Inf/NaN in z-scores
       if (any(is.infinite(z_scores)) || any(is.nan(z_scores))) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_outlier_percentage",
           message = "Unable to calculate valid z-scores"
         )
@@ -475,7 +475,7 @@ quality_test_outlier_percentage <- function(
 #' @return List with statistic (CV percentage) and p_value (NA)
 #' @export
 quality_test_coefficient_variation <- function(survey_design, variables) {
-  phr_try(
+  phrutils::phr_try(
     {
       data <- phr_get_data_from_design(survey_design)
 
@@ -498,7 +498,7 @@ quality_test_coefficient_variation <- function(survey_design, variables) {
       var <- variables[1]
 
       if (!var %in% names(data)) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_coefficient_variation",
           message = "Variable not found in data"
         )
@@ -506,7 +506,7 @@ quality_test_coefficient_variation <- function(survey_design, variables) {
       }
 
       # Validate that the variable is numeric
-      is_valid <- phr_validate_numeric(
+      is_valid <- phrutils::phr_validate_numeric(
         data[[var]],
         origin = "quality_test_coefficient_variation",
         hint = phr_txt("CV calculation requires numeric data."),
@@ -522,7 +522,7 @@ quality_test_coefficient_variation <- function(survey_design, variables) {
       x <- x[!is.na(x)]
 
       if (length(x) < 2) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_coefficient_variation",
           message = "Insufficient data for CV calculation (need at least 2 non-missing values)"
         )
@@ -534,7 +534,7 @@ quality_test_coefficient_variation <- function(survey_design, variables) {
 
       # Check for zero variance (all values identical)
       if (sd_x == 0) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_coefficient_variation",
           message = "Variable has zero variance (all values are identical), CV is 0"
         )
@@ -543,7 +543,7 @@ quality_test_coefficient_variation <- function(survey_design, variables) {
 
       # Check for zero mean
       if (mean_x == 0) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_coefficient_variation",
           message = "Mean is zero, CV is undefined"
         )
@@ -554,7 +554,7 @@ quality_test_coefficient_variation <- function(survey_design, variables) {
 
       # Additional safety check for Inf/NaN in CV
       if (is.infinite(cv) || is.nan(cv)) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_coefficient_variation",
           message = "Unable to calculate valid CV"
         )
@@ -587,7 +587,7 @@ quality_test_range_violation <- function(
   min_value = -Inf,
   max_value = Inf
 ) {
-  phr_try(
+  phrutils::phr_try(
     {
       data <- phr_get_data_from_design(survey_design)
 
@@ -649,7 +649,7 @@ quality_test_range_violation <- function(
       var <- variables[1]
 
       if (!var %in% names(data)) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_range_violation",
           message = "Variable not found in data"
         )
@@ -657,7 +657,7 @@ quality_test_range_violation <- function(
       }
 
       # Validate that the variable is numeric
-      is_valid <- phr_validate_numeric(
+      is_valid <- phrutils::phr_validate_numeric(
         data[[var]],
         origin = "quality_test_range_violation",
         hint = phr_txt("Range violation test requires numeric data."),
@@ -673,7 +673,7 @@ quality_test_range_violation <- function(
       x <- x[!is.na(x)]
 
       if (length(x) == 0) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_range_violation",
           message = "No non-missing values found"
         )
@@ -682,14 +682,14 @@ quality_test_range_violation <- function(
 
       # Check for infinite values in the data
       if (any(is.infinite(x))) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_range_violation",
           message = "Variable contains infinite values which will be excluded from range check"
         )
         x <- x[is.finite(x)]
 
         if (length(x) == 0) {
-          phr_warning(
+          phrutils::phr_warning(
             origin = "quality_test_range_violation",
             message = "No finite values found after removing infinite values"
           )
@@ -719,7 +719,7 @@ quality_test_range_violation <- function(
 #' @return List with statistic (standard deviation) and p_value (NA)
 #' @export
 quality_test_sd <- function(survey_design, variables) {
-  phr_try(
+  phrutils::phr_try(
     {
       data <- phr_get_data_from_design(survey_design)
 
@@ -742,7 +742,7 @@ quality_test_sd <- function(survey_design, variables) {
       var <- variables[1]
 
       if (!var %in% names(data)) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_sd",
           message = "Variable not found in data"
         )
@@ -750,7 +750,7 @@ quality_test_sd <- function(survey_design, variables) {
       }
 
       # Validate that the variable is numeric
-      is_valid <- phr_validate_numeric(
+      is_valid <- phrutils::phr_validate_numeric(
         data[[var]],
         origin = "quality_test_sd",
         hint = phr_txt("Standard deviation calculation requires numeric data."),
@@ -766,7 +766,7 @@ quality_test_sd <- function(survey_design, variables) {
       x <- x[!is.na(x)]
 
       if (length(x) < 2) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_sd",
           message = "Insufficient data for standard deviation calculation (need at least 2 non-missing values)"
         )
@@ -777,7 +777,7 @@ quality_test_sd <- function(survey_design, variables) {
 
       # Additional safety check for Inf/NaN in standard deviation
       if (is.infinite(sd_x) || is.nan(sd_x)) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_sd",
           message = "Unable to calculate valid standard deviation"
         )
@@ -809,7 +809,7 @@ quality_test_sd_across_percentage <- function(
   variables,
   threshold = 0.8
 ) {
-  phr_try(
+  phrutils::phr_try(
     {
       data <- phr_get_data_from_design(survey_design)
 
@@ -849,7 +849,7 @@ quality_test_sd_across_percentage <- function(
       missing_vars <- setdiff(variables, names(data))
 
       if (length(missing_vars) > 0) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_sd_across_percentage",
           message = paste0(
             "Variables not found in data: ",
@@ -859,7 +859,7 @@ quality_test_sd_across_percentage <- function(
       }
 
       if (length(existing_vars) < 2) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_sd_across_percentage",
           message = "At least 2 variables must exist in data for SD calculation"
         )
@@ -868,7 +868,7 @@ quality_test_sd_across_percentage <- function(
 
       # Validate that all existing variables are numeric
       for (var in existing_vars) {
-        is_valid <- phr_validate_numeric(
+        is_valid <- phrutils::phr_validate_numeric(
           data[[var]],
           origin = "quality_test_sd_across_percentage",
           hint = phr_txt(paste0(
@@ -880,7 +880,7 @@ quality_test_sd_across_percentage <- function(
         )
 
         if (isFALSE(is_valid)) {
-          phr_warning(
+          phrutils::phr_warning(
             origin = "quality_test_sd_across_percentage",
             message = paste0(
               "Variable '",
@@ -894,7 +894,7 @@ quality_test_sd_across_percentage <- function(
 
       # Check again after removing non-numeric variables
       if (length(existing_vars) < 2) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_sd_across_percentage",
           message = "At least 2 numeric variables required after validation"
         )
@@ -925,7 +925,7 @@ quality_test_sd_across_percentage <- function(
       valid_rows <- !is.na(row_sd)
 
       if (sum(valid_rows) == 0) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_sd_across_percentage",
           message = "No rows with sufficient non-missing values for SD calculation"
         )
@@ -964,7 +964,7 @@ quality_test_any_flag_percentage <- function(
   variables,
   flag_value = 1
 ) {
-  phr_try(
+  phrutils::phr_try(
     {
       data <- phr_get_data_from_design(survey_design)
 
@@ -997,7 +997,7 @@ quality_test_any_flag_percentage <- function(
       missing_vars <- setdiff(variables, names(data))
 
       if (length(missing_vars) > 0) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_any_flag_percentage",
           message = paste0(
             "Variables not found in data: ",
@@ -1007,7 +1007,7 @@ quality_test_any_flag_percentage <- function(
       }
 
       if (length(existing_vars) == 0) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_any_flag_percentage",
           message = "No specified variables found in data"
         )
@@ -1019,7 +1019,7 @@ quality_test_any_flag_percentage <- function(
 
       # Check if we have any rows
       if (nrow(subset_data) == 0) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_any_flag_percentage",
           message = "Data has no rows"
         )
@@ -1048,7 +1048,7 @@ quality_test_any_flag_percentage <- function(
       valid_rows <- !is.na(flag_column)
 
       if (sum(valid_rows) == 0) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_any_flag_percentage",
           message = "No rows with non-missing values for flag calculation"
         )
@@ -1089,7 +1089,7 @@ quality_test_sexratio <- function(
   female_val,
   expected_ratio_val = 1
 ) {
-  phr_try(
+  phrutils::phr_try(
     {
       data <- phr_get_data_from_design(survey_design)
 
@@ -1101,7 +1101,7 @@ quality_test_sexratio <- function(
       }
 
       if (!variables %in% names(data)) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_sexratio",
           message = "Sex column not found in data"
         )
@@ -1133,7 +1133,7 @@ quality_test_sexratio <- function(
       s <- s[!is.na(s)]
 
       if (length(s) < 5) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_sexratio",
           message = "Insufficient data for sex ratio test"
         )
@@ -1145,7 +1145,7 @@ quality_test_sexratio <- function(
       n_excluded <- sum(!is_mf)
 
       if (n_excluded > 0) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_sexratio",
           message = paste0(
             "Excluding ",
@@ -1158,7 +1158,7 @@ quality_test_sexratio <- function(
       s <- s[is_mf]
 
       if (length(s) < 5) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_sexratio",
           message = "Insufficient male/female data for sex ratio test"
         )
@@ -1169,7 +1169,7 @@ quality_test_sexratio <- function(
       obs_female <- sum(s == female_val, na.rm = TRUE)
 
       if (obs_male == 0L || obs_female == 0L) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_sexratio",
           message = "Only one sex category present; cannot test sex ratio"
         )
@@ -1217,7 +1217,7 @@ quality_test_ageratio <- function(
   no_val = 0,
   expected_ratio_val = 0.85
 ) {
-  phr_try(
+  phrutils::phr_try(
     {
       data <- phr_get_data_from_design(survey_design)
 
@@ -1234,7 +1234,7 @@ quality_test_ageratio <- function(
       if (
         !age_group_col1 %in% names(data) || !age_group_col2 %in% names(data)
       ) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_ageratio",
           message = "One or both age group columns not found in data"
         )
@@ -1278,7 +1278,7 @@ quality_test_ageratio <- function(
       y <- y[complete_cases]
 
       if (length(x) < 5) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_ageratio",
           message = "Insufficient data for age ratio test"
         )
@@ -1292,7 +1292,7 @@ quality_test_ageratio <- function(
 
       n_excluded <- sum(!valid)
       if (n_excluded > 0) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_ageratio",
           message = paste0(
             "Excluding ",
@@ -1306,7 +1306,7 @@ quality_test_ageratio <- function(
       y <- y[valid]
 
       if (length(x) < 5) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_ageratio",
           message = "Insufficient valid data for age ratio test"
         )
@@ -1318,7 +1318,7 @@ quality_test_ageratio <- function(
       yes2 <- sum(y == yes_val, na.rm = TRUE)
 
       if (yes1 == 0L || yes2 == 0L) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_ageratio",
           message = "One of the age groups has zero 'yes' counts; cannot test age ratio"
         )
@@ -1388,7 +1388,7 @@ digit_preference_score <- function(x, digits = 1, values = 0:9) {
 #' @return List with statistic (digit preference score) and p_value (NA_real_)
 #' @export
 quality_test_digit_preference <- function(survey_design, variables) {
-  phr_try(
+  phrutils::phr_try(
     {
       data <- phr_get_data_from_design(survey_design)
 
@@ -1400,7 +1400,7 @@ quality_test_digit_preference <- function(survey_design, variables) {
       }
 
       if (!variables %in% names(data)) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_digit_preference",
           message = "Variable not found in data"
         )
@@ -1413,7 +1413,7 @@ quality_test_digit_preference <- function(survey_design, variables) {
       x <- x[!is.na(x)]
 
       if (length(x) < 5) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_digit_preference",
           message = "Insufficient data for digit preference calculation"
         )
@@ -1421,7 +1421,7 @@ quality_test_digit_preference <- function(survey_design, variables) {
       }
 
       if (!is.numeric(x)) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_digit_preference",
           message = "Variable is not numeric; cannot compute digit preference score"
         )
@@ -1452,7 +1452,7 @@ quality_test_digit_preference <- function(survey_design, variables) {
 #' @return List with statistic (F-value) and p_value
 #' @export
 quality_test_anova <- function(survey_design, variables) {
-  phr_try(
+  phrutils::phr_try(
     {
       data <- phr_get_data_from_design(survey_design)
 
@@ -1468,7 +1468,7 @@ quality_test_anova <- function(survey_design, variables) {
 
       missing_cols <- setdiff(variables, names(data))
       if (length(missing_cols) > 0) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_anova",
           message = paste0(
             "Columns not found in data: ",
@@ -1478,7 +1478,7 @@ quality_test_anova <- function(survey_design, variables) {
         return(list(statistic = NA_real_, p_value = NA_real_))
       }
 
-      is_valid <- phr_validate_numeric(
+      is_valid <- phrutils::phr_validate_numeric(
         data[[outcome_col]],
         origin = "quality_test_anova",
         hint = phr_txt("ANOVA requires a numeric outcome variable."),
@@ -1497,7 +1497,7 @@ quality_test_anova <- function(survey_design, variables) {
       group <- group[complete_cases]
 
       if (length(outcome) < 3) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_anova",
           message = "Insufficient data for ANOVA (need at least 3 non-missing observations)"
         )
@@ -1507,7 +1507,7 @@ quality_test_anova <- function(survey_design, variables) {
       group <- as.factor(group)
 
       if (nlevels(group) < 2) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_anova",
           message = "Group column must have at least 2 distinct levels for ANOVA"
         )
@@ -1543,7 +1543,7 @@ quality_test_anova <- function(survey_design, variables) {
 #' @return List with statistic (chi-squared value) and p_value
 #' @export
 quality_test_chisq_binary <- function(survey_design, variables) {
-  phr_try(
+  phrutils::phr_try(
     {
       data <- phr_get_data_from_design(survey_design)
 
@@ -1556,7 +1556,7 @@ quality_test_chisq_binary <- function(survey_design, variables) {
 
       missing_cols <- setdiff(variables, names(data))
       if (length(missing_cols) > 0) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_chisq_binary",
           message = paste0(
             "Columns not found in data: ",
@@ -1577,7 +1577,7 @@ quality_test_chisq_binary <- function(survey_design, variables) {
       y <- y[complete_cases]
 
       if (length(x) < 5) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_chisq_binary",
           message = "Insufficient data for chi-squared binary test (need at least 5 complete observations)"
         )
@@ -1587,7 +1587,7 @@ quality_test_chisq_binary <- function(survey_design, variables) {
       contingency_table <- table(x, y)
 
       if (any(dim(contingency_table) < 2)) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_chisq_binary",
           message = "Contingency table too small for chi-squared test (each variable must have at least 2 distinct levels)"
         )
@@ -1634,7 +1634,7 @@ quality_test_binomial_ratio_rowwise <- function(
   alternative = "two.sided",
   pval_colname = "p_value"
 ) {
-  phr_try(
+  phrutils::phr_try(
     {
       data <- phr_get_data_from_design(survey_design)
 
@@ -1674,7 +1674,7 @@ quality_test_binomial_ratio_rowwise <- function(
 
       missing_cols <- setdiff(variables, names(data))
       if (length(missing_cols) > 0) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_binomial_ratio_rowwise",
           message = paste0(
             "Columns not found in data: ",
@@ -1759,7 +1759,7 @@ quality_test_ttest_summary_rowwise <- function(
   alternative = "two.sided",
   pval_colname = "p_value"
 ) {
-  phr_try(
+  phrutils::phr_try(
     {
       data <- phr_get_data_from_design(survey_design)
 
@@ -1797,7 +1797,7 @@ quality_test_ttest_summary_rowwise <- function(
 
       missing_cols <- setdiff(variables, names(data))
       if (length(missing_cols) > 0) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_ttest_summary_rowwise",
           message = paste0(
             "Columns not found in data: ",
@@ -1871,7 +1871,7 @@ quality_test_poisson_ratio <- function(
   expected_rate = 0.02,
   alternative = "two.sided"
 ) {
-  phr_try(
+  phrutils::phr_try(
     {
       data <- phr_get_data_from_design(survey_design)
 
@@ -1903,7 +1903,7 @@ quality_test_poisson_ratio <- function(
 
       missing_cols <- setdiff(variables, names(data))
       if (length(missing_cols) > 0) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_poisson_ratio",
           message = paste0(
             "Columns not found in data: ",
@@ -1973,7 +1973,7 @@ quality_test_poisson_ratio <- function(
 #' @return List with statistic (non-missing count) and p_value (NA_real_)
 #' @export
 quality_test_count <- function(survey_design, variables) {
-  phr_try(
+  phrutils::phr_try(
     {
       data <- phr_get_data_from_design(survey_design)
 
@@ -1985,7 +1985,7 @@ quality_test_count <- function(survey_design, variables) {
       }
 
       if (!variables %in% names(data)) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_count",
           message = "Column not found in data"
         )
@@ -2078,7 +2078,7 @@ quality_test_index_dispersion <- function(survey_design, variables) {
 
       missing_cols <- setdiff(variables, names(data))
       if (length(missing_cols) > 0) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_index_dispersion",
           message = paste0(
             "Columns not found in data: ",
@@ -2097,7 +2097,7 @@ quality_test_index_dispersion <- function(survey_design, variables) {
       clusters <- clusters[cc]
 
       if (length(events) < 2) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_index_dispersion",
           message = "Insufficient data for dispersion test"
         )
@@ -2105,7 +2105,7 @@ quality_test_index_dispersion <- function(survey_design, variables) {
       }
 
       if (any(events < 0, na.rm = TRUE)) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_index_dispersion",
           message = "Negative event counts found; returning NA"
         )
@@ -2117,7 +2117,7 @@ quality_test_index_dispersion <- function(survey_design, variables) {
 
       # Validate cluster-level counts
       if (length(events_by_cluster) < 2) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_index_dispersion",
           message = "Need at least 2 clusters with non-missing counts"
         )
@@ -2200,7 +2200,7 @@ quality_test_index_dispersion <- function(survey_design, variables) {
 #'
 #' @export
 quality_test_events_months_distribution <- function(survey_design, variables) {
-  phr_try(
+  phrutils::phr_try(
     {
       data <- phr_get_data_from_design(survey_design)
 
@@ -2216,7 +2216,7 @@ quality_test_events_months_distribution <- function(survey_design, variables) {
       dates_col <- variables[2]
 
       if (!event_col %in% names(data) || !dates_col %in% names(data)) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_events_months_distribution",
           message = paste0(
             "Columns not found in data: ",
@@ -2261,7 +2261,7 @@ quality_test_events_months_distribution <- function(survey_design, variables) {
       )
 
       if (!all(check_ok)) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_events_months_distribution",
           message = "Mismatch between number of deaths and number of dates in some records"
         )
@@ -2295,7 +2295,7 @@ quality_test_events_months_distribution <- function(survey_design, variables) {
       long_dates$date <- suppressWarnings(as.Date(long_dates$date))
 
       if (any(is.na(long_dates$date))) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_events_months_distribution",
           message = "Some dates could not be parsed; returning NA"
         )
@@ -2308,7 +2308,7 @@ quality_test_events_months_distribution <- function(survey_design, variables) {
       counts <- table(long_dates$month_year)
 
       if (length(counts) < 2) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_events_months_distribution",
           message = "Insufficient distinct months for chi-squared test"
         )
@@ -2372,7 +2372,7 @@ quality_test_events_months_distribution <- function(survey_design, variables) {
 #'
 #' @export
 quality_test_anova_by_exposure <- function(survey_design, variables) {
-  phr_try(
+  phrutils::phr_try(
     {
       data <- phr_get_data_from_design(survey_design)
 
@@ -2390,7 +2390,7 @@ quality_test_anova_by_exposure <- function(survey_design, variables) {
 
       missing_cols <- setdiff(variables, names(data))
       if (length(missing_cols) > 0) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_anova_by_exposure",
           message = paste0(
             "Columns not found in data: ",
@@ -2405,14 +2405,14 @@ quality_test_anova_by_exposure <- function(survey_design, variables) {
       group <- data[[group_col]]
 
       # Validate numeric inputs
-      is_valid_events <- phr_validate_numeric(
+      is_valid_events <- phrutils::phr_validate_numeric(
         events,
         origin = "quality_test_anova_by_exposure",
         hint = phr_txt("Events column must be numeric."),
         soft = TRUE
       )
 
-      is_valid_exposure <- phr_validate_numeric(
+      is_valid_exposure <- phrutils::phr_validate_numeric(
         exposure,
         origin = "quality_test_anova_by_exposure",
         hint = phr_txt("Exposure column must be numeric."),
@@ -2430,7 +2430,7 @@ quality_test_anova_by_exposure <- function(survey_design, variables) {
       group <- group[complete_cases]
 
       if (length(events) < 3) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_anova_by_exposure",
           message = "Insufficient data for ANOVA (need at least 3 non-missing observations)"
         )
@@ -2446,7 +2446,7 @@ quality_test_anova_by_exposure <- function(survey_design, variables) {
       removed_count <- initial_count - length(events)
 
       if (removed_count > 0) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_anova_by_exposure",
           message = paste0(
             removed_count,
@@ -2456,7 +2456,7 @@ quality_test_anova_by_exposure <- function(survey_design, variables) {
       }
 
       if (length(events) < 3) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_anova_by_exposure",
           message = "Insufficient data for ANOVA after filtering (need at least 3 valid observations)"
         )
@@ -2469,7 +2469,7 @@ quality_test_anova_by_exposure <- function(survey_design, variables) {
       group <- as.factor(group)
 
       if (nlevels(group) < 2) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_anova_by_exposure",
           message = "Group column must have at least 2 distinct levels for ANOVA"
         )
@@ -2594,7 +2594,7 @@ quality_test_event_group_variance <- function(survey_design, variables) {
       removed_count <- initial_count - length(events)
 
       if (removed_count > 0) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_event_group_variance",
           message = paste0(
             removed_count,
@@ -2630,7 +2630,7 @@ quality_test_event_group_variance <- function(survey_design, variables) {
       )
 
       if (is.null(full_model)) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_variance_partitioning",
           message = "Mixed model failed to converge"
         )
@@ -2706,7 +2706,7 @@ quality_test_sexratio_count <- function(
   variables,
   expected_ratio = c(0.5, 0.5)
 ) {
-  phr_try(
+  phrutils::phr_try(
     {
       data <- phr_get_data_from_design(survey_design)
 
@@ -2723,7 +2723,7 @@ quality_test_sexratio_count <- function(
 
       missing_cols <- setdiff(variables, names(data))
       if (length(missing_cols) > 0) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_sexratio_count_expected",
           message = paste0(
             "Columns not found in data: ",
@@ -2740,7 +2740,7 @@ quality_test_sexratio_count <- function(
           any(expected_ratio < 0) ||
           sum(expected_ratio) <= 0
       ) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_sexratio_count_expected",
           message = "`expected_ratio` must be numeric length 2 with non-negative values"
         )
@@ -2758,7 +2758,7 @@ quality_test_sexratio_count <- function(
       female_counts <- female_counts[cc]
 
       if (length(male_counts) < 5) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_sexratio_count_expected",
           message = "Insufficient data for sex ratio expected test"
         )
@@ -2770,7 +2770,7 @@ quality_test_sexratio_count <- function(
         any(male_counts < 0, na.rm = TRUE) ||
           any(female_counts < 0, na.rm = TRUE)
       ) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_sexratio_count_expected",
           message = "Negative counts found; cannot test sex ratio"
         )
@@ -2782,7 +2782,7 @@ quality_test_sexratio_count <- function(
       total_female <- sum(female_counts)
 
       if (total_male == 0 || total_female == 0) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_sexratio_count_expected",
           message = "One sex category has zero total counts; cannot test sex ratio"
         )
@@ -2859,7 +2859,7 @@ quality_test_sexratio_count_group <- function(
   survey_design,
   variables
 ) {
-  phr_try(
+  phrutils::phr_try(
     {
       data <- phr_get_data_from_design(survey_design)
 
@@ -2877,7 +2877,7 @@ quality_test_sexratio_count_group <- function(
 
       missing_cols <- setdiff(variables, names(data))
       if (length(missing_cols) > 0) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_sexratio_count_group",
           message = paste0(
             "Columns not found in data: ",
@@ -2897,7 +2897,7 @@ quality_test_sexratio_count_group <- function(
       groups <- groups[cc]
 
       if (length(male_counts) < 5) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_sexratio_count_group",
           message = "Insufficient data for sex ratio count group test"
         )
@@ -2909,7 +2909,7 @@ quality_test_sexratio_count_group <- function(
         any(male_counts < 0, na.rm = TRUE) ||
           any(female_counts < 0, na.rm = TRUE)
       ) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_sexratio_count_group",
           message = "Negative counts found; cannot test sex ratio"
         )
@@ -2924,7 +2924,7 @@ quality_test_sexratio_count_group <- function(
 
       # Need at least 2 groups and both sexes present
       if (length(male_by_group) < 2 || length(female_by_group) < 2) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_sexratio_count_group",
           message = "Insufficient variation across groups for sex ratio test"
         )
@@ -2932,7 +2932,7 @@ quality_test_sexratio_count_group <- function(
       }
 
       if (all(male_by_group == 0) || all(female_by_group == 0)) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_sexratio_count_group",
           message = "One sex category has zero counts across all groups; cannot test sex ratio"
         )
@@ -2988,7 +2988,7 @@ quality_test_ageratio_count <- function(
   variables,
   expected_ratio
 ) {
-  phr_try(
+  phrutils::phr_try(
     {
       data <- phr_get_data_from_design(survey_design)
 
@@ -3005,7 +3005,7 @@ quality_test_ageratio_count <- function(
 
       missing_cols <- setdiff(variables, names(data))
       if (length(missing_cols) > 0) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_ageratio_count",
           message = paste0(
             "Columns not found in data: ",
@@ -3022,7 +3022,7 @@ quality_test_ageratio_count <- function(
           any(expected_ratio < 0) ||
           sum(expected_ratio) <= 0
       ) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_ageratio_count",
           message = "`expected_ratio` must be numeric length 2 with non-negative values"
         )
@@ -3040,7 +3040,7 @@ quality_test_ageratio_count <- function(
       age2_counts <- age2_counts[cc]
 
       if (length(age1_counts) < 5) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_ageratio_count",
           message = "Insufficient data for age ratio expected test"
         )
@@ -3052,7 +3052,7 @@ quality_test_ageratio_count <- function(
         any(age1_counts < 0, na.rm = TRUE) ||
           any(age2_counts < 0, na.rm = TRUE)
       ) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_ageratio_count",
           message = "Negative counts found; cannot test age ratio"
         )
@@ -3064,7 +3064,7 @@ quality_test_ageratio_count <- function(
       total_age2 <- sum(age2_counts)
 
       if (total_age1 == 0 || total_age2 == 0) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_ageratio_count",
           message = "One age group has zero total counts; cannot test age ratio"
         )
@@ -3141,7 +3141,7 @@ quality_test_ageratio_count_group <- function(
   survey_design,
   variables
 ) {
-  phr_try(
+  phrutils::phr_try(
     {
       data <- phr_get_data_from_design(survey_design)
 
@@ -3159,7 +3159,7 @@ quality_test_ageratio_count_group <- function(
 
       missing_cols <- setdiff(variables, names(data))
       if (length(missing_cols) > 0) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_ageratio_count_group",
           message = paste0(
             "Columns not found in data: ",
@@ -3179,7 +3179,7 @@ quality_test_ageratio_count_group <- function(
       groups <- groups[cc]
 
       if (length(age1_counts) < 5) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_ageratio_count_group",
           message = "Insufficient data for age ratio count group test"
         )
@@ -3190,7 +3190,7 @@ quality_test_ageratio_count_group <- function(
       if (
         any(age1_counts < 0, na.rm = TRUE) || any(age2_counts < 0, na.rm = TRUE)
       ) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_ageratio_count_group",
           message = "Negative counts found; cannot test age ratio"
         )
@@ -3205,7 +3205,7 @@ quality_test_ageratio_count_group <- function(
 
       # Need at least 2 groups and both age groups present
       if (length(age1_by_group) < 2 || length(age2_by_group) < 2) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_ageratio_count_group",
           message = "Insufficient variation across groups for age ratio test"
         )
@@ -3213,7 +3213,7 @@ quality_test_ageratio_count_group <- function(
       }
 
       if (all(age1_by_group == 0) || all(age2_by_group == 0)) {
-        phr_warning(
+        phrutils::phr_warning(
           origin = "quality_test_ageratio_count_group",
           message = "One age group has zero counts across all groups; cannot test age ratio consistency"
         )

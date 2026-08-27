@@ -24,6 +24,11 @@ Key design principles:
   ("data" for quality outputs, "survey_design" for analysis outputs)
 * `results` stores quality check results; `analysis_results` stores analysis results
 * All outputs store into the same `visualizations` and `tables` fields
+* The `pre_run_quality_checks()`, `pre_run_analysis()` and `pre_run_outputs()`
+  hooks return named sets of input field names; subclasses with multiple
+  datasets/schemas (e.g. [MortalityDataAnalytics]) override them so the
+  inherited `run_quality_checks()`, `run_analysis()` and `run_outputs()`
+  iterate over each set and store results under the set's role name
 }
 \seealso{
 [FSLDataAnalytics]
@@ -101,6 +106,7 @@ Key design principles:
     \item \href{#method-DataAnalytics-import_quality_schema}{\code{DataAnalytics$import_quality_schema()}}
     \item \href{#method-DataAnalytics-set_analysis_schema}{\code{DataAnalytics$set_analysis_schema()}}
     \item \href{#method-DataAnalytics-get_analysis_schema}{\code{DataAnalytics$get_analysis_schema()}}
+    \item \href{#method-DataAnalytics-pre_run_quality_checks}{\code{DataAnalytics$pre_run_quality_checks()}}
     \item \href{#method-DataAnalytics-run_quality_checks}{\code{DataAnalytics$run_quality_checks()}}
     \item \href{#method-DataAnalytics-execute_check}{\code{DataAnalytics$execute_check()}}
     \item \href{#method-DataAnalytics-evaluate_threshold_expressions}{\code{DataAnalytics$evaluate_threshold_expressions()}}
@@ -118,14 +124,18 @@ Key design principles:
     \item \href{#method-DataAnalytics-quality_diagnose}{\code{DataAnalytics$quality_diagnose()}}
     \item \href{#method-DataAnalytics-analysis_diagnose}{\code{DataAnalytics$analysis_diagnose()}}
     \item \href{#method-DataAnalytics-outputs_diagnose}{\code{DataAnalytics$outputs_diagnose()}}
+    \item \href{#method-DataAnalytics-pre_run_outputs}{\code{DataAnalytics$pre_run_outputs()}}
     \item \href{#method-DataAnalytics-run_outputs}{\code{DataAnalytics$run_outputs()}}
     \item \href{#method-DataAnalytics-create_survey_design}{\code{DataAnalytics$create_survey_design()}}
     \item \href{#method-DataAnalytics-add_indicator_dap}{\code{DataAnalytics$add_indicator_dap()}}
     \item \href{#method-DataAnalytics-remove_indicator_dap}{\code{DataAnalytics$remove_indicator_dap()}}
+    \item \href{#method-DataAnalytics-pre_add_all_to_dap}{\code{DataAnalytics$pre_add_all_to_dap()}}
+    \item \href{#method-DataAnalytics-add_all_to_dap}{\code{DataAnalytics$add_all_to_dap()}}
     \item \href{#method-DataAnalytics-to_list_schema}{\code{DataAnalytics$to_list_schema()}}
     \item \href{#method-DataAnalytics-generate_dap_from_schema}{\code{DataAnalytics$generate_dap_from_schema()}}
     \item \href{#method-DataAnalytics-validate_schema}{\code{DataAnalytics$validate_schema()}}
     \item \href{#method-DataAnalytics-validate_plan}{\code{DataAnalytics$validate_plan()}}
+    \item \href{#method-DataAnalytics-pre_run_analysis}{\code{DataAnalytics$pre_run_analysis()}}
     \item \href{#method-DataAnalytics-run_analysis}{\code{DataAnalytics$run_analysis()}}
     \item \href{#method-DataAnalytics-post_run_analysis}{\code{DataAnalytics$post_run_analysis()}}
     \item \href{#method-DataAnalytics-get_results}{\code{DataAnalytics$get_results()}}
@@ -440,17 +450,55 @@ analysis_schema if not supplied}
 }
 
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-DataAnalytics-pre_run_quality_checks"></a>}}
+\if{latex}{\out{\hypertarget{method-DataAnalytics-pre_run_quality_checks}{}}}
+\subsection{\code{DataAnalytics$pre_run_quality_checks()}}{
+  Pre-hook providing the input sets used by \code{run_quality_checks()}.
+
+The default implementation returns a single set (named \code{main})
+pointing at the core \code{data}, \code{quality_schema},
+\code{base_survey_design}, \code{survey_design} and \code{variable_map}
+fields. Subclasses that hold multiple datasets or quality schemas can
+override this method to return one entry per dataset/schema. Each entry
+must be a named list whose elements give the names of the public fields
+holding the respective inputs.
+
+When more than one set is returned (or the single set is not named
+\code{main}), quality results are stored under the set's role name in
+\code{plausibility_results} and penalty tables under
+\code{tables[[role]][["plausibility"]]}.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DataAnalytics$pre_run_quality_checks()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A named list of field sets.
+  }
+}
+
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DataAnalytics-run_quality_checks"></a>}}
 \if{latex}{\out{\hypertarget{method-DataAnalytics-run_quality_checks}{}}}
 \subsection{\code{DataAnalytics$run_quality_checks()}}{
-  Run all quality checks defined in the quality schema
+  Run all quality checks defined in the quality schema(s).
+
+Iterates over every input set returned by
+\code{pre_run_quality_checks()}. For the default single \code{main} set
+the behaviour is unchanged: results are stored flat in
+\code{plausibility_results} and tables in
+\code{tables[["plausibility"]]}. When multiple sets are defined, results
+are nested under each set's role name (e.g.
+\code{plausibility_results$roster},
+\code{tables$roster$plausibility}).
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{DataAnalytics$run_quality_checks()}
     \if{html}{\out{</div>}}
   }
   \subsection{Returns}{
-    A list of check results (invisibly)
+    A list of check results (invisibly). Nested per role when
+  multiple input sets are defined.
   }
 }
 
@@ -461,7 +509,12 @@ analysis_schema if not supplied}
   Execute a single quality check using statistical tests
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{DataAnalytics$execute_check(check, survey_design = NULL)}
+    \preformatted{DataAnalytics$execute_check(
+  check,
+  survey_design = NULL,
+  data = NULL,
+  variable_map = NULL
+)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -471,6 +524,10 @@ analysis_schema if not supplied}
       \item{\code{survey_design}}{Optional srvyr survey design to use. Defaults to
 \code{self$base_survey_design} (or \code{self$survey_design} as fallback)
 when \code{NULL}.}
+      \item{\code{data}}{Optional data frame to check variables against. Defaults to
+\code{self$data} when \code{NULL}.}
+      \item{\code{variable_map}}{Optional named list mapping canonical names to actual
+column names. Defaults to \code{self$variable_map} when \code{NULL}.}
     }
     \if{html}{\out{</div>}}
   }
@@ -514,7 +571,15 @@ when \code{NULL}.}
   Calculate the overall quality score based on penalties
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{DataAnalytics$calculate_overall_score()}
+    \preformatted{DataAnalytics$calculate_overall_score(results = NULL)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{results}}{Optional flat named list of check results to score.
+Defaults to \code{self$plausibility_results} when \code{NULL}.}
+    }
     \if{html}{\out{</div>}}
   }
   \subsection{Returns}{
@@ -544,7 +609,15 @@ when \code{NULL}.}
   Convert quality results to a tabular format
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{DataAnalytics$results_to_table()}
+    \preformatted{DataAnalytics$results_to_table(results = NULL)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{results}}{Optional flat named list of check results to convert.
+Defaults to \code{self$plausibility_results} when \code{NULL}.}
+    }
     \if{html}{\out{</div>}}
   }
   \subsection{Returns}{
@@ -637,13 +710,18 @@ when \code{NULL}.}
   Translate canonical variable names to actual column names using variable_map
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{DataAnalytics$.translate_canonical_to_actual_vars(canonical_vars)}
+    \preformatted{DataAnalytics$.translate_canonical_to_actual_vars(
+  canonical_vars,
+  variable_map = NULL
+)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
       \item{\code{canonical_vars}}{Character vector of canonical variable names}
+      \item{\code{variable_map}}{Optional named list mapping canonical names to actual
+column names. Defaults to \code{self$variable_map} when \code{NULL}.}
     }
     \if{html}{\out{</div>}}
   }
@@ -659,13 +737,23 @@ when \code{NULL}.}
   Run quality checks on data subsets for each unique value of a grouping column
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{DataAnalytics$.compute_results_by_group(group_col)}
+    \preformatted{DataAnalytics$.compute_results_by_group(
+  group_col,
+  data = NULL,
+  quality_schema = NULL,
+  variable_map = NULL
+)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{group_col}}{Character string. The actual column name in self$data to group by.}
+      \item{\code{group_col}}{Character string. The actual column name in the data to group by.}
+      \item{\code{data}}{Optional data frame to subset. Defaults to \code{self$data}.}
+      \item{\code{quality_schema}}{Optional quality schema to execute. Defaults to
+\code{self$quality_schema}.}
+      \item{\code{variable_map}}{Optional named list mapping canonical names to actual
+column names. Defaults to \code{self$variable_map}.}
     }
     \if{html}{\out{</div>}}
   }
@@ -773,17 +861,51 @@ non-empty. The results mirror the outputs schema table and add a
 }
 
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-DataAnalytics-pre_run_outputs"></a>}}
+\if{latex}{\out{\hypertarget{method-DataAnalytics-pre_run_outputs}{}}}
+\subsection{\code{DataAnalytics$pre_run_outputs()}}{
+  Pre-hook providing the input sets used by \code{run_outputs()}.
+
+The default implementation returns a single set (named \code{main})
+pointing at the core \code{data}, \code{outputs_schema},
+\code{base_survey_design}, \code{survey_design} and \code{variable_map}
+fields. Subclasses that hold multiple datasets (e.g. linked roster or
+deaths data) can override this method to return one entry per dataset.
+Each entry must be a named list whose elements give the names of the
+public fields holding the respective inputs. An optional
+\code{analysis_results_key} element (a plain character key, not a field
+name) selects the sub-list of \code{analysis_results} used for
+\code{dataset_type = "analysis_results_*"} outputs; it defaults to the
+set's role name when multiple sets are defined.
+
+When more than one set is returned (or the single set is not named
+\code{main}), outputs are stored under the set's role name in
+\code{visualizations} and \code{tables} (e.g.
+\code{visualizations$roster}, \code{tables$deaths}).
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DataAnalytics$pre_run_outputs()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A named list of field sets.
+  }
+}
+
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DataAnalytics-run_outputs"></a>}}
 \if{latex}{\out{\hypertarget{method-DataAnalytics-run_outputs}{}}}
 \subsection{\code{DataAnalytics$run_outputs()}}{
-  Run all outputs defined in the outputs_schema.
+  Run all outputs defined in the outputs schema(s).
 
-Iterates through the unified outputs schema, resolves \code{@variable_map},
-\code{@value_map}, \code{@variable_label}, \code{@value_label}, and
-\code{@results_table} references in \code{test_params}, determines the
-first positional argument from \code{dataset_type} (defaulting to
-\code{"base"}), calls the specified output function, and stores results
-in \code{self$visualizations} or \code{self$tables}.
+Iterates over every input set returned by \code{pre_run_outputs()}.
+For each output entry in a set's outputs schema, resolves the required
+dataset from the set's survey design objects or analysis results, calls
+the specified output function, and stores results in
+\code{self$visualizations} or \code{self$tables}. For the default single
+\code{main} set results are stored flat (unchanged behaviour); when
+multiple sets are defined, results are nested under each set's role name
+(e.g. \code{tables$roster}, \code{visualizations$deaths}).
 
 The \code{output_name} field in each schema entry controls the key used
 when storing results in \code{visualizations} or \code{tables}. The
@@ -797,10 +919,10 @@ auto-generate the \code{title_name} argument passed to \code{plot_*} or
 
 Supported \code{dataset_type} values:
 \describe{
-  \item{"base"}{uses \code{self$base_survey_design} (unweighted; default for all quality outputs)}
-  \item{"survey_design"}{uses \code{self$survey_design} (weighted)}
-  \item{"analysis_results_surveydesign"}{uses \code{self$analysis_results$survey_design}}
-  \item{"analysis_results_base"}{uses \code{self$analysis_results$base}}
+  \item{"base" / "data"}{uses the set's base (unweighted) survey design (default for all quality outputs)}
+  \item{"survey_design"}{uses the set's weighted survey design}
+  \item{"analysis_results_surveydesign"}{uses the set's \code{analysis_results$survey_design}}
+  \item{"analysis_results_base"}{uses the set's \code{analysis_results$base}}
 }
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
@@ -900,6 +1022,61 @@ language-specific field is absent.}
 }
 
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-DataAnalytics-pre_add_all_to_dap"></a>}}
+\if{latex}{\out{\hypertarget{method-DataAnalytics-pre_add_all_to_dap}{}}}
+\subsection{\code{DataAnalytics$pre_add_all_to_dap()}}{
+  Pre-hook providing the field sets used by \code{add_all_to_dap()}.
+
+The default implementation returns a single set pointing at the core
+\code{data}, \code{variable_map} and \code{data_analysis_plan} fields.
+Subclasses that hold multiple datasets (e.g. linked roster or deaths
+data) can override this method to return one entry per dataset. Each
+entry must be a named list with elements \code{data},
+\code{variable_map} and \code{data_analysis_plan}, giving the names of
+the public fields that hold the dataset, its variable map, and its
+data analysis plan respectively.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DataAnalytics$pre_add_all_to_dap()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A named list of field sets.
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-DataAnalytics-add_all_to_dap"></a>}}
+\if{latex}{\out{\hypertarget{method-DataAnalytics-add_all_to_dap}{}}}
+\subsection{\code{DataAnalytics$add_all_to_dap()}}{
+  Add all data columns to the data analysis plan(s).
+
+For every field set returned by \code{pre_add_all_to_dap()}, this
+method lists all column names in the data and classifies them as:
+(1) already present in both the variable_map and the
+data_analysis_plan, (2) present in the variable_map but not the
+data_analysis_plan, or (3) present in neither. Columns in group (2)
+are added to the data_analysis_plan using their existing variable_map
+reference; columns in group (3) are first added to the variable_map as
+novel entries keyed by their column name and then added to the
+data_analysis_plan. The calculation type is best-guess estimated as
+"prop", "mean", "cat", or "select_multiple_cat" based on the column
+values. Character columns with more than 20 unique values that are not
+comma- or space-separated are skipped (likely metadata or uuid fields).
+If a valid stratum column is defined in the variable_map, each newly
+added row is replicated with the stratum column in the disaggregation
+field.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DataAnalytics$add_all_to_dap()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly returns self.
+  }
+}
+
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DataAnalytics-to_list_schema"></a>}}
 \if{latex}{\out{\hypertarget{method-DataAnalytics-to_list_schema}{}}}
 \subsection{\code{DataAnalytics$to_list_schema()}}{
@@ -960,15 +1137,45 @@ language-specific field is absent.}
 }
 
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-DataAnalytics-pre_run_analysis"></a>}}
+\if{latex}{\out{\hypertarget{method-DataAnalytics-pre_run_analysis}{}}}
+\subsection{\code{DataAnalytics$pre_run_analysis()}}{
+  Pre-hook providing the input sets used by \code{run_analysis()}.
+
+The default implementation returns a single set (named \code{main})
+pointing at the core \code{data}, \code{survey_design} and
+\code{data_analysis_plan} fields. Subclasses that hold multiple datasets
+(e.g. linked roster or deaths data) can override this method to return
+one entry per dataset. Each entry must be a named list whose elements
+give the names of the public fields holding the respective inputs.
+
+When more than one set is returned (or the single set is not named
+\code{main}), analysis results are stored under the set's role name in
+\code{analysis_results} (e.g. \code{analysis_results$roster}).
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{DataAnalytics$pre_run_analysis()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A named list of field sets.
+  }
+}
+
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-DataAnalytics-run_analysis"></a>}}
 \if{latex}{\out{\hypertarget{method-DataAnalytics-run_analysis}{}}}
 \subsection{\code{DataAnalytics$run_analysis()}}{
-  Run the data analysis plan and store results in analysis_results
+  Run the data analysis plan(s) and store results in analysis_results
 
-Executes every indicator twice: once using the full survey design (weighted)
-and once using a simple unweighted design.  Both sets are stored in
-\code{self$analysis_results} as a named list with elements
-\code{survey_design} and \code{base}.
+Iterates over every input set returned by \code{pre_run_analysis()}.
+Each set's indicators are executed twice: once using the set's full
+survey design (weighted) and once using a simple unweighted design.
+For the default single \code{main} set both result sets are stored flat
+in \code{self$analysis_results} as a named list with elements
+\code{survey_design} and \code{base} (unchanged behaviour). When
+multiple sets are defined, results are nested under each set's role
+name (e.g. \code{analysis_results$roster$survey_design}).
 
 After storing the results, \code{self$post_run_analysis()} is called to
 allow subclasses to perform additional analysis steps.

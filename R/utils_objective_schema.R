@@ -18,7 +18,8 @@ NULL
   "pillar",
   "sub_pillar",
   "short_objective",
-  "text_objective"
+  "text_objective",
+  "objective_code"
 )
 
 # All columns present in the bundled reference_objectives.xlsx file.
@@ -67,23 +68,26 @@ NULL
 #'   Returns an empty data frame if the file cannot be found or read.
 #' @export
 load_objective_schema <- function() {
-
   file <- system.file("resources", "reference_objectives.xlsx", package = "phr")
 
   if (!file.exists(file) || file == "") {
-    phr_warning(
-      origin  = "load_objective_schema",
-      message = phr_txt("Could not locate reference_objectives.xlsx; returning empty objective schema."),
-      hint    = phr_txt("Ensure the 'inst/resources/reference_objectives.xlsx' file is present in the package installation.")
+    phrutils::phr_warning(
+      origin = "load_objective_schema",
+      message = phr_txt(
+        "Could not locate reference_objectives.xlsx; returning empty objective schema."
+      ),
+      hint = phr_txt(
+        "Ensure the 'inst/resources/reference_objectives.xlsx' file is present in the package installation."
+      )
     )
     return(data.frame())
   }
 
-  schema <- phr_try(
+  schema <- phrutils::phr_try(
     readxl::read_xlsx(file),
     on_error = "warn",
-    origin   = "load_objective_schema",
-    hint     = "Check that reference_objectives.xlsx is a valid Excel file."
+    origin = "load_objective_schema",
+    hint = "Check that reference_objectives.xlsx is a valid Excel file."
   )
 
   if (is.null(schema) || nrow(schema) == 0) {
@@ -112,23 +116,30 @@ load_objective_schema <- function() {
 #'   Returns an empty data frame if the file cannot be found or read.
 #' @export
 load_indicator_bank <- function() {
-
-  file <- system.file("resources", "reference_indicator_bank.xlsx", package = "phr")
+  file <- system.file(
+    "resources",
+    "reference_indicator_bank.xlsx",
+    package = "phr"
+  )
 
   if (!file.exists(file) || file == "") {
-    phr_warning(
-      origin  = "load_indicator_bank",
-      message = phr_txt("Could not locate reference_indicator_bank.xlsx; returning empty indicator bank."),
-      hint    = phr_txt("Ensure the 'inst/resources/reference_indicator_bank.xlsx' file is present in the package installation.")
+    phrutils::phr_warning(
+      origin = "load_indicator_bank",
+      message = phr_txt(
+        "Could not locate reference_indicator_bank.xlsx; returning empty indicator bank."
+      ),
+      hint = phr_txt(
+        "Ensure the 'inst/resources/reference_indicator_bank.xlsx' file is present in the package installation."
+      )
     )
     return(data.frame())
   }
 
-  bank <- phr_try(
+  bank <- phrutils::phr_try(
     readxl::read_xlsx(file),
     on_error = "warn",
-    origin   = "load_indicator_bank",
-    hint     = "Check that reference_indicator_bank.xlsx is a valid Excel file."
+    origin = "load_indicator_bank",
+    hint = "Check that reference_indicator_bank.xlsx is a valid Excel file."
   )
 
   if (is.null(bank) || nrow(bank) == 0) {
@@ -163,89 +174,98 @@ load_indicator_bank <- function() {
 #'   error (or warning, when \code{soft = TRUE}) if validation fails.
 #' @export
 validate_objective_schema <- function(schema, soft = FALSE) {
-
   origin <- "validate_objective_schema"
 
-  phr_try({
-
-    # Must be a non-NULL data frame
-    if (is.null(schema) || !is.data.frame(schema)) {
-      phr_error(
-        origin  = origin,
-        message = phr_txt("Objective schema must be a data frame."),
-        hint    = phr_txt("Use load_objective_schema() to obtain the default schema.")
-      )
-    }
-
-    # Must have at least one row
-    if (nrow(schema) == 0) {
-      msg <- phr_txt("Objective schema is empty (zero rows).")
-      if (soft) {
-        phr_warning(origin = origin, message = msg)
-        return(invisible(FALSE))
-      }
-      phr_error(origin = origin, message = msg)
-    }
-
-    # Check required columns are present
-    missing_cols <- setdiff(.objective_schema_required_cols, names(schema))
-    if (length(missing_cols) > 0) {
-      phr_error(
-        origin  = origin,
-        message = phr_txt(
-          glue::glue(
-            "Objective schema is missing required column(s): {paste(missing_cols, collapse = ', ')}"
-          )
-        ),
-        hint = phr_txt(
-          glue::glue(
-            "Required columns are: {paste(.objective_schema_required_cols, collapse = ', ')}"
+  phrutils::phr_try(
+    {
+      # Must be a non-NULL data frame
+      if (is.null(schema) || !is.data.frame(schema)) {
+        phr_error(
+          origin = origin,
+          message = phr_txt("Objective schema must be a data frame."),
+          hint = phr_txt(
+            "Use load_objective_schema() to obtain the default schema."
           )
         )
-      )
-    }
+      }
 
-    # Completeness: sector must not be all-NA
-    if (all(is.na(schema$sector))) {
-      phr_error(
-        origin  = origin,
-        message = phr_txt("All 'sector' values in the objective schema are NA.")
-      )
-    }
-
-    # Completeness: short_objective must not be all-NA
-    if (all(is.na(schema$short_objective))) {
-      msg <- phr_txt("All 'short_objective' values in the objective schema are NA.")
-      if (soft) {
-        phr_warning(origin = origin, message = msg)
-      } else {
+      # Must have at least one row
+      if (nrow(schema) == 0) {
+        msg <- phr_txt("Objective schema is empty (zero rows).")
+        if (soft) {
+          phrutils::phr_warning(origin = origin, message = msg)
+          return(invisible(FALSE))
+        }
         phr_error(origin = origin, message = msg)
       }
-    }
 
-    # Type checks: text columns must be character type (factor is also accepted
-    # as it is coercible to character, but callers should use stringsAsFactors = FALSE)
-    char_cols <- c("sector", "pillar", "sub_pillar", "text_objective")
-    bad_types <- char_cols[sapply(char_cols, function(col) {
-      col %in% names(schema) && !is.character(schema[[col]]) &&
-        !is.factor(schema[[col]])
-    })]
-    if (length(bad_types) > 0) {
-      msg <- phr_txt(
-        glue::glue(
-          "The following column(s) should be character (or factor): {paste(bad_types, collapse = ', ')}"
+      # Check required columns are present
+      missing_cols <- setdiff(.objective_schema_required_cols, names(schema))
+      if (length(missing_cols) > 0) {
+        phr_error(
+          origin = origin,
+          message = phr_txt(
+            glue::glue(
+              "Objective schema is missing required column(s): {paste(missing_cols, collapse = ', ')}"
+            )
+          ),
+          hint = phr_txt(
+            glue::glue(
+              "Required columns are: {paste(.objective_schema_required_cols, collapse = ', ')}"
+            )
+          )
         )
-      )
-      if (soft) {
-        phr_warning(origin = origin, message = msg)
-      } else {
-        phr_error(origin = origin, message = msg)
       }
-    }
 
-    invisible(TRUE)
+      # Completeness: sector must not be all-NA
+      if (all(is.na(schema$sector))) {
+        phr_error(
+          origin = origin,
+          message = phr_txt(
+            "All 'sector' values in the objective schema are NA."
+          )
+        )
+      }
 
-  }, on_error = "abort", origin = origin)
+      # Completeness: short_objective must not be all-NA
+      if (all(is.na(schema$short_objective))) {
+        msg <- phr_txt(
+          "All 'short_objective' values in the objective schema are NA."
+        )
+        if (soft) {
+          phrutils::phr_warning(origin = origin, message = msg)
+        } else {
+          phr_error(origin = origin, message = msg)
+        }
+      }
+
+      # Type checks: text columns must be character type (factor is also accepted
+      # as it is coercible to character, but callers should use stringsAsFactors = FALSE)
+      char_cols <- c("sector", "pillar", "sub_pillar", "text_objective")
+      bad_types <- char_cols[sapply(char_cols, function(col) {
+        col %in%
+          names(schema) &&
+          !is.character(schema[[col]]) &&
+          !is.factor(schema[[col]])
+      })]
+      if (length(bad_types) > 0) {
+        msg <- phr_txt(
+          glue::glue(
+            "The following column(s) should be character (or factor): {paste(bad_types, collapse = ', ')}"
+          )
+        )
+        if (soft) {
+          phrutils::phr_warning(origin = origin, message = msg)
+        } else {
+          phr_error(origin = origin, message = msg)
+        }
+      }
+
+      invisible(TRUE)
+    },
+    on_error = "abort",
+    origin = origin
+  )
 }
 
 

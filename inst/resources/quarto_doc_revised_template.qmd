@@ -28,7 +28,8 @@ params:
   population: "[Specify population(s) here]"
   stratification: "[Specify stratification, e.g. by geographic area, population group, etc.]"
   rationale: "[Specify rationale for this research]"
-  tools_table_df: null
+  tools_table_df: 
+    value: []
   date_pilot_training: "2027-04-15"
   date_data_collection_start: "2027-04-20"
   date_data_collection_end: "2027-05-10"
@@ -137,18 +138,18 @@ params:
   num_enumerators_per_team: 3
   kii_pillars_table_df: 
     value: []
-  tool_household: TRUE
-  tool_community_kii: TRUE
-  tool_community_observation: TRUE
-  tool_health_facility_kii: TRUE
-  tool_health_facility_observation: TRUE
-  tool_nutrition_facility_kii: TRUE
-  tool_fsl_provider_kii: TRUE
-  tool_market_kii: TRUE
-  tool_crops_livestock_observation: TRUE
-  tool_wash_provider_kii: TRUE
-  tool_water_point_observation: TRUE
-  tool_latrine_observation: TRUE
+  tool_household: FALSE
+  tool_community_kii: FALSE
+  tool_community_observation: FALSE
+  tool_health_facility_kii: FALSE
+  tool_health_facility_observation: FALSE
+  tool_nutrition_facility_kii: FALSE
+  tool_fsl_provider_kii: FALSE
+  tool_market_kii: FALSE
+  tool_crops_livestock_observation: FALSE
+  tool_wash_provider_kii: FALSE
+  tool_water_point_observation: FALSE
+  tool_latrine_observation: FALSE
   observation_pillars_table_df:
     value: []
   household_dap_df:
@@ -597,6 +598,12 @@ timeline_df <- data.frame(
 
 timeline_df$date <- as.Date(timeline_df$date)
 
+timeline_df <- timeline_df[!is.na(timeline_df$date), ]
+
+if (nrow(timeline_df) == 0) {
+cat("No timeline milestones available.")
+} else {
+
 timeline_df$milestone_wrapped <- vapply(
   timeline_df$milestone,
   function(x) paste(strwrap(x, width = 25), collapse = "\n"),
@@ -684,6 +691,9 @@ timeline_plot <- ggplot(timeline_df, aes(x = date, y = 0)) +
   )
 
 timeline_plot
+
+}
+
 ```
 
 ## Dissemination
@@ -790,7 +800,6 @@ Goal: To assess the severity of the public health outcomes and identify initial 
 ```{r tbl-objectives_research_questions}
 #| results: asis
 #| echo: false
-#| label: tbl-objectives_research_questions
 #| tbl-cap: "Specific objectives and research questions"
 
 
@@ -992,7 +1001,6 @@ Figure: Acute Needs Framework (ANF) and Data Collection Mapping
 
 ```{r revised_svg}
 #| out.width: "100%"
-#| label: framework_anf
 #| fig-cap: "Acute Needs Framework (ANF) and Data Collection Mapping"
 
 # cat(figure_caption("Acute Needs Framework (ANF) and Data Collection Mapping"))
@@ -1883,7 +1891,7 @@ cat("The household analysis will be treated as a simple random sampling design a
     cat(glue::glue("This analysis method applies for the following strata: {params$stratified_strata_names_cluster_rlc} .\n"))
   }
 
-} else if (params$site_selection_proportional == TRUE & (params$hh_selection_srs == TRUE | params$hh_selection_systematic == TRUE)) {
+} else if (params$site_selection_exhaustive == TRUE & (params$hh_selection_srs == TRUE | params$hh_selection_systematic == TRUE)) {
   
   cat("The household analysis will be treated as a simple random sampling design across sites. ")
 
@@ -1906,7 +1914,7 @@ cat("The household analysis will be treated as a simple random sampling design a
     cat(glue::glue("This analysis method applies for the following strata: {params$stratified_strata_names_proportional_srs} {params$stratified_strata_names_proportional_systematic} .\n"))
   }
 
-} else if (params$site_selection_proportional == TRUE & params$hh_selection_rlc == TRUE) {
+} else if (params$site_selection_exhaustive == TRUE & params$hh_selection_rlc == TRUE) {
   
   cat("The household analysis will be treated as a cluster design across sites with groupings of households at each GPS point treated as the clusters in the analysis. If population density is assessed to be very different within or across assessment sites, survey weights will be used for each random location cluster equivalent to the inverse of the population density of each cluster. This is intended to correct for any bias due to an uneven population density across the assessment area to make sure households have a more equal representation in the dataset. Population density is estimated based on the number of people in households within a random location cluster divided by the area of the circle formed by the locations of the three households and the GPS point of that random location cluster. ")
 

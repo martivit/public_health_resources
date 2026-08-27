@@ -87,6 +87,20 @@ protocol$access_nested(
 
 protocol$access_nested(
   field = "sample_object",
+  member = "get_sample_table"
+)
+
+protocol$access_nested(
+  field = "sample_object",
+  member = "add_stratum",
+  stratum_id = "strata_A",
+  stratum_name = "strata_A",
+  sampling_method_site = "systematic"
+
+)
+
+protocol$access_nested(
+  field = "sample_object",
   member = "add_stratum",
   stratum_id = "strata_A",
   stratum_name = "Urban North",
@@ -129,23 +143,24 @@ protocol$access_nested(
   member = "add_stratum",
   stratum_id = "strata_B",
   stratum_name = "Peri-Urban East",
+  sampling_method_site = "simple_random",
   population_size = 28000,
   pop_indicator = "Food Consumption Score",
   pop_design_effect = 1.8,
-  pop_precision = 5,
-  pop_expected_prevalence = 50,
-  pop_nonresponse = 10,
-  ind_indicator = "wasting_prevalence",
-  rate_indicator = "crude_death_rate",
-  rate_expected_rate = 0.2,
-  rate_precision = 0.5,
-  rate_avg_hh_size = 5.2,
-  rate_design_effect = 2,
-  rate_fpc = FALSE,
-  rate_nonresponse = 10,
-  sampling_method_site = "proportional",
-  sampling_method_hh = "systematic",
-  n_sites = 30
+  pop_precision = 5
+  # pop_expected_prevalence = 50,
+  # pop_nonresponse = 10,
+  # ind_indicator = "wasting_prevalence",
+  # rate_indicator = "crude_death_rate",
+  # rate_expected_rate = 0.2,
+  # rate_precision = 0.5,
+  # rate_avg_hh_size = 5.2,
+  # rate_design_effect = 2,
+  # rate_fpc = FALSE,
+  # rate_nonresponse = 10,
+  # sampling_method_site = "proportional",
+  # sampling_method_hh = "systematic",
+  # n_sites = 30
 )
 
 protocol$access_nested(
@@ -195,7 +210,11 @@ frame_C <- make_psu_frame("strata_C", n_psu = 30, pop_range = c(100, 500))
 
 sampling_frame <- dplyr::bind_rows(frame_A, frame_B, frame_C)
 
-protocol$set_sampling_frame(sampling_frame)
+protocol$sampling_frame$set("log_df", sampling_frame)
+
+protocol$sampling_frame$get("log_df")
+
+protocol$sampling_frame$draw_sample(strata_table = protocol$sample_object$sample_table)
 
 protocol$sampling_frame$validate()
 protocol$sampling_frame$validated
@@ -231,6 +250,10 @@ protocol$access_nested(
 print(protocol$get_allowable_tools())
 
 # Household Tool ####
+protocol$add_tools(tool_name = "tool_household_iphra_v2")
+
+protocol$remove_tools(tool_name = "tool_household_iphra_v2")
+
 protocol$add_tools(tool_name = "tool_household_iphra_v2")
 
 # protocol$tools$tool_household_iphra_v2$change_default_language(
@@ -337,6 +360,10 @@ protocol$add_tools(tool_name = "tool_kii_nutrition_service_provider_iphra_v2")
 # The standalone wrapper generate_protocol_report() dispatches to the method.
 
 # -- 3a: Generate report with no tools (tools section shows placeholder text) --
+
+protocol$access_nested(field = "metadata", role = "research_cycle_id")
+
+protocol$set(field = "metadata", role = "research_cycle_id", value = "RC-2025-001")
 
 protocol$metadata$research_cycle_id <- "RC-2025-001"
 protocol$metadata$country <- "Switzerland"

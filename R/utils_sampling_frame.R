@@ -33,7 +33,7 @@ validate_sampling_frame <- function(frame, required_cols = character(0)) {
   issues <- list()
 
   # ---- Basic data-frame check (reuse phr_validate_dataframe) ----------
-  if (!phr_validate_dataframe(frame, soft = TRUE)) {
+  if (!phrutils::phr_validate_dataframe(frame, soft = TRUE)) {
     return(list(valid = FALSE,
                 message = "Frame must be a non-NULL data frame with atomic columns."))
   }
@@ -117,8 +117,8 @@ check_frame_coverage <- function(frame, sample_table) {
 
   origin <- "check_frame_coverage"
 
-  phr_try({
-    phr_assert(
+  phrutils::phr_try({
+    phrutils::phr_assert(
       is.data.frame(frame) && is.data.frame(sample_table),
       message = phr_txt("Both frame and sample_table must be data frames."),
       origin  = origin
@@ -221,8 +221,8 @@ summarize_sampling_frame <- function(frame) {
 
   origin <- "summarize_sampling_frame"
 
-  phr_try({
-    phr_validate_dataframe(frame, origin = origin, soft = FALSE)
+  phrutils::phr_try({
+    phrutils::phr_validate_dataframe(frame, origin = origin, soft = FALSE)
 
     summary_out <- list(
       total_units  = nrow(frame),
@@ -264,16 +264,16 @@ print_frame_summary <- function(frame) {
 
   origin <- "print_frame_summary"
 
-  phr_try({
+  phrutils::phr_try({
     summary <- summarize_sampling_frame(frame)
 
-    phr_message(
+    phrutils::phr_message(
       phr_txt("Sampling Frame: {summary$total_units} units across {summary$num_strata} {ifelse(summary$num_strata == 1, 'stratum', 'strata')}."),
       origin = origin
     )
 
     if (!is.null(summary$total_population)) {
-      phr_message(
+      phrutils::phr_message(
         phr_txt("Population: total={summary$total_population}, mean/unit={round(summary$mean_population_per_unit,1)}, median/unit={round(summary$median_population_per_unit,1)}"),
         origin = origin
       )
@@ -283,7 +283,7 @@ print_frame_summary <- function(frame) {
       for (stratum in names(summary$by_stratum)) {
         st_s <- summary$by_stratum[[stratum]]
         pop_txt <- if (!is.na(st_s$total_population)) phr_txt(", population={st_s$total_population}") else ""
-        phr_message(phr_txt("{stratum}: {st_s$num_units} units{pop_txt}"), origin = origin)
+        phrutils::phr_message(phr_txt("{stratum}: {st_s$num_units} units{pop_txt}"), origin = origin)
       }
     }
   }, on_error = "abort", origin = origin)

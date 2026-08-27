@@ -110,7 +110,7 @@ Orchestrator <- R6::R6Class(
       update_modified = TRUE,
       ...
     ) {
-      phr_try(
+      phrutils::phr_try(
         {
           target <- private$..resolve_nested_target(
             field = field,
@@ -128,12 +128,12 @@ Orchestrator <- R6::R6Class(
             return(target)
           }
 
-          phr_assert(
+          phrutils::phr_assert(
             is.character(member) && length(member) == 1L && nzchar(member),
             message = phr_txt("member must be a non-empty character string."),
             origin = "Orchestrator$access_nested"
           )
-          phr_assert(
+          phrutils::phr_assert(
             !is.null(target[[member]]),
             message = phr_txt(
               "Member '{member}' does not exist on the resolved target."
@@ -178,9 +178,9 @@ Orchestrator <- R6::R6Class(
     #' @param role Optional character scalar used to resolve a list element in
     #'   \code{field} by role-like name.
     set_nested = function(field, member, value, name = NULL, role = NULL) {
-      phr_try(
+      phrutils::phr_try(
         {
-          phr_assert(
+          phrutils::phr_assert(
             is.character(member) && length(member) == 1L && nzchar(member),
             message = phr_txt("member must be a non-empty character string."),
             origin = "Orchestrator$set_nested"
@@ -198,14 +198,133 @@ Orchestrator <- R6::R6Class(
         origin = "Orchestrator$set_nested"
       )
       invisible(self)
+    },
+
+    #' @description
+    #' Generalized, scope-safe field setter.
+    #'
+    #' Mirrors \code{access_nested()}'s \code{field}/\code{name}/\code{role}/
+    #' \code{member} arguments, but safely writes \code{value} instead of
+    #' reading. Unlike \code{set_nested()}, \code{field} may resolve to either
+    #' a public or a private field, and \code{member} is optional: when
+    #' omitted, \code{value} replaces the resolved top-level (or
+    #' name/role-resolved) target directly. Writing to a resolved member or
+    #' target that currently holds a function is rejected, to avoid
+    #' accidentally clobbering methods.
+    #'
+    #' @param field Character scalar naming a public or private top-level
+    #'   field on this object.
+    #' @param value Value to assign.
+    #' @param member Optional character scalar naming a writable field on the
+    #'   resolved target. When \code{NULL}, \code{value} is assigned directly
+    #'   to the resolved target.
+    #' @param name Optional character scalar naming a list element in
+    #'   \code{field}.
+    #' @param role Optional character scalar used to resolve a list element in
+    #'   \code{field} by role-like name.
+    #' @param update_sync Logical indicating whether to synchronize state
+    #'   after the assignment.
+    #' @param update_modified Logical indicating whether to update the
+    #'   modified timestamp.
+    #' @return Invisibly returns \code{self}.
+    set = function(
+      field,
+      value,
+      member = NULL,
+      name = NULL,
+      role = NULL,
+      update_sync = FALSE,
+      update_modified = TRUE
+    ) {
+      phrutils::phr_try(
+        {
+          resolved <- private$..resolve_field_scope(
+            field = field,
+            origin = "Orchestrator$set"
+          )
+          container <- resolved$value
+
+          key <- NULL
+          if (!is.null(name) || !is.null(role)) {
+            phrutils::phr_assert(
+              !(!is.null(name) && !is.null(role)),
+              message = phr_txt("Provide only one of name or role."),
+              origin = "Orchestrator$set"
+            )
+            key <- private$..resolve_list_key(
+              container = container,
+              field = field,
+              name = name,
+              role = role,
+              origin = "Orchestrator$set"
+            )
+          }
+
+          target <- if (is.null(key)) container else container[[key]]
+
+          if (is.null(member)) {
+            phrutils::phr_assert(
+              !is.function(target),
+              message = phr_txt(
+                "Refusing to overwrite function member '{field}'."
+              ),
+              origin = "Orchestrator$set"
+            )
+            new_target <- value
+          } else {
+            phrutils::phr_assert(
+              is.character(member) && length(member) == 1L && nzchar(member),
+              message = phr_txt("member must be a non-empty character string."),
+              origin = "Orchestrator$set"
+            )
+            phrutils::phr_assert(
+              is.list(target) || is.environment(target),
+              message = phr_txt(
+                "Resolved target for field '{field}' must be a list or environment to set member '{member}'."
+              ),
+              origin = "Orchestrator$set"
+            )
+            phrutils::phr_assert(
+              !is.function(target[[member]]),
+              message = phr_txt(
+                "Refusing to overwrite function member '{member}'."
+              ),
+              origin = "Orchestrator$set"
+            )
+            target[[member]] <- value
+            new_target <- target
+          }
+
+          if (is.null(key)) {
+            container <- new_target
+          } else {
+            container[[key]] <- new_target
+          }
+
+          private$..assign_field_scope(
+            scope = resolved$scope,
+            field = field,
+            value = container
+          )
+
+          if (update_sync) {
+            private$..sync_state()
+          }
+          if (update_modified) {
+            private$..touch()
+          }
+        },
+        on_error = "abort",
+        origin = "Orchestrator$set"
+      )
+      invisible(self)
     }
   ),
 
   private = list(
-    #' @description Update modified timestamp metadata.
-    #' @return Invisibly returns \code{NULL}.
-    #' @keywords internal
-    #' @noRd
+    # @description Update modified timestamp metadata.
+    # @return Invisibly returns \code{NULL}.
+    # @keywords internal
     ..touch = function() {
       if (is.null(self$metadata) || !is.list(self$metadata)) {
         self$metadata <- list()
@@ -214,19 +333,18 @@ Orchestrator <- R6::R6Class(
       invisible(NULL)
     },
 
-    #' @description Synchronize orchestrator state.
-    #'
-    #' When \code{field/member} are provided, returns the resolved nested value
-    #' and optionally assigns it to \code{target_field}. Without arguments, this
-    #' runs inherited synchronization hooks (\code{sync_*} members).
-    #' @param field Optional top-level field name.
-    #' @param member Optional nested member name.
-    #' @param target_field Optional destination field path (supports \code{$}).
-    #' @param name Optional named list entry inside \code{field}.
-    #' @param role Optional role-based list resolution key.
-    #' @return Invisibly returns resolved value (targeted mode) or \code{NULL}.
-    #' @keywords internal
-    #' @noRd
+    # @description Synchronize orchestrator state.
+    #
+    # When \code{field/member} are provided, returns the resolved nested value
+    # and optionally assigns it to \code{target_field}. Without arguments, this
+    # runs inherited synchronization hooks (\code{sync_*} members).
+    # @param field Optional top-level field name.
+    # @param member Optional nested member name.
+    # @param target_field Optional destination field path (supports \code{$}).
+    # @param name Optional named list entry inside \code{field}.
+    # @param role Optional role-based list resolution key.
+    # @return Invisibly returns resolved value (targeted mode) or \code{NULL}.
+    # @keywords internal
     ..sync_state = function(
       field = NULL,
       member = NULL,
@@ -248,12 +366,12 @@ Orchestrator <- R6::R6Class(
           !is.null(name) ||
           !is.null(role)
       ) {
-        phr_assert(
+        phrutils::phr_assert(
           is.character(field) && length(field) == 1L && nzchar(field),
           message = phr_txt("field must be a non-empty character string."),
           origin = "Orchestrator$sync_state"
         )
-        phr_assert(
+        phrutils::phr_assert(
           is.character(member) && length(member) == 1L && nzchar(member),
           message = phr_txt("member must be a non-empty character string."),
           origin = "Orchestrator$sync_state"
@@ -263,7 +381,7 @@ Orchestrator <- R6::R6Class(
           name = name,
           role = role
         )
-        phr_assert(
+        phrutils::phr_assert(
           !is.null(target[[member]]),
           message = phr_txt(
             "Member '{member}' does not exist on the resolved target."
@@ -335,27 +453,26 @@ Orchestrator <- R6::R6Class(
       invisible(NULL)
     },
 
-    #' @description Resolve a top-level or nested target object.
-    #' @param field Top-level field name.
-    #' @param name Optional exact list element name.
-    #' @param role Optional role-style key for list lookup.
-    #' @return Resolved object.
-    #' @keywords internal
-    #' @noRd
+    # @description Resolve a top-level or nested target object.
+    # @param field Top-level field name.
+    # @param name Optional exact list element name.
+    # @param role Optional role-style key for list lookup.
+    # @return Resolved object.
+    # @keywords internal
     ..resolve_nested_target = function(field, name = NULL, role = NULL) {
-      phr_assert(
+      phrutils::phr_assert(
         is.character(field) && length(field) == 1L && nzchar(field),
         message = phr_txt("field must be a non-empty character string."),
         origin = "Orchestrator$.resolve_nested_target"
       )
-      phr_assert(
+      phrutils::phr_assert(
         !is.null(self[[field]]),
         message = phr_txt("Field '{field}' is not available on this object."),
         origin = "Orchestrator$.resolve_nested_target"
       )
       container <- self[[field]]
 
-      phr_assert(
+      phrutils::phr_assert(
         !(!is.null(name) && !is.null(role)),
         message = phr_txt("Provide only one of name or role."),
         origin = "Orchestrator$.resolve_nested_target"
@@ -365,45 +482,74 @@ Orchestrator <- R6::R6Class(
         return(container)
       }
 
-      phr_assert(
+      key <- private$..resolve_list_key(
+        container = container,
+        field = field,
+        name = name,
+        role = role,
+        origin = "Orchestrator$.resolve_nested_target"
+      )
+      container[[key]]
+    },
+
+    # @description Resolve the list index/name identifying an element within
+    #   \code{container}, using either an exact \code{name} or a role-like
+    #   \code{role} lookup. Shared by \code{..resolve_nested_target()} and
+    #   \code{set()}.
+    # @param container A list to search within.
+    # @param field Top-level field name (used only for error messages).
+    # @param name Optional exact list element name.
+    # @param role Optional role-style key for list lookup.
+    # @param origin Character scalar identifying the calling context for
+    #   error messages.
+    # @return The resolved list key (character name or integer index).
+    # @keywords internal
+    ..resolve_list_key = function(
+      container,
+      field,
+      name = NULL,
+      role = NULL,
+      origin = "Orchestrator$.resolve_list_key"
+    ) {
+      phrutils::phr_assert(
         is.list(container),
         message = phr_txt(
           "Field '{field}' must be a list when resolving name/role."
         ),
-        origin = "Orchestrator$.resolve_nested_target"
+        origin = origin
       )
 
       if (!is.null(name)) {
-        phr_assert(
+        phrutils::phr_assert(
           is.character(name) && length(name) == 1L && nzchar(name),
           message = phr_txt(
             "name must be a non-empty character string when provided."
           ),
-          origin = "Orchestrator$.resolve_nested_target"
+          origin = origin
         )
-        phr_assert(
+        phrutils::phr_assert(
           !is.null(container[[name]]),
           message = phr_txt("Name '{name}' was not found in field '{field}'."),
-          origin = "Orchestrator$.resolve_nested_target"
+          origin = origin
         )
-        return(container[[name]])
+        return(name)
       }
 
-      phr_assert(
+      phrutils::phr_assert(
         is.character(role) && length(role) == 1L && nzchar(role),
         message = phr_txt(
           "role must be a non-empty character string when provided."
         ),
-        origin = "Orchestrator$.resolve_nested_target"
+        origin = origin
       )
 
       nms <- names(container)
-      phr_assert(
+      phrutils::phr_assert(
         !is.null(nms) && length(nms) > 0L,
         message = phr_txt(
           "Field '{field}' has no named elements for role-based lookup."
         ),
-        origin = "Orchestrator$.resolve_nested_target"
+        origin = origin
       )
 
       role_key <- private$..normalize_role_name(role)
@@ -421,23 +567,70 @@ Orchestrator <- R6::R6Class(
         )
       }
 
-      phr_assert(
+      phrutils::phr_assert(
         length(idx) == 1L,
         message = if (length(idx) == 0L) {
           phr_txt("Role '{role}' was not found in field '{field}'.")
         } else {
           phr_txt("Role '{role}' matched multiple elements in field '{field}'.")
         },
-        origin = "Orchestrator$.resolve_nested_target"
+        origin = origin
       )
-      container[[idx]]
+      idx
     },
 
-    #' @description Normalize role names for fuzzy list matching.
-    #' @param x Character role/name input.
-    #' @return Normalized character key.
-    #' @keywords internal
-    #' @noRd
+    # @description Resolve which scope ("public" or "private") owns a
+    #   top-level field, so that `set()` can safely read/write fields
+    #   regardless of visibility.
+    # @param field Character scalar naming the field to resolve.
+    # @param origin Character scalar identifying the calling context for
+    #   error messages.
+    # @return A list with `scope` ("public" or "private") and `value` (the
+    #   field's current value).
+    # @keywords internal
+    ..resolve_field_scope = function(field, origin = "Orchestrator$set") {
+      phrutils::phr_assert(
+        is.character(field) && length(field) == 1L && nzchar(field),
+        message = phr_txt("field must be a non-empty character string."),
+        origin = origin
+      )
+
+      if (field %in% names(self)) {
+        return(list(scope = "public", value = self[[field]]))
+      }
+      if (field %in% names(private)) {
+        return(list(scope = "private", value = private[[field]]))
+      }
+
+      phrutils::phr_assert(
+        FALSE,
+        message = phr_txt(
+          "Field '{field}' is not available on this object."
+        ),
+        origin = origin
+      )
+    },
+
+    # @description Assign `value` back to a field in the scope identified by
+    #   `..resolve_field_scope()`.
+    # @param scope Either "public" or "private".
+    # @param field Character scalar naming the field to assign.
+    # @param value Value to assign.
+    # @return Invisibly returns \code{NULL}.
+    # @keywords internal
+    ..assign_field_scope = function(scope, field, value) {
+      if (identical(scope, "private")) {
+        private[[field]] <- value
+      } else {
+        self[[field]] <- value
+      }
+      invisible(NULL)
+    },
+
+    # @description Normalize role names for fuzzy list matching.
+    # @param x Character role/name input.
+    # @return Normalized character key.
+    # @keywords internal
     ..normalize_role_name = function(x) {
       x <- tolower(as.character(x %||% ""))
       x <- gsub("^tool_", "", x)
@@ -446,14 +639,13 @@ Orchestrator <- R6::R6Class(
       x
     },
 
-    #' @description Assign synchronized values to a target field path.
-    #' @param target_field Character path using \code{$} separators.
-    #' @param value Value to assign.
-    #' @return Invisibly returns \code{NULL}.
-    #' @keywords internal
-    #' @noRd
+    # @description Assign synchronized values to a target field path.
+    # @param target_field Character path using \code{$} separators.
+    # @param value Value to assign.
+    # @return Invisibly returns \code{NULL}.
+    # @keywords internal
     ..assign_sync_value = function(target_field, value) {
-      phr_assert(
+      phrutils::phr_assert(
         is.character(target_field) &&
           length(target_field) == 1L &&
           nzchar(target_field),
@@ -463,7 +655,7 @@ Orchestrator <- R6::R6Class(
 
       path <- strsplit(target_field, "\\$", fixed = FALSE)[[1L]]
       path <- path[nzchar(path)]
-      phr_assert(
+      phrutils::phr_assert(
         length(path) >= 1L,
         message = phr_txt("target_field path is invalid."),
         origin = "Orchestrator$.assign_sync_value"

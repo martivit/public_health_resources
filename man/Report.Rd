@@ -8,7 +8,7 @@ Subclass of \code{\link{Document}} for holding a protocol object, multiple
 data analytics objects, and an integrated analysis object.
 }
 \section{Super classes}{
-\code{Orchestrator} -> \code{Document} -> \code{Report}
+\code{\link[phr:Orchestrator]{Orchestrator}} -> \code{\link[phr:Document]{Document}} -> \code{Report}
 }
 \section{Public fields}{
   \if{html}{\out{<div class="r6-fields">}}
@@ -30,14 +30,15 @@ data analytics objects, and an integrated analysis object.
 }
 \if{html}{\out{<details><summary>Inherited methods</summary>
 <ul>
-  <li><code>Orchestrator$access_nested()</code></li>
-  <li><code>Orchestrator$post_sync_state()</code></li>
-  <li><code>Orchestrator$pre_sync_state()</code></li>
-  <li><code>Orchestrator$set_nested()</code></li>
-  <li><code>Orchestrator$sync_state()</code></li>
-  <li><code>Document$generate_quarto_doc()</code></li>
-  <li><code>Document$generate_quarto_ppt()</code></li>
-  <li><code>Document$get_quarto_params()</code></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Orchestrator" data-id="access_nested"><a href='../../phr/html/Orchestrator.html#method-Orchestrator-access_nested'><code>Orchestrator$access_nested()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Orchestrator" data-id="post_sync_state"><a href='../../phr/html/Orchestrator.html#method-Orchestrator-post_sync_state'><code>Orchestrator$post_sync_state()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Orchestrator" data-id="pre_sync_state"><a href='../../phr/html/Orchestrator.html#method-Orchestrator-pre_sync_state'><code>Orchestrator$pre_sync_state()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Orchestrator" data-id="set"><a href='../../phr/html/Orchestrator.html#method-Orchestrator-set'><code>Orchestrator$set()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Orchestrator" data-id="set_nested"><a href='../../phr/html/Orchestrator.html#method-Orchestrator-set_nested'><code>Orchestrator$set_nested()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Orchestrator" data-id="sync_state"><a href='../../phr/html/Orchestrator.html#method-Orchestrator-sync_state'><code>Orchestrator$sync_state()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Document" data-id="generate_quarto_doc"><a href='../../phr/html/Document.html#method-Document-generate_quarto_doc'><code>Document$generate_quarto_doc()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Document" data-id="generate_quarto_ppt"><a href='../../phr/html/Document.html#method-Document-generate_quarto_ppt'><code>Document$generate_quarto_ppt()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="phr" data-topic="Document" data-id="get_quarto_params"><a href='../../phr/html/Document.html#method-Document-get_quarto_params'><code>Document$get_quarto_params()</code></a></span></li>
 </ul>
 </details>}}
 \if{html}{\out{<hr>}}

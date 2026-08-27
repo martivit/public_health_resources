@@ -99,7 +99,7 @@ QuantDataAnalysisPlanLog <- R6::R6Class(
     #' Sets self$validated and self$issues based on results.
     validate = function() {
 
-      phr_try({
+      phrutils::phr_try({
 
 
         # 1. Start with super validation
@@ -125,7 +125,7 @@ QuantDataAnalysisPlanLog <- R6::R6Class(
 
           super_issues$missing_or_empty <- bad_cols
 
-          phr_warning(
+          phrutils::phr_warning(
             self$log_name,
             phr_txt(glue::glue("Analysis plan contains missing/empty values in: {paste(bad_cols, collapse=', ')}."))
           )
@@ -140,7 +140,7 @@ QuantDataAnalysisPlanLog <- R6::R6Class(
           if (length(invalid_mult) > 0) {
             super_issues$invalid_multiplier <- invalid_mult
             
-            phr_warning(
+            phrutils::phr_warning(
               self$log_name,
               phr_txt(glue::glue("Analysis plan contains non-positive multipliers at rows: {paste(invalid_mult, collapse=', ')}."))
             )

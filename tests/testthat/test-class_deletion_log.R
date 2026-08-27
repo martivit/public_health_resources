@@ -4,6 +4,7 @@
 
 library(testthat)
 library(tibble)
+library(phrutils)
 
 # ------------------------------------------------------------
 # Reuse the MockData class from CleaningLog tests
@@ -32,19 +33,17 @@ MockData <- R6::R6Class(
 # ============================================================
 
 test_that("DeletionLog initializes with required columns", {
-
   log <- DeletionLog$new()
 
-  expect_true(is.data.frame(log$log_df))
+  expect_true(is.data.frame(log$get("log_df")))
   expect_setequal(
-    names(log$log_df),
+    names(log$get("log_df")),
     c("uuid", "enum_id", "device_id", "issue", "feedback")
   )
 })
 
 test_that("DeletionLog fills missing required columns when provided log_df is incomplete", {
-
-  df <- tibble(uuid = "1", issue = "bad")   # missing enum_id, device_id, feedback, etc.
+  df <- tibble(uuid = "1", issue = "bad") # missing enum_id, device_id, feedback, etc.
 
   log <- DeletionLog$new(log_df = df)
 
@@ -52,23 +51,22 @@ test_that("DeletionLog fills missing required columns when provided log_df is in
   expect_s3_class(log, "DeletionLog")
 
   # It should contain all required columns
-  expect_true(all(log$required_columns %in% names(log$log_df)))
+  expect_true(all(log$required_columns %in% names(log$get("log_df"))))
 
   # All missing columns should be filled with NA
   missing_cols <- setdiff(log$required_columns, names(df))
 
   for (col in missing_cols) {
-    expect_true(all(is.na(log$log_df[[col]])))
+    expect_true(all(is.na(log$get("log_df")[[col]])))
   }
 })
 
 test_that("DeletionLog initializes with correct schema types", {
-
   log <- DeletionLog$new()
 
-  expect_equal(log$schema$types$uuid, "character")
-  expect_equal(log$schema$types$issue, "character")
-  expect_equal(log$schema$types$feedback, "character")
+  expect_equal(log$get("schema")$types$uuid, "character")
+  expect_equal(log$get("schema")$types$issue, "character")
+  expect_equal(log$get("schema")$types$feedback, "character")
 })
 
 
@@ -77,7 +75,6 @@ test_that("DeletionLog initializes with correct schema types", {
 # ============================================================
 
 test_that("add_deletion() appends a properly formatted row", {
-
   log <- DeletionLog$new()
 
   log$add_deletion(
@@ -88,22 +85,21 @@ test_that("add_deletion() appends a properly formatted row", {
     feedback = "confirmed"
   )
 
-  expect_equal(nrow(log$log_df), 1)
-  expect_equal(log$log_df$uuid, "u1")
-  expect_equal(log$log_df$issue, "duplicate")
+  expect_equal(nrow(log$get("log_df")), 1)
+  expect_equal(log$get("log_df")$uuid, "u1")
+  expect_equal(log$get("log_df")$issue, "duplicate")
 })
 
 
 test_that("add_deletion() allows NA for optional fields", {
-
   log <- DeletionLog$new()
 
   log$add_deletion(uuid = "u1", issue = "bad record")
 
-  expect_equal(nrow(log$log_df), 1)
-  expect_equal(log$log_df$uuid, "u1")
-  expect_equal(log$log_df$issue, "bad record")
-  expect_true(is.na(log$log_df$enum_id))
+  expect_equal(nrow(log$get("log_df")), 1)
+  expect_equal(log$get("log_df")$uuid, "u1")
+  expect_equal(log$get("log_df")$issue, "bad record")
+  expect_true(is.na(log$get("log_df")$enum_id))
 })
 
 
@@ -112,7 +108,6 @@ test_that("add_deletion() allows NA for optional fields", {
 # ============================================================
 
 test_that("DeletionLog validate passes when data is correct", {
-
   df <- tibble(
     uuid = "u1",
     enum_id = "e1",
@@ -127,7 +122,6 @@ test_that("DeletionLog validate passes when data is correct", {
 })
 
 test_that("DeletionLog validate errors when required non-empty fields are empty", {
-
   df <- tibble(
     uuid = "",
     enum_id = "e1",
@@ -145,9 +139,8 @@ test_that("DeletionLog validate errors when required non-empty fields are empty"
 })
 
 test_that("DeletionLog validate coerces safely coercible types", {
-
   df <- tibble(
-    uuid = 1001,  # numeric → character
+    uuid = 1001, # numeric → character
     enum_id = "e1",
     device_id = "d1",
     issue = "bad",
@@ -157,7 +150,7 @@ test_that("DeletionLog validate coerces safely coercible types", {
   log <- DeletionLog$new(df)
 
   expect_no_error(log$validate())
-  expect_true(is.character(log$log_df$uuid))
+  expect_true(is.character(log$get("log_df")$uuid))
 })
 
 
@@ -166,7 +159,6 @@ test_that("DeletionLog validate coerces safely coercible types", {
 # ============================================================
 
 test_that("post_validate errors if dataset missing UUID column", {
-
   df_log <- tibble(
     uuid = "u1",
     enum_id = "e",
@@ -176,7 +168,7 @@ test_that("post_validate errors if dataset missing UUID column", {
   )
 
   log <- DeletionLog$new(df_log)
-  d <- MockData$new(df = tibble(x = 1))  # no uuid column
+  d <- MockData$new(df = tibble(x = 1)) # no uuid column
 
   expect_error(
     log$post_validate(d),
@@ -185,13 +177,12 @@ test_that("post_validate errors if dataset missing UUID column", {
 })
 
 test_that("post_validate warns if log UUIDs not in dataset", {
-
   df_log <- tibble(
     uuid = c("missing1", "missing2"),
-    enum_id = c("e","e"),
-    device_id = c("d","d"),
-    issue = c("bad","worse"),
-    feedback = c("x","y")
+    enum_id = c("e", "e"),
+    device_id = c("d", "d"),
+    issue = c("bad", "worse"),
+    feedback = c("x", "y")
   )
 
   df_data <- tibble(uuid = "u1", x = 1)
@@ -206,7 +197,6 @@ test_that("post_validate warns if log UUIDs not in dataset", {
 })
 
 test_that("post_validate passes when all UUIDs match dataset", {
-
   df_log <- tibble(
     uuid = c("u1"),
     enum_id = "e",
@@ -229,13 +219,12 @@ test_that("post_validate passes when all UUIDs match dataset", {
 # ============================================================
 
 test_that("DeletionLog validate allows multiple rows", {
-
   df <- tibble(
-    uuid = c("u1","u2","u3"),
-    enum_id = c("e1","e2","e3"),
-    device_id = c("d1","d2","d3"),
-    issue = c("bad","worse","ok"),
-    feedback = c("x","y","z")
+    uuid = c("u1", "u2", "u3"),
+    enum_id = c("e1", "e2", "e3"),
+    device_id = c("d1", "d2", "d3"),
+    issue = c("bad", "worse", "ok"),
+    feedback = c("x", "y", "z")
   )
 
   log <- DeletionLog$new(df)
@@ -244,19 +233,17 @@ test_that("DeletionLog validate allows multiple rows", {
 })
 
 test_that("DeletionLog initialize allows empty log_df and creates proper structure", {
-
   log <- DeletionLog$new(log_df = NULL)
 
-  expect_equal(nrow(log$log_df), 0)
+  expect_equal(nrow(log$get("log_df")), 0)
   expect_setequal(
-    names(log$log_df),
+    names(log$get("log_df")),
     c("uuid", "enum_id", "device_id", "issue", "feedback")
   )
 })
 
 
 test_that("DeletionLog post_validate allows extra unmapped columns silently", {
-
   df_log <- tibble(
     uuid = "u1",
     enum_id = "E1",
@@ -276,4 +263,3 @@ test_that("DeletionLog post_validate allows extra unmapped columns silently", {
 
   expect_silent(log$post_validate(d))
 })
-

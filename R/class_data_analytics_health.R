@@ -120,13 +120,13 @@ HealthDataAnalytics <- R6::R6Class(
       if (!is.null(linked_ind_roster_data)) msg_parts <- c(msg_parts, "roster")
       if (!is.null(linked_ind_health_data))  msg_parts <- c(msg_parts, "health individual")
       if (length(msg_parts) > 0) {
-        phr_message(
+        phrutils::phr_message(
           phr_txt(glue::glue(
             "HealthDataAnalytics initialized with linked {paste(msg_parts, collapse=' and ')} data."
           ))
         )
       } else {
-        phr_message(
+        phrutils::phr_message(
           phr_txt(glue::glue("{dataset_name} initialized as HealthDataAnalytics object."))
         )
       }
@@ -152,7 +152,7 @@ HealthDataAnalytics <- R6::R6Class(
       df <- tryCatch(
         readxl::read_xlsx(file),
         error = function(e) {
-          phr_warning(
+          phrutils::phr_warning(
             origin  = "HealthDataAnalytics$default_quality_schema",
             message = phr_txt(glue::glue("Failed to read quality_schema_data_quality_health_template.xlsx: {e$message}"))
           )
@@ -190,7 +190,7 @@ HealthDataAnalytics <- R6::R6Class(
         }
       }
 
-      df <- phr_try(
+      df <- phrutils::phr_try(
         readxl::read_xlsx(file),
         on_error = "warn",
         origin   = "HealthDataAnalytics$default_outputs_schema",
@@ -221,7 +221,7 @@ HealthDataAnalytics <- R6::R6Class(
         }
       }
 
-      schema_tbl <- phr_try(
+      schema_tbl <- phrutils::phr_try(
         readxl::read_xlsx(file),
         on_error = "warn",
         origin   = "HealthDataAnalytics$default_analysis_schema",

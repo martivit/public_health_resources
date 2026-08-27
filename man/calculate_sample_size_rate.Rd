@@ -20,6 +20,9 @@ calculate_sample_size_rate(
 )
 }
 \arguments{
+\item{expected_rate}{Numeric. Expected crude death rate (CDR) in
+deaths per 10,000 people per day (must be positive).}
+
 \item{desired_precision}{Numeric. Desired precision as a half-width in
 deaths per 10,000 people per day (must be positive).}
 
@@ -52,8 +55,7 @@ be positive) when \code{fpc = TRUE}.}
 \item{confidence_level}{Numeric. Desired confidence level as a proportion
 (default = 0.95).}
 
-\item{expected_death_rate}{Numeric. Expected crude death rate (CDR) in
-deaths per 10,000 people per day (must be positive).}
+\item{multiplier}{Numeric. Scaling multiplier for the rate (default = 10000).}
 }
 \value{
 A named list with six elements:

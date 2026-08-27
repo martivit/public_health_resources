@@ -202,6 +202,7 @@ Placeholder: UI modal implementation will be developed in a separate branch.
 - Other operators (<, >, <=, >=, etc.) are not currently translated for values
 - Variable names in functions (e.g., is.na(var)) are translated
 - Special regex characters in names/values are automatically escaped
+Save Data Object to File
 }
 \examples{
 \dontrun{

@@ -59,7 +59,7 @@ IYCFDataAnalytics <- R6::R6Class(
         quality_schema = quality_schema
       )
 
-      phr_message(
+      phrutils::phr_message(
         phr_txt(glue::glue("{dataset_name} initialized as IYCFDataAnalytics object."))
       )
     },
@@ -84,7 +84,7 @@ IYCFDataAnalytics <- R6::R6Class(
       df <- tryCatch(
         readxl::read_xlsx(file),
         error = function(e) {
-          phr_warning(
+          phrutils::phr_warning(
             origin  = "IYCFDataAnalytics$default_quality_schema",
             message = phr_txt(glue::glue("Failed to read quality_schema_data_quality_iycf_template.xlsx: {e$message}"))
           )
@@ -122,7 +122,7 @@ IYCFDataAnalytics <- R6::R6Class(
         }
       }
 
-      df <- phr_try(
+      df <- phrutils::phr_try(
         readxl::read_xlsx(file),
         on_error = "warn",
         origin   = "IYCFDataAnalytics$default_outputs_schema",

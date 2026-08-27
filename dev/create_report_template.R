@@ -6,7 +6,7 @@
 # SurveyProtocol$generate_report() is now based on the REACH Terms of
 # Reference (TOR) template:
 #
-#   resources/REACH_TOR_Template_ 2023-06_clean_ENGLISH.docx
+#   resources/REACH_TOR_Template_2023-06_clean_ENGLISH.docx
 #
 # A copy of this file is bundled with the package at:
 #
@@ -39,7 +39,7 @@
 # To refresh the bundled template if the source document has been updated:
 #
 #   file.copy(
-#     from = "resources/REACH_TOR_Template_ 2023-06_clean_ENGLISH.docx",
+#     from = "resources/REACH_TOR_Template_2023-06_clean_ENGLISH.docx",
 #     to   = "inst/resources/reach_tor_template.docx",
 #     overwrite = TRUE
 #   )

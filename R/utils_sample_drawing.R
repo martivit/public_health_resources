@@ -23,8 +23,13 @@
 # PSU-level sampling utility functions (called from Protocol$draw_sample)
 # ---------------------------------------------------------------------------
 
-# Determine the number of reserve clusters to add based on the main draw size.
-# Returns 3 for n_main <= 10, 4 for n_main <= 20, and 5 for n_main > 20.
+#' Determine the number of reserve clusters
+#'
+#' Determine the number of reserve clusters to add based on the main draw size.
+#' Returns 3 for n_main <= 10, 4 for n_main <= 20, and 5 for n_main > 20.
+#'
+#' @param n_main Integer. Number of main (non-reserve) clusters.
+#' @keywords internal
 n_reserve_clusters <- function(n_main) {
   if (n_main <= 10L) {
     3L
@@ -88,15 +93,15 @@ assign_reserve_labels <- function(n_total, n_reserve, seed) {
 draw_sample_psu_srs <- function(frame, n_psu, sample_size, seed = 42) {
   origin <- "draw_sample_psu_srs"
 
-  phr_try(
+  phrutils::phr_try(
     {
-      phr_validate_dataframe(frame, origin = origin, soft = FALSE)
-      phr_assert(
+      phrutils::phr_validate_dataframe(frame, origin = origin, soft = FALSE)
+      phrutils::phr_assert(
         n_psu > 0,
         message = phr_txt("n_psu must be a positive integer."),
         origin = origin
       )
-      phr_assert(
+      phrutils::phr_assert(
         sample_size > 0,
         message = phr_txt("sample_size must be positive."),
         origin = origin
@@ -105,7 +110,7 @@ draw_sample_psu_srs <- function(frame, n_psu, sample_size, seed = 42) {
       set.seed(seed)
       n_available <- nrow(frame)
       if (n_psu > n_available) {
-        phr_warning(
+        phrutils::phr_warning(
           message = phr_txt(
             "n_psu ({n_psu}) exceeds available PSUs ({n_available}). Using all available PSUs."
           ),
@@ -120,7 +125,7 @@ draw_sample_psu_srs <- function(frame, n_psu, sample_size, seed = 42) {
         n_original_reserve <- n_reserve
         n_reserve <- max(0L, n_available - n_psu)
         n_total <- n_psu + n_reserve
-        phr_warning(
+        phrutils::phr_warning(
           message = phr_txt(
             "Only {n_reserve} reserve cluster(s) can be drawn (wanted {n_original_reserve}); frame has too few PSUs."
           ),
@@ -169,24 +174,24 @@ draw_sample_psu_srs <- function(frame, n_psu, sample_size, seed = 42) {
 draw_sample_psu_proportional <- function(frame, sample_size, seed = 42) {
   origin <- "draw_sample_psu_proportional"
 
-  phr_try(
+  phrutils::phr_try(
     {
-      phr_validate_dataframe(frame, origin = origin, soft = FALSE)
-      phr_assert(
+      phrutils::phr_validate_dataframe(frame, origin = origin, soft = FALSE)
+      phrutils::phr_assert(
         "population_size" %in% names(frame),
         message = phr_txt(
           "Frame must have a 'population_size' column for proportional method."
         ),
         origin = origin
       )
-      phr_assert(
+      phrutils::phr_assert(
         sample_size > 0,
         message = phr_txt("sample_size must be positive."),
         origin = origin
       )
 
       total_pop <- sum(frame$population_size, na.rm = TRUE)
-      phr_assert(
+      phrutils::phr_assert(
         total_pop > 0,
         message = phr_txt(
           "Total population cannot be zero for proportional method."
@@ -244,29 +249,29 @@ draw_sample_psu_proportional_rlc <- function(
 ) {
   origin <- "draw_sample_psu_proportional_rlc"
 
-  phr_try(
+  phrutils::phr_try(
     {
-      phr_validate_dataframe(frame, origin = origin, soft = FALSE)
-      phr_assert(
+      phrutils::phr_validate_dataframe(frame, origin = origin, soft = FALSE)
+      phrutils::phr_assert(
         "population_size" %in% names(frame),
         message = phr_txt(
           "Frame must have a 'population_size' column for proportional_rlc method."
         ),
         origin = origin
       )
-      phr_assert(
+      phrutils::phr_assert(
         sample_size > 0,
         message = phr_txt("sample_size must be positive."),
         origin = origin
       )
-      phr_assert(
+      phrutils::phr_assert(
         cluster_size > 0,
         message = phr_txt("cluster_size must be a positive integer."),
         origin = origin
       )
 
       total_pop <- sum(frame$population_size, na.rm = TRUE)
-      phr_assert(
+      phrutils::phr_assert(
         total_pop > 0,
         message = phr_txt(
           "Total population cannot be zero for proportional_rlc method."
@@ -337,22 +342,22 @@ draw_sample_psu_pps_cluster <- function(
 ) {
   origin <- "draw_sample_psu_pps_cluster"
 
-  phr_try(
+  phrutils::phr_try(
     {
-      phr_validate_dataframe(frame, origin = origin, soft = FALSE)
-      phr_assert(
+      phrutils::phr_validate_dataframe(frame, origin = origin, soft = FALSE)
+      phrutils::phr_assert(
         "population_size" %in% names(frame),
         message = phr_txt(
           "Frame must have a 'population_size' column for pps_cluster method."
         ),
         origin = origin
       )
-      phr_assert(
+      phrutils::phr_assert(
         n_clusters > 0,
         message = phr_txt("n_clusters must be a positive integer."),
         origin = origin
       )
-      phr_assert(
+      phrutils::phr_assert(
         cluster_size > 0,
         message = phr_txt("cluster_size must be a positive integer."),
         origin = origin
@@ -490,27 +495,27 @@ draw_sample_psu_rlc <- function(
 ) {
   origin <- "draw_sample_psu_rlc"
 
-  phr_try(
+  phrutils::phr_try(
     {
-      phr_validate_dataframe(frame, origin = origin, soft = FALSE)
-      phr_assert(
+      phrutils::phr_validate_dataframe(frame, origin = origin, soft = FALSE)
+      phrutils::phr_assert(
         "population_size" %in% names(frame),
         message = phr_txt(
           "Frame must have a 'population_size' column for rlc method."
         ),
         origin = origin
       )
-      phr_assert(
+      phrutils::phr_assert(
         sample_size > 0,
         message = phr_txt("sample_size must be positive."),
         origin = origin
       )
-      phr_assert(
+      phrutils::phr_assert(
         cluster_size > 0,
         message = phr_txt("cluster_size must be a positive integer."),
         origin = origin
       )
-      phr_assert(
+      phrutils::phr_assert(
         !is.null(n_sites) && !is.na(n_sites) && n_sites > 0,
         message = phr_txt(
           "n_sites is required and must be a positive integer for the rlc method."
@@ -520,7 +525,7 @@ draw_sample_psu_rlc <- function(
 
       n_available <- nrow(frame)
       if (n_sites > n_available) {
-        phr_warning(
+        phrutils::phr_warning(
           message = phr_txt(
             "n_sites ({n_sites}) exceeds available PSUs ({n_available}). Using all available PSUs."
           ),
@@ -546,9 +551,18 @@ draw_sample_psu_rlc <- function(
         slot_alloc[seq_len(slot_rem)] <- slot_alloc[seq_len(slot_rem)] + 1L
       }
 
+      # Keep first-appearance order, sum slots for repeated site IDs
+      site_totals <- tapply(slot_alloc, selected_sites, sum)
+      selected_sites <- as.integer(names(site_totals))
+      selected_sites <- selected_sites[order(match(
+        selected_sites,
+        unique(selected_sites)
+      ))]
+      slot_alloc <- as.integer(site_totals[as.character(selected_sites)])
+
       # Produce the global label sequence (sequential numbers interleaved with "RC")
       # and distribute them to sites in the order of site selection.
-      labels <- assign_reserve_labels(n_total, n_reserve, seed)
+      labels <- assign_reserve_labels(sum(slot_alloc), n_reserve, seed)
 
       # Step 3: Populate sampled_psu / allocated_sample on the full frame
       assign_slots_to_frame(
@@ -597,20 +611,20 @@ draw_sample_psu_srs_rlc <- function(
 ) {
   origin <- "draw_sample_psu_srs_rlc"
 
-  phr_try(
+  phrutils::phr_try(
     {
-      phr_validate_dataframe(frame, origin = origin, soft = FALSE)
-      phr_assert(
+      phrutils::phr_validate_dataframe(frame, origin = origin, soft = FALSE)
+      phrutils::phr_assert(
         sample_size > 0,
         message = phr_txt("sample_size must be positive."),
         origin = origin
       )
-      phr_assert(
+      phrutils::phr_assert(
         cluster_size > 0,
         message = phr_txt("cluster_size must be a positive integer."),
         origin = origin
       )
-      phr_assert(
+      phrutils::phr_assert(
         !is.null(n_sites) && !is.na(n_sites) && n_sites > 0,
         message = phr_txt(
           "n_sites is required and must be a positive integer for the simple_random_rlc method."
@@ -620,7 +634,7 @@ draw_sample_psu_srs_rlc <- function(
 
       n_available <- nrow(frame)
       if (n_sites > n_available) {
-        phr_warning(
+        phrutils::phr_warning(
           message = phr_txt(
             "n_sites ({n_sites}) exceeds available PSUs ({n_available}). Using all available PSUs."
           ),
@@ -699,20 +713,20 @@ draw_sample_psu_systematic_rlc <- function(
 ) {
   origin <- "draw_sample_psu_systematic_rlc"
 
-  phr_try(
+  phrutils::phr_try(
     {
-      phr_validate_dataframe(frame, origin = origin, soft = FALSE)
-      phr_assert(
+      phrutils::phr_validate_dataframe(frame, origin = origin, soft = FALSE)
+      phrutils::phr_assert(
         sample_size > 0,
         message = phr_txt("sample_size must be positive."),
         origin = origin
       )
-      phr_assert(
+      phrutils::phr_assert(
         cluster_size > 0,
         message = phr_txt("cluster_size must be a positive integer."),
         origin = origin
       )
-      phr_assert(
+      phrutils::phr_assert(
         !is.null(n_sites) && !is.na(n_sites) && n_sites > 0,
         message = phr_txt(
           "n_sites is required and must be a positive integer for the systematic_rlc method."
@@ -722,7 +736,7 @@ draw_sample_psu_systematic_rlc <- function(
 
       n_available <- nrow(frame)
       if (n_sites > n_available) {
-        phr_warning(
+        phrutils::phr_warning(
           message = phr_txt(
             "n_sites ({n_sites}) exceeds available PSUs ({n_available}). Using all available PSUs."
           ),
@@ -795,15 +809,15 @@ draw_sample_psu_systematic_rlc <- function(
 draw_sample_psu_systematic <- function(frame, n_sites, sample_size, seed = 42) {
   origin <- "draw_sample_psu_systematic"
 
-  phr_try(
+  phrutils::phr_try(
     {
-      phr_validate_dataframe(frame, origin = origin, soft = FALSE)
-      phr_assert(
+      phrutils::phr_validate_dataframe(frame, origin = origin, soft = FALSE)
+      phrutils::phr_assert(
         n_sites > 0,
         message = phr_txt("n_sites must be a positive integer."),
         origin = origin
       )
-      phr_assert(
+      phrutils::phr_assert(
         sample_size > 0,
         message = phr_txt("sample_size must be positive."),
         origin = origin
@@ -812,7 +826,7 @@ draw_sample_psu_systematic <- function(frame, n_sites, sample_size, seed = 42) {
       set.seed(seed)
       n_available <- nrow(frame)
       if (n_sites > n_available) {
-        phr_warning(
+        phrutils::phr_warning(
           message = phr_txt(
             "n_sites ({n_sites}) exceeds available PSUs ({n_available}). Using all available PSUs."
           ),
@@ -827,7 +841,7 @@ draw_sample_psu_systematic <- function(frame, n_sites, sample_size, seed = 42) {
         n_original_reserve <- n_reserve
         n_reserve <- max(0L, n_available - n_sites)
         n_total <- n_sites + n_reserve
-        phr_warning(
+        phrutils::phr_warning(
           message = phr_txt(
             "Only {n_reserve} reserve cluster(s) can be drawn (wanted {n_original_reserve}); frame has too few PSUs."
           ),
@@ -884,9 +898,9 @@ draw_sample_psu_systematic <- function(frame, n_sites, sample_size, seed = 42) {
 draw_sample_psu_purposive <- function(frame, seed = 42) {
   origin <- "draw_sample_psu_purposive"
 
-  phr_try(
+  phrutils::phr_try(
     {
-      phr_validate_dataframe(frame, origin = origin, soft = FALSE)
+      phrutils::phr_validate_dataframe(frame, origin = origin, soft = FALSE)
 
       frame$sampled_psu <- NA_integer_
       frame$allocated_sample <- NA_real_
@@ -912,12 +926,12 @@ draw_sample_psu_purposive <- function(frame, seed = 42) {
 draw_sample_srs <- function(frame, n, seed = NULL) {
   origin <- "draw_sample_srs"
 
-  phr_try(
+  phrutils::phr_try(
     {
-      phr_validate_dataframe(frame, origin = origin, soft = FALSE)
+      phrutils::phr_validate_dataframe(frame, origin = origin, soft = FALSE)
 
       if (n > nrow(frame)) {
-        phr_warning(
+        phrutils::phr_warning(
           message = phr_txt(
             "Sample size {n} exceeds frame size {nrow(frame)}. Drawing all available units."
           ),
@@ -957,10 +971,10 @@ draw_sample_srs <- function(frame, n, seed = NULL) {
 draw_sample_pps <- function(frame, n, seed = NULL) {
   origin <- "draw_sample_pps"
 
-  phr_try(
+  phrutils::phr_try(
     {
-      phr_validate_dataframe(frame, origin = origin, soft = FALSE)
-      phr_assert(
+      phrutils::phr_validate_dataframe(frame, origin = origin, soft = FALSE)
+      phrutils::phr_assert(
         "population_size" %in% names(frame),
         message = phr_txt(
           "Frame must have a 'population_size' column for PPS sampling."
@@ -968,7 +982,7 @@ draw_sample_pps <- function(frame, n, seed = NULL) {
         origin = origin
       )
       if (n > nrow(frame)) {
-        phr_warning(
+        phrutils::phr_warning(
           message = phr_txt(
             "Sample size {n} exceeds frame size {nrow(frame)}. Drawing all available units."
           ),
@@ -1018,11 +1032,11 @@ draw_sample_pps <- function(frame, n, seed = NULL) {
 draw_sample_systematic <- function(frame, n, seed = NULL) {
   origin <- "draw_sample_systematic"
 
-  phr_try(
+  phrutils::phr_try(
     {
-      phr_validate_dataframe(frame, origin = origin, soft = FALSE)
+      phrutils::phr_validate_dataframe(frame, origin = origin, soft = FALSE)
       if (n > nrow(frame)) {
-        phr_warning(
+        phrutils::phr_warning(
           message = phr_txt(
             "Sample size {n} exceeds frame size {nrow(frame)}. Drawing all available units."
           ),
@@ -1075,19 +1089,19 @@ draw_sample_stratified <- function(
 ) {
   origin <- "draw_sample_stratified"
 
-  phr_try(
+  phrutils::phr_try(
     {
-      phr_assert(
+      phrutils::phr_assert(
         is.data.frame(frame) && is.data.frame(sample_table),
         message = phr_txt("Both frame and sample_table must be data frames."),
         origin = origin
       )
-      phr_assert(
+      phrutils::phr_assert(
         "stratum" %in% names(frame),
         message = phr_txt("Frame must have a 'stratum' column."),
         origin = origin
       )
-      phr_assert(
+      phrutils::phr_assert(
         all(c("stratum_id", "sample_size") %in% names(sample_table)),
         message = phr_txt(
           "sample_table must have 'stratum_id' and 'sample_size' columns."
@@ -1095,7 +1109,7 @@ draw_sample_stratified <- function(
         origin = origin
       )
       valid_methods <- c("srs", "pps", "systematic")
-      phr_assert(
+      phrutils::phr_assert(
         method %in% valid_methods,
         message = phr_txt(
           "Unknown sampling method '{method}'. Must be one of: {paste(valid_methods, collapse=', ')}."
@@ -1115,7 +1129,7 @@ draw_sample_stratified <- function(
         stratum_frame <- frame[frame$stratum == stratum_id, ]
 
         if (nrow(stratum_frame) == 0) {
-          phr_warning(
+          phrutils::phr_warning(
             message = phr_txt(
               "No units found in frame for stratum: {stratum_id}."
             ),
@@ -1171,11 +1185,11 @@ allocate_households <- function(
 ) {
   origin <- "allocate_households"
 
-  phr_try(
+  phrutils::phr_try(
     {
-      phr_validate_dataframe(sample, origin = origin, soft = FALSE)
+      phrutils::phr_validate_dataframe(sample, origin = origin, soft = FALSE)
       valid_methods <- c("equal", "pps")
-      phr_assert(
+      phrutils::phr_assert(
         method %in% valid_methods,
         message = phr_txt(
           "method must be one of: {paste(valid_methods, collapse=', ')}."
@@ -1187,7 +1201,7 @@ allocate_households <- function(
         sample$households_allocated <- households_per_cluster
       } else {
         # pps
-        phr_assert(
+        phrutils::phr_assert(
           "population_size" %in% names(sample),
           message = phr_txt(
             "Sample must have 'population_size' column for PPS allocation."
@@ -1233,14 +1247,14 @@ generate_replacements <- function(
 ) {
   origin <- "generate_replacements"
 
-  phr_try(
+  phrutils::phr_try(
     {
-      phr_assert(
+      phrutils::phr_assert(
         is.data.frame(frame) && is.data.frame(drawn_sample),
         message = phr_txt("Both frame and drawn_sample must be data frames."),
         origin = origin
       )
-      phr_assert(
+      phrutils::phr_assert(
         "id" %in% names(frame) && "id" %in% names(drawn_sample),
         message = phr_txt(
           "Both frame and drawn_sample must have an 'id' column."
@@ -1248,7 +1262,7 @@ generate_replacements <- function(
         origin = origin
       )
       valid_methods <- c("srs", "pps")
-      phr_assert(
+      phrutils::phr_assert(
         method %in% valid_methods,
         message = phr_txt(
           "method must be one of: {paste(valid_methods, collapse=', ')}."
@@ -1264,7 +1278,7 @@ generate_replacements <- function(
       remaining_frame <- frame[!frame$id %in% drawn_sample$id, ]
 
       if (nrow(remaining_frame) == 0) {
-        phr_warning(
+        phrutils::phr_warning(
           message = phr_txt("No units remaining in frame for replacements."),
           origin = origin
         )

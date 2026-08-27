@@ -89,11 +89,11 @@ WASHDataAnalytics <- R6::R6Class(
       self$linked_containers_value_map         <- linked_containers_value_map
 
       if (!is.null(linked_containers_data)) {
-        phr_message(
+        phrutils::phr_message(
           phr_txt("WASHDataAnalytics initialized with linked water container data.")
         )
       } else {
-        phr_message(
+        phrutils::phr_message(
           phr_txt(glue::glue("{dataset_name} initialized as WASHDataAnalytics object."))
         )
       }
@@ -119,7 +119,7 @@ WASHDataAnalytics <- R6::R6Class(
       df <- tryCatch(
         readxl::read_xlsx(file),
         error = function(e) {
-          phr_warning(
+          phrutils::phr_warning(
             origin  = "WASHDataAnalytics$default_quality_schema",
             message = phr_txt(glue::glue("Failed to read quality_schema_data_quality_wash_template.xlsx: {e$message}"))
           )
@@ -157,7 +157,7 @@ WASHDataAnalytics <- R6::R6Class(
         }
       }
 
-      df <- phr_try(
+      df <- phrutils::phr_try(
         readxl::read_xlsx(file),
         on_error = "warn",
         origin   = "WASHDataAnalytics$default_outputs_schema",
@@ -188,7 +188,7 @@ WASHDataAnalytics <- R6::R6Class(
         }
       }
 
-      schema_tbl <- phr_try(
+      schema_tbl <- phrutils::phr_try(
         readxl::read_xlsx(file),
         on_error = "warn",
         origin   = "WASHDataAnalytics$default_analysis_schema",

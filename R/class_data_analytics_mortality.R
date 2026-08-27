@@ -265,7 +265,7 @@ MortalityDataAnalytics <- R6::R6Class(
 
       # Create and store per-dataset survey designs for roster and deaths
       if (!is.null(linked_ind_roster_data)) {
-        self$base_survey_design_roster <- phr_try(
+        self$base_survey_design_roster <- phrutils::phr_try(
           srvyr::as_survey_design(.data = linked_ind_roster_data, ids = 1),
           on_error = "warn",
           origin   = paste0(dataset_name, "$initialize"),
@@ -279,7 +279,7 @@ MortalityDataAnalytics <- R6::R6Class(
       }
 
       if (!is.null(linked_ind_deaths_data)) {
-        self$base_survey_design_deaths <- phr_try(
+        self$base_survey_design_deaths <- phrutils::phr_try(
           srvyr::as_survey_design(.data = linked_ind_deaths_data, ids = 1),
           on_error = "warn",
           origin   = paste0(dataset_name, "$initialize"),
@@ -296,13 +296,13 @@ MortalityDataAnalytics <- R6::R6Class(
       if (!is.null(linked_ind_roster_data)) msg_parts <- c(msg_parts, "roster")
       if (!is.null(linked_ind_deaths_data)) msg_parts <- c(msg_parts, "deaths")
       if (length(msg_parts) > 0) {
-        phr_message(
+        phrutils::phr_message(
           phr_txt(glue::glue(
             "MortalityDataAnalytics initialized with linked {paste(msg_parts, collapse=' and ')} data."
           ))
         )
       } else {
-        phr_message(
+        phrutils::phr_message(
           phr_txt(glue::glue("{dataset_name} initialized as MortalityDataAnalytics object."))
         )
       }
@@ -328,7 +328,7 @@ MortalityDataAnalytics <- R6::R6Class(
       df <- tryCatch(
         readxl::read_xlsx(file),
         error = function(e) {
-          phr_warning(
+          phrutils::phr_warning(
             origin  = "MortalityDataAnalytics$default_quality_schema",
             message = phr_txt(glue::glue("Failed to read quality_schema_data_quality_mortality_template.xlsx: {e$message}"))
           )
@@ -366,7 +366,7 @@ MortalityDataAnalytics <- R6::R6Class(
         }
       }
 
-      df <- phr_try(
+      df <- phrutils::phr_try(
         readxl::read_xlsx(file),
         on_error = "warn",
         origin   = "MortalityDataAnalytics$default_outputs_schema",
@@ -397,7 +397,7 @@ MortalityDataAnalytics <- R6::R6Class(
         }
       }
 
-      schema_tbl <- phr_try(
+      schema_tbl <- phrutils::phr_try(
         readxl::read_xlsx(file),
         on_error = "warn",
         origin   = "MortalityDataAnalytics$default_analysis_schema",
@@ -428,7 +428,7 @@ MortalityDataAnalytics <- R6::R6Class(
         }
       }
 
-      df <- phr_try(
+      df <- phrutils::phr_try(
         readxl::read_xlsx(file),
         on_error = "warn",
         origin   = "MortalityDataAnalytics$default_outputs_schema_roster",
@@ -459,7 +459,7 @@ MortalityDataAnalytics <- R6::R6Class(
         }
       }
 
-      df <- phr_try(
+      df <- phrutils::phr_try(
         readxl::read_xlsx(file),
         on_error = "warn",
         origin   = "MortalityDataAnalytics$default_outputs_schema_deaths",
@@ -490,7 +490,7 @@ MortalityDataAnalytics <- R6::R6Class(
         }
       }
 
-      schema_tbl <- phr_try(
+      schema_tbl <- phrutils::phr_try(
         readxl::read_xlsx(file),
         on_error = "warn",
         origin   = "MortalityDataAnalytics$default_analysis_schema_roster",
@@ -521,7 +521,7 @@ MortalityDataAnalytics <- R6::R6Class(
         }
       }
 
-      schema_tbl <- phr_try(
+      schema_tbl <- phrutils::phr_try(
         readxl::read_xlsx(file),
         on_error = "warn",
         origin   = "MortalityDataAnalytics$default_analysis_schema_deaths",
@@ -546,17 +546,17 @@ MortalityDataAnalytics <- R6::R6Class(
     #' @return Invisibly returns self.
     generate_dap_from_schema_roster = function() {
       origin <- paste0(self$dataset_name, "$generate_dap_from_schema_roster")
-      phr_message(origin, "Generating data_analysis_plan_roster from analysis_schema_roster...")
+      phrutils::phr_message(origin, "Generating data_analysis_plan_roster from analysis_schema_roster...")
 
-      phr_try({
+      phrutils::phr_try({
 
         if (is.null(self$linked_ind_roster_data) || nrow(self$linked_ind_roster_data) == 0) {
-          phr_warning(origin, "linked_ind_roster_data is not available; skipping roster DAP generation.")
+          phrutils::phr_warning(origin, "linked_ind_roster_data is not available; skipping roster DAP generation.")
           return(invisible(self))
         }
 
         if (is.null(self$analysis_schema_roster) || nrow(self$analysis_schema_roster) == 0) {
-          phr_warning(origin, "analysis_schema_roster is empty; data_analysis_plan_roster will remain empty.")
+          phrutils::phr_warning(origin, "analysis_schema_roster is empty; data_analysis_plan_roster will remain empty.")
           return(invisible(self))
         }
 
@@ -574,9 +574,9 @@ MortalityDataAnalytics <- R6::R6Class(
             self$analysis_plan_issue_log,
             result$issues
           )
-          phr_warning(origin, paste0(nrow(result$issues), " roster indicators skipped due to missing variables."))
+          phrutils::phr_warning(origin, paste0(nrow(result$issues), " roster indicators skipped due to missing variables."))
         } else {
-          phr_message(origin, "All roster schema indicators found and added to data_analysis_plan_roster.")
+          phrutils::phr_message(origin, "All roster schema indicators found and added to data_analysis_plan_roster.")
         }
 
       }, on_error = "warn", origin = origin,
@@ -596,17 +596,17 @@ MortalityDataAnalytics <- R6::R6Class(
     #' @return Invisibly returns self.
     generate_dap_from_schema_deaths = function() {
       origin <- paste0(self$dataset_name, "$generate_dap_from_schema_deaths")
-      phr_message(origin, "Generating data_analysis_plan_deaths from analysis_schema_deaths...")
+      phrutils::phr_message(origin, "Generating data_analysis_plan_deaths from analysis_schema_deaths...")
 
-      phr_try({
+      phrutils::phr_try({
 
         if (is.null(self$linked_ind_deaths_data) || nrow(self$linked_ind_deaths_data) == 0) {
-          phr_warning(origin, "linked_ind_deaths_data is not available; skipping deaths DAP generation.")
+          phrutils::phr_warning(origin, "linked_ind_deaths_data is not available; skipping deaths DAP generation.")
           return(invisible(self))
         }
 
         if (is.null(self$analysis_schema_deaths) || nrow(self$analysis_schema_deaths) == 0) {
-          phr_warning(origin, "analysis_schema_deaths is empty; data_analysis_plan_deaths will remain empty.")
+          phrutils::phr_warning(origin, "analysis_schema_deaths is empty; data_analysis_plan_deaths will remain empty.")
           return(invisible(self))
         }
 
@@ -624,9 +624,9 @@ MortalityDataAnalytics <- R6::R6Class(
             self$analysis_plan_issue_log,
             result$issues
           )
-          phr_warning(origin, paste0(nrow(result$issues), " deaths indicators skipped due to missing variables."))
+          phrutils::phr_warning(origin, paste0(nrow(result$issues), " deaths indicators skipped due to missing variables."))
         } else {
-          phr_message(origin, "All deaths schema indicators found and added to data_analysis_plan_deaths.")
+          phrutils::phr_message(origin, "All deaths schema indicators found and added to data_analysis_plan_deaths.")
         }
 
       }, on_error = "warn", origin = origin,
@@ -671,7 +671,7 @@ MortalityDataAnalytics <- R6::R6Class(
             data_analysis_plan = "data_analysis_plan_roster"
           )
         } else {
-          phr_message(origin, "Linked roster data present but data_analysis_plan_roster is empty. Skipping roster analysis.")
+          phrutils::phr_message(origin, "Linked roster data present but data_analysis_plan_roster is empty. Skipping roster analysis.")
         }
       }
 
@@ -683,7 +683,7 @@ MortalityDataAnalytics <- R6::R6Class(
             data_analysis_plan = "data_analysis_plan_deaths"
           )
         } else {
-          phr_message(origin, "Linked deaths data present but data_analysis_plan_deaths is empty. Skipping deaths analysis.")
+          phrutils::phr_message(origin, "Linked deaths data present but data_analysis_plan_deaths is empty. Skipping deaths analysis.")
         }
       }
 
@@ -723,10 +723,10 @@ MortalityDataAnalytics <- R6::R6Class(
             outputs_schema = "outputs_schema_roster",
             base_survey_design = "base_survey_design_roster",
             survey_design = "survey_design_roster",
-            variable_map = "variable_map"
+            variable_map = "linked_ind_roster_variable_map"
           )
         } else {
-          phr_message(origin, "Linked roster data present but outputs_schema_roster is empty. Skipping roster outputs.")
+          phrutils::phr_message(origin, "Linked roster data present but outputs_schema_roster is empty. Skipping roster outputs.")
         }
       }
 
@@ -737,10 +737,10 @@ MortalityDataAnalytics <- R6::R6Class(
             outputs_schema = "outputs_schema_deaths",
             base_survey_design = "base_survey_design_deaths",
             survey_design = "survey_design_deaths",
-            variable_map = "variable_map"
+            variable_map = "linked_ind_deaths_variable_map"
           )
         } else {
-          phr_message(origin, "Linked deaths data present but outputs_schema_deaths is empty. Skipping deaths outputs.")
+          phrutils::phr_message(origin, "Linked deaths data present but outputs_schema_deaths is empty. Skipping deaths outputs.")
         }
       }
 
@@ -777,7 +777,7 @@ MortalityDataAnalytics <- R6::R6Class(
       origin <- origin %||% paste0(self$dataset_name, "$.create_survey_design_for_dataset")
 
       if (is.null(data) || nrow(data) == 0) {
-        phr_warning(origin, "No data available to create survey design for linked dataset.")
+        phrutils::phr_warning(origin, "No data available to create survey design for linked dataset.")
         return(NULL)
       }
 
@@ -802,7 +802,7 @@ MortalityDataAnalytics <- R6::R6Class(
       if (is.null(fpc_col) || !fpc_col %in% data_cols) fpc_col <- NULL
 
       if (is.null(cluster_col)) {
-        phr_message(origin, "No cluster column found for linked dataset; using ids = 1 (simple random sample design).")
+        phrutils::phr_message(origin, "No cluster column found for linked dataset; using ids = 1 (simple random sample design).")
       }
 
       ids_sym    <- if (!is.null(cluster_col)) rlang::sym(cluster_col) else 1
@@ -810,7 +810,7 @@ MortalityDataAnalytics <- R6::R6Class(
       weight_sym <- if (!is.null(weight_col))  rlang::sym(weight_col)  else NULL
       fpc_sym    <- if (!is.null(fpc_col))     rlang::sym(fpc_col)     else NULL
 
-      design <- phr_try(
+      design <- phrutils::phr_try(
         srvyr::as_survey_design(
           .data   = data,
           ids     = !!ids_sym,
@@ -825,7 +825,7 @@ MortalityDataAnalytics <- R6::R6Class(
       )
 
       if (!is.null(design)) {
-        phr_message(origin, "Survey design created successfully for linked dataset.")
+        phrutils::phr_message(origin, "Survey design created successfully for linked dataset.")
       }
 
       design
@@ -915,16 +915,16 @@ MortalityDataAnalytics <- R6::R6Class(
       origin <- paste0(self$dataset_name, "$.run_analysis_for_dataset")
 
       if (is.null(data) || nrow(data) == 0) {
-        phr_warning(origin, "No data available for linked-dataset analysis.")
+        phrutils::phr_warning(origin, "No data available for linked-dataset analysis.")
         return(list(survey_design = NULL, base = NULL))
       }
 
       if (is.null(analysis_schema) || nrow(analysis_schema) == 0) {
-        phr_warning(origin, "No analysis schema rows available for linked-dataset analysis.")
+        phrutils::phr_warning(origin, "No analysis schema rows available for linked-dataset analysis.")
         return(list(survey_design = NULL, base = NULL))
       }
 
-      survey_design <- phr_try(
+      survey_design <- phrutils::phr_try(
         srvyr::as_survey_design(.data = data, ids = 1),
         on_error = "warn",
         origin   = origin,
@@ -961,7 +961,7 @@ MortalityDataAnalytics <- R6::R6Class(
         dplyr::filter(.data$var_exists & .data$denom_exists)
 
       if (nrow(schema_valid) == 0) {
-        phr_warning(origin, "No valid indicators found in analysis schema for linked dataset after variable matching.")
+        phrutils::phr_warning(origin, "No valid indicators found in analysis schema for linked dataset after variable matching.")
         return(list(survey_design = NULL, base = NULL))
       }
 
@@ -976,7 +976,7 @@ MortalityDataAnalytics <- R6::R6Class(
           indicator_unit = .data$indicator_unit
         )
 
-      survey_results <- phr_try(
+      survey_results <- phrutils::phr_try(
         phr_calc_survey_from_plan(
           design        = survey_design,
           analysis_plan = dap_df

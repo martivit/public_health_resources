@@ -47,11 +47,11 @@ apply_phr_flextable_theme <- function(ft,
 
   origin <- "apply_phr_flextable_theme"
 
-  phr_try({
+  phrutils::phr_try({
 
     # Resolve the palette name to a vector of colours, then use the first
     # colour as the header background (same pattern as plot_* functions)
-    palette_colors <- get_color_palette(type = color_palette)
+    palette_colors <- phrutils::get_color_palette(type = color_palette)
     header_bg <- palette_colors[[1]]
 
     # Base booktabs theme

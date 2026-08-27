@@ -119,6 +119,7 @@ Priority order depends on requested stage:
 * If "clean": clean -> standardized -> raw
 * If "standardized": standardized -> clean -> raw
 * If "raw": raw -> clean -> standardized
+Generate Survey Weights from a Sampling Frame
 
 
 
@@ -162,6 +163,7 @@ Stores the design object in self$survey_design field for later use
 For each linked dataset, performs type-specific aggregations and adds columns with
 naming convention "linked_<name>_<column>". See class documentation for specific
 aggregation rules by dataset type.
+Aggregate Deaths Data from Linked Dataset
 
 
 
@@ -169,28 +171,34 @@ Sums canonical death and person_time columns by household: death, death_under5, 
 death_female, death_non_trauma, death_trauma, death_other, death_current_location,
 death_migration, death_last_location, death_birth, person_time, person_time_under5,
 person_time_male, person_time_female
+Aggregate Water Container Data from Linked Dataset
 
 
 
 Sums total liters by household and counts number of containers
+Aggregate Roster Data from Linked Dataset
 
 
 
 Calculates household demographics: household_size, num_children, num_male, num_female,
 num_women_15to49, and person_time columns by household. If calc_date_birth_final is
 available and recall/survey dates exist, also counts births in recall period.
+Aggregate Nutrition Data from Linked Dataset
 
 
 
 Aggregates by age groups: children_under2, children_2to5, children_under5 based on age in months
+Aggregate Health Data from Linked Dataset
 
 
 
 Counts total number of people recorded (rows) per household
+Aggregate Women Data from Linked Dataset
 
 
 
 Counts women aged 15-49 per household (all rows in WomenIndividualData represent eligible women)
+Merge Household Variables to Linked Datasets
 
 
 

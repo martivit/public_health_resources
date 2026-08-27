@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils_tools_validation.R
 \name{xlsform_orphan_square_brackets}
 \alias{xlsform_orphan_square_brackets}
-\title{Detect Square Brackets Not Preceded by a Dollar Sign}
+\title{Detect orphan curly brackets}
 \usage{
 xlsform_orphan_square_brackets(cell)
 }
@@ -12,7 +12,7 @@ xlsform_orphan_square_brackets(cell)
 \value{
 A list with two elements:
 \describe{
-  \item{`valid`}{`TRUE` if no orphaned square brackets are found.}
+  \item{`valid`}{`TRUE` if no orphaned curly brackets are found.}
   \item{`issues`}{A list of issue items (each with `row` and `message`).
     Empty when `valid` is `TRUE`.}
 }
@@ -20,15 +20,15 @@ A list with two elements:
 an empty string.
 }
 \description{
-In XLSForm logic, square brackets are only valid inside the `${}` variable
-reference syntax. A `[` that appears on its own (not immediately after `$`)
-is invalid coding and will cause evaluation errors.
-
-This helper strips all `${}` variable blocks (using the extract helper
-pattern) from the cell and then checks for any remaining `[` characters.
+Checks an XLSForm cell for orphaned curly brackets. A cell is considered
+valid when all `\{` and `\}` are properly paired (no unmatched opening or
+closing brace) and no closing brace appears before a corresponding opening
+brace. Square brackets `[` and `]` are ignored.
 }
 \examples{
-xlsform_orphan_square_brackets("${var}")$valid   # TRUE
-xlsform_orphan_square_brackets("[1]")$valid      # FALSE
+xlsform_orphan_square_brackets("${var}")$valid        # TRUE
+xlsform_orphan_square_brackets("\\\\{1\\\\}")$valid       # FALSE (orphan curly)
+xlsform_orphan_square_brackets("\\\\}1\\\\{")$valid       # FALSE (closing before opening)
+xlsform_orphan_square_brackets("\\\\{a\\\\} + \\\\{b\\\\}")$valid # TRUE (properly paired)
 
 }

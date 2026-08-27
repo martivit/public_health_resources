@@ -171,6 +171,7 @@ good_hh$standardized
 good_hh$generate_cleaning_log(stage = "standardized", overwrite = TRUE)
 
 log_cl <- good_hh$cleaning_log$log_df
+
 head(log_cl, 10)
 log_dl <- good_hh$deletion_log$log_df
 head(log_dl, 10)

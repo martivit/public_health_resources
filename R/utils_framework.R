@@ -32,8 +32,8 @@ restore_framework <- function(framework_data) {
 
   origin <- "restore_framework"
 
-  phr_try({
-    phr_assert(
+  phrutils::phr_try({
+    phrutils::phr_assert(
       is.list(framework_data),
       message = phr_txt("framework_data must be a named list containing framework export data."),
       origin  = origin
@@ -57,7 +57,7 @@ restore_framework <- function(framework_data) {
     if (!is.null(framework_data$primary_objectives))        fw$primary_objectives        <- framework_data$primary_objectives
     if (!is.null(framework_data$secondary_objectives))      fw$secondary_objectives      <- framework_data$secondary_objectives
 
-    phr_message(phr_txt("Framework restored (class: {cls})."), origin = origin)
+    phrutils::phr_message(phr_txt("Framework restored (class: {cls})."), origin = origin)
     fw
   }, on_error = "abort", origin = origin)
 }
